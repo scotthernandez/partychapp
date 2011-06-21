@@ -1,0 +1,226 @@
+body {
+  font-family: Helvetica, sans-serif;
+  background-color: #ccc;
+  line-height: 130%;
+}
+
+.hidden {
+  display: none;
+}
+
+#main {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  background-color: white;
+  padding: 20px 30px;
+  border: 1px solid #aaa;
+  margin: 0 auto;
+  width: 600px;
+}
+
+#header {
+  text-align: center;
+}
+
+#subtitle-header {
+  margin-top: 1em;
+  border-bottom: dashed 1px #ccc;
+  overflow: hidden;
+  height: 50px;
+  position: relative;
+}
+
+#subtitle {
+  position: absolute;
+  bottom: .15em;
+  font-size: 150%;
+  font-weight: bold;
+}
+
+#subtitle-header img {
+  position: absolute;
+  right: 0;
+}
+
+.channel-form-table td {
+  padding: 5px 2px;
+}
+
+.channel-form-table #room-name,
+.channel-form-table #invitees {
+  width: 250px;
+}
+
+.channel-form-table .label {
+  text-align: right;
+  font-weight: bold;
+  vertical-align: top;
+}
+
+.channel-form-table .description {
+  color: #999;
+  font-size: smaller;
+  font-weight: normal;
+  line-height: 100%;
+}
+
+.channel-form-table .buttons {
+  text-align: right;
+}
+
+.channel-form-table .radio-option-table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.channel-form-table .radio-option-table td {
+  padding: 0;
+}
+
+.channel-form-table .radio-option-table td a {
+  text-decoration: none;
+}
+
+#create-result {
+  border: solid 1px #999;
+  padding: 5px;
+  background: #ff9;
+}
+
+h2 {
+  text-align: center;
+  padding-bottom: .1em;
+  border-bottom: solid 1px #ccc;
+}
+
+.channel h3 {
+  border-bottom: solid 1px #ccc;
+  margin-bottom: 0;
+}
+
+.channel #channel-settings-table {
+  width: 100%;
+}
+
+.channel-table {
+  margin-top: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 600px;
+}
+
+.channel-table td,
+.channel-table th {
+  vertical-align: top;
+  padding: 2px 10px 2px 0;
+}
+
+.channel-table th {
+  text-align: left;
+  background: #eee;
+}
+
+.target-loading {
+  opacity: .5;
+}
+
+.target-cell {
+  overflow: hidden;
+  max-width: 550px;
+}
+
+.score-cell {
+  text-align: right !important;
+}
+
+.target-name {
+  cursor: pointer;
+  padding-left: 11px;
+  background: url(/images/expand.png) no-repeat left center;
+}
+
+.target-expanded td {
+  background: #fafafa;
+}
+
+.target-expanded .target-name {
+  background-image: url(/images/collapse.png);
+}
+
+.target-details {
+  display: none;
+}
+
+.target-expanded .target-details {
+  display: block;
+}
+
+.target-details .reasons {
+  list-style-type: none;
+  padding: 2px;
+  margin: 0 0 0 11px;
+  background: #eee;
+}
+
+.target-details .reasons li {
+  padding: 0;
+  margin: 0;
+}
+
+.target-details .reasons .action {
+  font-family: Courier;
+  font-weight: bold;
+}
+
+.target-details .reasons .plusplus {
+  color: green;
+}
+
+.target-details .reasons .minusminus {
+  color: red;
+}
+
+.target-details .reasons .sender {
+  font-weight: bold;
+}
+
+.target-details .reasons .date {
+  color: #999;
+  font-size: smaller;
+}
+
+.channel-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.channel-list li {
+  padding: 2px 0;
+  margin: 0;
+}
+
+.channel-list .description {
+  color: #666;
+}
+
+#channel-share-table {
+  margin: 0 auto;
+}
+
+#channel-share-table #url,
+#channel-share-table #annotation {
+  width: 350px;
+}
+
+#channel-share-table .url-info {
+  color: #999;
+  font-size: 90%;
+}
+
+.bookmarklet {
+  background: #eee;
+  border-radius: 5px;
+  padding: 5px;
+  text-decoration: none;
+}
