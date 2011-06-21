@@ -1,0 +1,8 @@
+<project default="compile-js">
+  <target name="compile-js">
+  	<java jar="../third_party/plovr.jar" output="partychapp_compiled.js" logError="true" fork="true">
+  	  <arg value="build"/>
+  	  <arg value="js/main-config.json"/>
+  	</java>
+  </target>
+</project>
