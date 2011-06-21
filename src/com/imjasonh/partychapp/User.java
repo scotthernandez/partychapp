@@ -150,6 +150,8 @@ public class User implements Serializable {
     List<Channel> channels =
         Lists.newArrayListWithExpectedSize(channelNames.size());
     
+    List<String> toRemove = Lists.newArrayList();
+    
     for (String channelName : channelNames) {
       Channel channel = Datastore.instance().getChannelByName(channelName);
       if (channel != null) {
@@ -160,8 +162,12 @@ public class User implements Serializable {
         logger.warning(
             "User " + jid + " was in non-existent channel " + channelName +
             ", removing");
-        removeChannel(channelName);
+        toRemove.add(channelName);
         shouldPut = true;
+      }
+      
+      for (String name : toRemove){
+    	  removeChannel(name);
       }
     }
     
