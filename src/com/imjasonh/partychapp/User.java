@@ -165,10 +165,10 @@ public class User implements Serializable {
         toRemove.add(channelName);
         shouldPut = true;
       }
-      
-      for (String name : toRemove){
-    	  removeChannel(name);
-      }
+    }
+    
+    for (String name : toRemove){
+  	  removeChannel(name);
     }
     
     // While we have all these channels loaded, also take the opportunity to
