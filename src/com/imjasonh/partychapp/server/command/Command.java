@@ -25,6 +25,7 @@ public enum Command {
   REASONS(new ReasonsHandler()),
   ME(new MeHandler()),
   SHARE(new ShareHandler(ChainedUrlInfoService.DEFAULT_SERVICE)),
+  SHARED(new SharedHandler()),
   INVITE_ONLY(new InviteOnlyHandler()),
   TOGGLE_LOGGING(new ToggleLoggingHandler()),
   INVITE(new InviteHandler()),

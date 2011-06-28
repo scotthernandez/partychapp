@@ -2,6 +2,7 @@ package com.imjasonh.partychapp;
 
 import com.google.appengine.api.xmpp.JID;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.googlecode.objectify.annotation.Serialized;
 import com.googlecode.objectify.annotation.Unindexed;
@@ -13,10 +14,14 @@ import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.Id;
@@ -40,6 +45,8 @@ public class Channel implements Serializable {
   private Boolean inviteOnly = false;
 
   private List<String> invitedIds = Lists.newArrayList();
+  
+  //Private map<string, string> sharedURLs of urls mapped to their alias
   
   private Integer sequenceId = 0;
   
@@ -543,5 +550,87 @@ public class Channel implements Serializable {
       logger.warning("Channel " + name + " needed fixing up");
       put();
     }
+  }
+  
+  /*
+   * private Class sharedURL
+   * 
+   * - URI
+   * - title
+   * - description
+   * - annotation
+   * - time
+   * - member
+   */
+  public class SharedURL implements Serializable{
+	  public final URI uri;
+	  public final String title;
+	  public final String description;
+	  public final String annotation;
+	  public final Date time;
+	  public final Member member;
+	  
+	  public SharedURL(Member m, URI url, String a, String t, String d){
+		  uri = url;
+		  member = m;
+		  annotation = a;
+		  title = t;
+		  description = d;
+		  time = new Date();
+	  }
+	  
+	  
+  }
+  
+  //private list sharedURL
+  private static final int SHARED_URL_LIMIT = 5;
+  @Serialized
+  private List<SharedURL> shared = Lists.newArrayListWithCapacity(SHARED_URL_LIMIT);
+  
+  /*
+   * public storeShare(Member, URI, annotation, title, description)
+   * 
+   * Takes in a string and shares it with the channel.
+   * 1) Check to see if the queue is full
+   * 2) If full, somehow pick which one we'll delete.
+   * 3) If not full, just pop in.
+   * 
+   */
+  public boolean storeShared(Member member, URI url, String annotation, String title, String description){
+	  SharedURL toShare = new SharedURL(member, url, annotation, title, description);
+	  for (SharedURL existing : shared){
+		  if (existing.uri.equals(toShare.uri)){
+			  return false;
+		  }
+	  }
+	  shared.add(0, toShare);
+	  if (shared.size() > SHARED_URL_LIMIT){
+		  shared.remove(SHARED_URL_LIMIT);
+	  }
+	  return true;
+  }
+  
+  
+  /*
+   * public getShared()
+   * 
+   * return inmutable list of sharedURLs
+   */
+  public List<SharedURL> getShared(){
+	  return Collections.unmodifiableList(shared);
+  }
+  
+  /*
+   * public getLink(int key)
+   * 
+   * if (sharedURL at key is not null)
+   * 	return URI
+   * return null
+   */
+  public URI getLink(int index){
+	  if (shared.size() > index){
+		  return shared.get(index).uri;
+	  }
+	  return null;
   }
 }

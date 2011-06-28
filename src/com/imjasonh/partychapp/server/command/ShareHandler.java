@@ -52,13 +52,24 @@ public class ShareHandler extends SlashCommand {
     }
 
     UrlInfo urlInfo = urlInfoService.getUrlInfo(uri);
-    sendShareBroadcast(
-        msg.channel,
-        msg.member,
-        uri,
-        annotation,
-        urlInfo.getTitle(),
-        urlInfo.getDescription());
+    if (msg.channel.storeShared(
+            msg.member,
+            uri,
+            annotation,
+            urlInfo.getTitle(),
+            urlInfo.getDescription())){
+        sendShareBroadcast(
+                msg.channel,
+                msg.member,
+                uri,
+                annotation,
+                urlInfo.getTitle(),
+                urlInfo.getDescription());
+    }else{
+    	msg.channel.sendDirect("_That link is currently being shared._", msg.member);
+    }
+    
+
   }
   
   public static void sendShareBroadcast(
