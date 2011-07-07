@@ -1,4 +1,11 @@
-<!-- Indices written at Fri, 17 Jun 2011 22:38:27 UTC -->
+<!-- Indices written at Thu, 7 Jul 2011 15:25:31 UTC -->
 
-<datastore-indexes/>
+<datastore-indexes>
 
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="LogEntry" ancestor="false" source="auto">
+        <property name="channelName" direction="asc"/>
+        <property name="timestamp" direction="desc"/>
+    </datastore-index>
+
+</datastore-indexes>

@@ -185,6 +185,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>targetdetailsjsonhandler</servlet-name>
     <url-pattern>/targetdetailsjson/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>logentriesjsonhandler</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.json.LogEntriesJsonServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>logentriesjsonhandler</servlet-name>
+    <url-pattern>/logentriesjson/</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>channeljsonhandler</servlet-name>

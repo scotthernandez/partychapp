@@ -109,6 +109,22 @@ public class Message {
   }
   
   public static Message createForTests(
+	      String content, String channelName) {
+
+	  JID userJID = new JID("some_pretty.longEmail1234@example.com");
+	  Channel c = Datastore.instance().getChannelByName(channelName);
+	  return new Builder()
+	      .setContent(content)
+	      .setUserJID(userJID)
+	      .setServerJID(new JID("pancake@partychapp.appspotchat.com"))
+	      .setMessageType(MessageType.XMPP)
+	      .setMember(c.getMemberByJID(userJID))
+	      .setChannel(c)
+	      .setUser(new User(userJID.getId()))
+	      .build();
+	  }
+  
+  public static Message createForTests(
           String content, MessageType messageType, String jid) {
     JID userJID = new JID(jid);
     Channel c = FakeDatastore.fakeChannel();

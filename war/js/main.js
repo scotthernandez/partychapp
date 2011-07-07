@@ -4,6 +4,7 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.string');
 
 goog.require('partychapp.templates');
+goog.require('partychapp.Log');
 goog.require('partychapp.ScoreTable');
 
 // These three shouldn't be required, but a couple dependencies are missing

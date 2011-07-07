@@ -41,12 +41,14 @@ public enum Command {
   SET_CARRIER(new SetCarrierHandler(), Category.HIDDEN),
   BROADCAST_SMS(new SendBroadcastSMSHandler(), Category.HIDDEN),
   BUG(new BugHandler()),
+  DELETELOG(new DeleteLogHandler()),
   
   // these have to be after the slash-commands
   SEARCHREPLACE(new SearchReplaceHandler()),
   PLUSPLUSBOT(new PPBHandler()),
 
   // this has to be last
+  LOG(new LogHandler()),
   BROADCAST(new BroadcastHandler()),
   ;
   

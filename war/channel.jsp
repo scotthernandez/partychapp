@@ -125,11 +125,23 @@
     <td><iframe frameborder=0 name="inviteResults"> </iframe></td>
   </tr>
 </table>
+
+<h3>Log History</h3>
+
+<div id="log-table"></div>
+	<div id="newerlog-button-container">
+		<input id="newerlog-button" class="log-button" type="button" value="Newer" />
+	</div>
+	<div id="olderlog-button-container">
+		<input id="olderlog-button" class="log-button" type="button" value="Older" />
+	</div>
+<div style="clear: both;"></div>
+
 <script>
   new partychapp.ScoreTable('<%= channel.getName() %>',
                             <%= (String) request.getAttribute("targetInfo") %>);
+  window.myInstance = myLog('<%= channel.getName() %>');
 </script>
-
 <jsp:include page="include/footer.jsp"/>
 </body>
 </html>
