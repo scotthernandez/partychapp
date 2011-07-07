@@ -10,7 +10,7 @@
 	UserService userService = UserServiceFactory.getUserService();
 	User user = userService.getCurrentUser();
   Datastore datastore = Datastore.instance();
-  datastore.startRequest(); 
+  datastore.startRequest();
   com.imjasonh.partychapp.User pchappUser = datastore.getOrCreateUser(user.getEmail());
 %>
 

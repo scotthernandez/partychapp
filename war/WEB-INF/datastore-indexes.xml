@@ -5,8 +5,4 @@
         <property name="targetId" direction="asc" />
         <property name="timestamp" direction="desc" />
     </datastore-index>
-    <datastore-index kind="LogEntry" ancestor="false">
-        <property name="channelName" direction="asc" />
-        <property name="timestamp" direction="desc" />
-    </datastore-index>
 </datastore-indexes>
