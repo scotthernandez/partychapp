@@ -17,7 +17,8 @@ public class ShareHandlerTest extends CommandHandlerTestCase {
   private static final ShareHandler handler = new ShareHandler(
       new MockUrlInfoService(
           ImmutableMap.of(
-              URI.create("http://example.com"), new UrlInfo("title", ""))));
+              URI.create("http://example.com"), new UrlInfo("title", ""),
+              URI.create("http://example2.com"), new UrlInfo("title2", ""))));
   
   public void testMatches() {
     assertTrue(handler.matches(Message.createForTests(
@@ -39,10 +40,19 @@ public class ShareHandlerTest extends CommandHandlerTestCase {
     // Announcement with annotation
     xmpp.messages.clear();
     handler.doCommand(Message.createForTests(
-        "/share http://example.com this site is awesome"));
+        "/share http://example2.com this site is awesome"));
     assertEquals(1, xmpp.messages.size());
     assertEquals(
-        "_neil is sharing http://example.com (title) : this site is awesome_",
-        xmpp.messages.get(0).getBody());    
+        "_neil is sharing http://example2.com (title2) : this site is awesome_",
+        xmpp.messages.get(0).getBody());
+    
+ // Repeated announcement with annotation
+    xmpp.messages.clear();
+    handler.doCommand(Message.createForTests(
+        "/share http://example.com this site is great"));
+    assertEquals(1, xmpp.messages.size());
+    assertEquals(
+        "_That link is currently being shared._",
+        xmpp.messages.get(0).getBody());
   }
 }

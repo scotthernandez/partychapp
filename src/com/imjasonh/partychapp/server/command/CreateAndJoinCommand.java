@@ -24,7 +24,7 @@ public class CreateAndJoinCommand implements CommandHandler {
         "and you have joined with the alias '" + msg.member.getAlias() + "'";
     msg.channel.sendDirect(reply, msg.member);
     
-    Command.getCommandHandler(msg).doCommand(msg);
+    //Command.getCommandHandler(msg).doCommand(msg);
   }
 
   public String documentation() {

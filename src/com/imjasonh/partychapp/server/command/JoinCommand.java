@@ -38,7 +38,7 @@ public class JoinCommand implements CommandHandler {
         + msg.member.getAlias() + "'";
     msg.channel.broadcast(broadcast, msg.member);
     
-    Command.getCommandHandler(msg).doCommand(msg);
+    //Command.getCommandHandler(msg).doCommand(msg);
   }
 
   public String documentation() {
