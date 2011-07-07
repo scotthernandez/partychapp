@@ -20,7 +20,7 @@
 </head>
 <body class="channel">
   <jsp:include page="include/header.jsp">
-    <jsp:param name="subtitle" value="<%=channel.getName()%>"/>
+    <jsp:param name="subtitle" value="<%=Room: + channel.getName()%>"/>
   </jsp:include>
 
 <p>

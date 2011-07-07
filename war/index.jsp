@@ -17,24 +17,6 @@
 <p>Create chat rooms with your friends or coworkers using Google
 Talk or XMPP.</p>
 
-<h3>Why use Partychat?</h3>
-<ul>
-	<li>
-	  Use whatever you use to chat already:
-    <a href="http://mail.google.com/mail/help/chat.html">Gmail</a>,
-    <a href="http://adium.im/">Adium</a>,
-    <a href="http://www.google.com/talk/">Google Talk</a>,
-    <a href="http://www.pidgin.im/">Pidgin</a>,
-    or any other XMPP/Jabber-aware client.
-  </li>
-	<li>Catch up on messages you miss while offline.</li>
-	<li>Don't have to re-join rooms when you log-out.</li>
-	<li>
-	  Built on the reliable, safe
-	  <a href="http://code.google.com/appengine/">Google App Engine</a>
-	</li>
-	<li>Easy to use, lots of <a href="#nowwhat">silly features</a>.</li>
-</ul>
 <%
 	if (Configuration.isConfidential) {
 %>
@@ -177,22 +159,6 @@ to the room, or <a href="/about/faq#commands">on this page</a>. Some key ones:</
 <%
   datastore.endRequest();
 %>
-
-<h3>Tell me more about this "partychat"</h3>
-
-<p>Partychat was started by <a href=http://www.q00p.net>Akshay</a> and is
-maintained by a motley, ragtag group of current and former Googlers with
-names like Neil, Jason, Kushal, Vijay, and Mihai, although <i>this is not in
-any way associated with Google</i>. You can find the source code on <a
-	href="http://code.google.com/p/partychapp/">Google Code</a>.</p>
-
-<p>For updates, please subscribe to our <a
-	href="http://techwalla.blogspot.com/">blog</a> or <a
-	href="http://twitter.com/partychat">follow us on Twitter</a>. You can report
-	bugs <a href="http://code.google.com/p/partychapp/issues/entry">on Google
-	Code</a> and send feedback to the developers at
-	<script type="text/javascript">printEmail()</script>.
-</p>
 
 <jsp:include page="include/footer.jsp"/>
 </body>
