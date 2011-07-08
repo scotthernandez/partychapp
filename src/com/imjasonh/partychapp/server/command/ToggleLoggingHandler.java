@@ -18,11 +18,11 @@ public class ToggleLoggingHandler extends SlashCommand {
     assert msg.channel != null;
     assert msg.member != null;
     
-    msg.channel.setLoggingDisabled(!msg.channel.isLoggingDisabled());
+    msg.channel.setMiniLogDisabled(!msg.channel.isMiniLogDisabled());
     msg.channel.put();
     
     String broadcast = "_" + msg.member.getAlias() + " has " +
-        (msg.channel.isLoggingDisabled() ? "disabled" : "enabled") +
+        (msg.channel.isMiniLogDisabled() ? "disabled" : "enabled") +
         " logging._";
     msg.channel.broadcastIncludingSender(broadcast);
   }

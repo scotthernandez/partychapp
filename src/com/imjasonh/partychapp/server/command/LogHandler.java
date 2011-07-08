@@ -15,7 +15,7 @@ public class LogHandler implements CommandHandler {
 
 	@Override
 	public boolean matches(Message msg) {
-		return true;
+		return !msg.channel.isLoggingDisabled();
 	}
 
 	@Override

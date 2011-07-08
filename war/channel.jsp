@@ -72,6 +72,32 @@
     </td>
   </tr>
   <tr>
+    <td class="label">Short-term log:</td>
+    <td>
+      <table class="radio-option-table">
+        <tr>
+          <td><input type="radio" name="minilog" value="true" <% if (!channel.isMiniLogDisabled()) {out.print("checked");} %> id="minilog-true"></td>
+          <td><label for="minilog-true">Enabled</label></td>
+        </tr>
+        <tr class="description">
+          <td></td>
+          <td>Recent messages are recorded for <a href="/about/faq#search-and-replace">search-and-replace</a> and <a href="/about/faq#commands">/undo</a></td>
+        </tr>
+      </table>
+
+      <table class="radio-option-table">
+        <tr>
+          <td><input type="radio" name="minilog" value="false" <% if (channel.isMiniLogDisabled()) {out.print("checked");} %> id="minilog-false"></td>
+          <td><label for="minilog-false">Disabled</label></td>
+        </tr>
+        <tr class="description">
+          <td></td>
+          <td><a href="/about/faq#search-and-replace">Search-and-replace</a> and <a href="/about/faq#commands">/undo are disabled.</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+   <tr>
     <td class="label">Logging:</td>
     <td>
       <table class="radio-option-table">
@@ -81,7 +107,7 @@
         </tr>
         <tr class="description">
           <td></td>
-          <td>Recent messages are recorded for <a href="/about/faq#search-and-replace">search-and-replace</a> and <a href="/about/faq#commands">/undo</a></td>
+          <td>All messages are recorded for history, which is default behavior.  The room will be notified of a change in this setting.</td>
         </tr>
       </table>
 
@@ -92,7 +118,7 @@
         </tr>
         <tr class="description">
           <td></td>
-          <td>No messages are logged, see <a href="/about/faq#logging">the FAQ</a> for more details on logging</td>
+          <td>No messages will be recorded.  The room will be notified of a change in this setting.</td>
         </tr>
       </table>
     </td>

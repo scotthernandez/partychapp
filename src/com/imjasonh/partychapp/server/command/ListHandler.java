@@ -71,7 +71,7 @@ public class ListHandler extends SlashCommand {
       if (msg.channel.isInviteOnly()) {
         sb.append("\nRoom is invite-only.");
       }
-      if (msg.channel.isLoggingDisabled()) {
+      if (msg.channel.isMiniLogDisabled()) {
         sb.append("\nLogging is disabled.");
       }      
     }
