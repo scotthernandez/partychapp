@@ -29,7 +29,7 @@ public class SearchReplaceHandler implements CommandHandler {
     msg.channel.put();
     msg.channel.broadcast((msg.member.getAliasPrefix() + msg.content), msg.member);
 
-    if (msg.channel.isLoggingDisabled()) {
+    if (msg.channel.isMiniLogDisabled()) {
       msg.channel.broadcastIncludingSender(
           "Search-and-replace is not supported if logging is disabled. You " +
           "can enable logging with the /togglelogging command or by visiting " +

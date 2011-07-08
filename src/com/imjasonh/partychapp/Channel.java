@@ -58,6 +58,11 @@ public class Channel implements Serializable {
   /**
    * Turns off storing of recent messages for the room. 
    */
+  private Boolean minilogDisabled = false;
+  
+  /**
+   * Turns off all messages for the room. 
+   */
   private Boolean loggingDisabled = false;
   
   public Channel(){}
@@ -75,6 +80,7 @@ public class Channel implements Serializable {
       this.members.add(new Member(m));
     }
     this.sequenceId = other.sequenceId;
+    this.minilogDisabled = other.minilogDisabled;
     this.loggingDisabled = other.loggingDisabled;
   }
   
@@ -112,12 +118,16 @@ public class Channel implements Serializable {
     this.inviteOnly = inviteOnly;
   }
   
-  public void setLoggingDisabled(boolean loggingDisabled) {
-    this.loggingDisabled = loggingDisabled;
-    if (loggingDisabled) {
+  public void setMiniLogDisabled(boolean minilogDisabled) {
+    this.minilogDisabled = minilogDisabled;
+    if (minilogDisabled) {
       // Clear currently logged messages if we're disabling logging.
       fixUp();
     }
+  }
+  
+  public void setLoggingDisabled(boolean loggingDisabled) {
+	    this.loggingDisabled = loggingDisabled;
   }
   
   /**
@@ -304,8 +314,12 @@ public class Channel implements Serializable {
     Datastore.instance().delete(this);
   }
   
+  public boolean isMiniLogDisabled() {
+    return minilogDisabled;
+  }
+  
   public boolean isLoggingDisabled() {
-    return loggingDisabled;
+	  return loggingDisabled;
   }
 
   public boolean isInviteOnly() {
@@ -492,11 +506,15 @@ public class Channel implements Serializable {
       inviteOnly = false;  
       shouldPut = true;
     }
-    if (loggingDisabled == null) {
+    if (minilogDisabled == null) {
       // Default large rooms to disabled logging, so that their Channel entities
       // are smaller.
-      loggingDisabled = members.size() > LARGE_CHANNEL_THRESHOLD;
+      minilogDisabled = members.size() > LARGE_CHANNEL_THRESHOLD;
       shouldPut = true;
+    }
+    if (loggingDisabled == null) {
+    	loggingDisabled = true;
+    	shouldPut = true;
     }
     if (invitedIds == null) {
       invitedIds = Lists.newArrayList();
