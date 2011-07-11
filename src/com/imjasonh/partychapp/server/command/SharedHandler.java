@@ -20,18 +20,7 @@ public class SharedHandler extends SlashCommand{
 
 	@Override
 	void doCommand(Message msg, String argument) {
-		/*If has an argument:
-		*	msg.channel.getShared(arg 1)
-		*   if not null:
-		*		broadcast to msg.member the url
-		*		return
-		*
-		* For each shared
-		* 	add to some list "(<#>) <member> - <title>:annotation \n"
-		* if not empty:
-		* 	broadcast to msg.member that (String) list
-		* return
-		*/
+		//When an arg is provided, user wants the URL.
 		if (!Strings.isNullOrEmpty(argument)){
 			String[] pieces = argument.split("\\s+", 1);
 			try{
@@ -47,19 +36,20 @@ public class SharedHandler extends SlashCommand{
 			}
 			return;
 		}
-		
+
+		//No args means user wants to see list of link descriptions
 		List<SharedURL> shared = msg.channel.getShared();
 		if (!shared.isEmpty()){
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < shared.size(); i++){
-				String line = "("+i+") ["+shared.get(i).member.getAlias()+"] - ";
-				if (!Strings.isNullOrEmpty(shared.get(i).title)){
-					line += shared.get(i).title;
+				String line = "("+i+") ["+shared.get(i).getMember().getAlias()+"] - ";
+				if (!Strings.isNullOrEmpty(shared.get(i).getTitle())){
+					line += shared.get(i).getTitle();
 				}else{
-					line += shared.get(i).uri.toString();
+					line += shared.get(i).getUrl().toString();
 				}
-				if (shared.get(i).annotation != null){
-					line += ": _"+shared.get(i).annotation+"_";
+				if (!Strings.isNullOrEmpty(shared.get(i).getAnnotation())){
+					line += ": _"+shared.get(i).getAnnotation()+"_";
 				}
 				builder.append(line+"\n");
 			}

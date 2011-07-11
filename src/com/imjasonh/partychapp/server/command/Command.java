@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.filters.TicketFilter;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ public enum Command {
   PLUSPLUSBOT(new PPBHandler(), Type.GRAB),
 
   // this has to be last
+  TICKETFILTER(new TicketFilter(), Type.GRAB),
   BROADCAST(new BroadcastHandler(), Type.GRAB),
   ;
   

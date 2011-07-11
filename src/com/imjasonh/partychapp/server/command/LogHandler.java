@@ -10,7 +10,6 @@ public class LogHandler implements CommandHandler {
 	@Override
 	public void doCommand(Message msg) {
 		LogDAO.put(new LogEntry(msg));
-		//Command.BROADCAST.commandHandler.doCommand(msg);
 	}
 
 	@Override
