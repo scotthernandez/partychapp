@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <%@ page import="com.imjasonh.partychapp.Channel"%>
-<%@ page import="com.imjasonh.partychapp.Channel.SharedURL"%>
+<%@ page import="com.imjasonh.partychapp.filters.SharedURL"%>
 <%@ page import="java.net.URI;"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 

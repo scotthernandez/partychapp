@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.imjasonh.partychapp.Channel.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.Message;
 
 public class SharedHandler extends SlashCommand{

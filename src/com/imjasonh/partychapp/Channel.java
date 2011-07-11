@@ -10,6 +10,7 @@ import com.googlecode.objectify.annotation.Unindexed;
 
 import com.imjasonh.partychapp.DebuggingOptions.Option;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
+import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
@@ -575,146 +576,32 @@ public class Channel implements Serializable {
     }
   }
   
-  /*
-   * private Class sharedURL
-   * 
-   * - URI
-   * - title
-   * - description
-   * - annotation
-   * - time
-   * - member
-   */
-  public class SharedURL implements Serializable{
-	  private final URI url;
-	  private final String title;
-	  private final String description;
-	  private final String annotation;
-	  private final Date time;
-	  private final Member member;
-	  
-	  public SharedURL(Member m, URI u, String a, String t, String d){
-		  url = u;
-		  member = m;
-		  annotation = a;
-		  title = t;
-		  description = d;
-		  time = new Date();
-		  
-	  }
-	  
-	  public URI getUrl(){
-		  return url;
-	  }
-	  
-	  public String getTitle(){
-		  return title;
-	  }
 
-	public String getDescription() {
-		return description;
-	}
-
-	public String getAnnotation() {
-		return annotation;
-	}
-
-	public Date getTime() {
-		return time;
-	}
-
-	public Member getMember() {
-		return member;
-	}
-	  
-	  
-  }
-  
-  //private list sharedURL
-  private static final int SHARED_URL_LIMIT = 5;
   @Serialized
-  private List<SharedURL> shared = Lists.newArrayListWithCapacity(SHARED_URL_LIMIT);
+  private List<SharedURL> shared = Lists.newArrayListWithCapacity(SharedURL.SHARED_URL_LIMIT);
   
-  /*
-   * public storeShare(Member, URI, annotation, title, description)
-   * 
-   * Takes in a string and shares it with the channel.
-   * 1) Check to see if the queue is full
-   * 2) If full, somehow pick which one we'll delete.
-   * 3) If not full, just pop in.
-   * 
-   */
-  public SharedURL storeShared(Member member, URI url, String annotation, String title, String description){
-	  SharedURL toShare = new SharedURL(member, url, annotation, title, description);
+  public boolean storeShared(SharedURL toShare){
 	  for (SharedURL existing : shared){
-		  if (existing.url.equals(toShare.url)){
-			  return null;
+		  if (existing.getUrl().equals(toShare.getUrl())){
+			  return false;
 		  }
 	  }
 	  shared.add(0, toShare);
-	  if (shared.size() > SHARED_URL_LIMIT){
-		  shared.remove(SHARED_URL_LIMIT);
+	  if (shared.size() > SharedURL.SHARED_URL_LIMIT){
+		  shared.remove(SharedURL.SHARED_URL_LIMIT);
 	  }
-	  return toShare;
+	  return true;
   }
   
-  
-  /*
-   * public getShared()
-   * 
-   * return inmutable list of sharedURLs
-   */
+
   public List<SharedURL> getShared(){
 	  return Collections.unmodifiableList(shared);
   }
   
-  /*
-   * public getLink(int key)
-   * 
-   * if (sharedURL at key is not null)
-   * 	return URI
-   * return null
-   */
   public URI getLink(int index){
 	  if (shared.size() > index){
-		  return shared.get(index).url;
+		  return shared.get(index).getUrl();
 	  }
 	  return null;
   }
-  
-  public SharedURL fromRequest(HttpServletRequest req) {
-      if (Strings.isNullOrEmpty(req.getParameter("url"))) {
-        return null;
-      }
-      
-      URI url;
-      try {
-        url = new URI(req.getParameter("url"));
-      } catch (URISyntaxException err) {
-        return null;
-      }
-
-      String annotation = req.getParameter("annotation");
-      if (annotation == null) {
-        annotation = "";
-      }
-
-      String title = req.getParameter("title");
-      if (title == null) {
-        title = "";
-      }
-      
-      String description = req.getParameter("description");
-      if (description == null) {
-        description = "";
-      }
-      
-      if (title.isEmpty() && description.isEmpty()) {
-        UrlInfo urlInfo = ChainedUrlInfoService.DEFAULT_SERVICE.getUrlInfo(url);
-        title = urlInfo.getTitle();
-        description = urlInfo.getDescription();
-      }
-
-      return new SharedURL(null, url, annotation, title, description);
-    }
 }

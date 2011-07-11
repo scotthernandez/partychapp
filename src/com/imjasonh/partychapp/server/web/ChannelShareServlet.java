@@ -4,7 +4,7 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.Channel.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.server.command.ShareHandler;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
@@ -33,7 +33,11 @@ public class ChannelShareServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException, ServletException {
-    SharedURL shareUrl = channel.fromRequest(req);
+	  
+
+      Member member = channel.getMemberByJID(user.getEmail());   
+      
+    SharedURL shareUrl = fromRequest(req, member);
     if (shareUrl == null) {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
@@ -53,15 +57,54 @@ public class ChannelShareServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException {
-    SharedURL shareUrl = channel.fromRequest(req);
+
+      Member member = channel.getMemberByJID(user.getEmail());   
+      
+    SharedURL shareUrl = fromRequest(req, member);
     if (shareUrl == null) {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }  
     
+    channel.storeShared(shareUrl);
     ShareHandler.sendShareBroadcast(shareUrl, channel);
     
     resp.sendRedirect(channel.webUrl());
   }
 
+  public static SharedURL fromRequest(HttpServletRequest req, Member member) {
+      if (Strings.isNullOrEmpty(req.getParameter("url"))) {
+        return null;
+      }
+      
+      URI url;
+      try {
+        url = new URI(req.getParameter("url"));
+      } catch (URISyntaxException err) {
+        return null;
+      }
+
+      String annotation = req.getParameter("annotation");
+      if (annotation == null) {
+        annotation = "";
+      }
+
+      String title = req.getParameter("title");
+      if (title == null) {
+        title = "";
+      }
+      
+      String description = req.getParameter("description");
+      if (description == null) {
+        description = "";
+      }
+      
+      if (title.isEmpty() && description.isEmpty()) {
+        UrlInfo urlInfo = ChainedUrlInfoService.DEFAULT_SERVICE.getUrlInfo(url);
+        title = urlInfo.getTitle();
+        description = urlInfo.getDescription();
+      }
+
+      return new SharedURL(member, url, annotation, title, description);
+    }
 }

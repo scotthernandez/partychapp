@@ -2,18 +2,14 @@ package com.imjasonh.partychapp.filters;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
-import com.imjasonh.partychapp.Channel.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Message.Builder;
 import com.imjasonh.partychapp.server.command.Command;
 import com.imjasonh.partychapp.server.command.CommandHandler;
 import com.imjasonh.partychapp.server.command.ShareHandler;
-import com.imjasonh.partychapp.urlinfo.UrlInfoService;
 
 
 public class TicketFilter implements CommandHandler {
@@ -31,8 +27,8 @@ public class TicketFilter implements CommandHandler {
             String urlStr = "http://jira.mongodb.org/browse/" + m.group();
             try{
             	URI url = new URI(urlStr);
-            	SharedURL toShare = msg.channel.storeShared(msg.member, url, "", m.group(), "");
-            	if (toShare != null){
+            	SharedURL toShare = new SharedURL(msg.member, url, "", m.group(), "");
+            	if (msg.channel.storeShared(toShare)){
 	            	ShareHandler sh = (ShareHandler) Command.SHARE.commandHandler;
 	            	sh.sendShareBroadcast(toShare, msg.channel);
             	}

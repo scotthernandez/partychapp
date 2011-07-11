@@ -1,15 +1,11 @@
 package com.imjasonh.partychapp.logging;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.xmpp.JID;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.Ofy;
-import com.imjasonh.partychapp.User;
 
 public class LogDAO {
 	private static Objectify ofy = Ofy.instance();
