@@ -29,7 +29,14 @@ var myLog = function(channelName){
 		var getEntries = function(offset, lim){
 			goog.net.XhrIo.send('/logentriesjson/', function(e){
 				var xhr = e.target;
-				renderLog(xhr.getResponseJson()['entries'], offset);
+				var entries = xhr.getResponseJson()['entries'];
+				
+				for (var i in entries){
+					entries[i]['content'].escape();
+					entries[i]['content'] = ticketFilter(entries[i]['content']);
+				}
+				
+				renderLog(entries, offset);
 			},
 			'POST',
 			'channelName=' + encodeURIComponent(channel) +
@@ -75,4 +82,18 @@ var myLog = function(channelName){
 		return that;
 }
 goog.exportSymbol('myLog', myLog);
+
+/**
+ * 
+ * @param {string} message
+ * @returns {string} modified
+ */
+function ticketFilter(message){
+	var re = /\b[A-Z]+-[0-9]+\b/;
+	var newstr = message.replace(re, function(match){
+											return '<a href="http://jira.mongodb.org/browse/' + match + '">' + match + '</a>';
+											});
+	return newstr;
+}
+goog.exportSymbol('ticketFilter', ticketFilter);
 

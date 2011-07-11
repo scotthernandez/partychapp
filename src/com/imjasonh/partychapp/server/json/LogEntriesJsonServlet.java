@@ -32,13 +32,14 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	    String error = "";
 	    if (offset >= 0){
 	    	List<LogEntry> log = LogDAO.getLogByChannel(channelName, limit, offset);
-//		    if (log.size() == 0){
-//		    	for (int i = 0; i < 50; i++){
-//			    	Message msg = Message.createForTests("test "+i, channelName);
-//		    		LogDAO.put(new LogEntry(msg));
-//		    	}
-//		    	log = LogDAO.getLogByChannel(channelName, limit, offset);
-//		    }
+		    if (log.size() == 0){
+		    	for (int i = 0; i < 50; i++){
+			    	Message msg = Message.createForTests("test "+i, channelName);
+		    		LogDAO.put(new LogEntry(msg));
+		    	}
+		    	LogDAO.put(new LogEntry(Message.createForTests("This is a message with a TICKET-9876", channelName)));
+		    	log = LogDAO.getLogByChannel(channelName, limit, offset);
+		    }
 		    for(LogEntry entry : log){
 		    	JSONObject entryJson = new JSONObject();
 		    	entryJson.put("time", entry.timeStamp());
