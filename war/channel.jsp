@@ -10,6 +10,7 @@
 <html>
 <head>
 <script>if (window.name == 'partychat-share') window.close();</script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>  
 <%
   Channel channel = (Channel) request.getAttribute("channel");
   Datastore datastore = Datastore.instance();
@@ -168,6 +169,7 @@
                             <%= (String) request.getAttribute("targetInfo") %>);
   window.myInstance = myLog('<%= channel.getName() %>');
 </script>
+<div id="test"></div>
 <jsp:include page="include/footer.jsp"/>
 </body>
 </html>
