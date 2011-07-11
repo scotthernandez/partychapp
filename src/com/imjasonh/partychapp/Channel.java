@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp;
 
 import com.google.appengine.api.xmpp.JID;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -12,9 +13,12 @@ import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
+import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
+import com.imjasonh.partychapp.urlinfo.UrlInfo;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -25,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.persistence.Id;
+import javax.servlet.http.HttpServletRequest;
 
 @Unindexed
 public class Channel implements Serializable {
@@ -581,21 +586,46 @@ public class Channel implements Serializable {
    * - member
    */
   public class SharedURL implements Serializable{
-	  public final URI uri;
-	  public final String title;
-	  public final String description;
-	  public final String annotation;
-	  public final Date time;
-	  public final Member member;
+	  private final URI url;
+	  private final String title;
+	  private final String description;
+	  private final String annotation;
+	  private final Date time;
+	  private final Member member;
 	  
-	  public SharedURL(Member m, URI url, String a, String t, String d){
-		  uri = url;
+	  public SharedURL(Member m, URI u, String a, String t, String d){
+		  url = u;
 		  member = m;
 		  annotation = a;
 		  title = t;
 		  description = d;
 		  time = new Date();
+		  
 	  }
+	  
+	  public URI getUrl(){
+		  return url;
+	  }
+	  
+	  public String getTitle(){
+		  return title;
+	  }
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getAnnotation() {
+		return annotation;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public Member getMember() {
+		return member;
+	}
 	  
 	  
   }
@@ -614,18 +644,18 @@ public class Channel implements Serializable {
    * 3) If not full, just pop in.
    * 
    */
-  public boolean storeShared(Member member, URI url, String annotation, String title, String description){
+  public SharedURL storeShared(Member member, URI url, String annotation, String title, String description){
 	  SharedURL toShare = new SharedURL(member, url, annotation, title, description);
 	  for (SharedURL existing : shared){
-		  if (existing.uri.equals(toShare.uri)){
-			  return false;
+		  if (existing.url.equals(toShare.url)){
+			  return null;
 		  }
 	  }
 	  shared.add(0, toShare);
 	  if (shared.size() > SHARED_URL_LIMIT){
 		  shared.remove(SHARED_URL_LIMIT);
 	  }
-	  return true;
+	  return toShare;
   }
   
   
@@ -647,8 +677,44 @@ public class Channel implements Serializable {
    */
   public URI getLink(int index){
 	  if (shared.size() > index){
-		  return shared.get(index).uri;
+		  return shared.get(index).url;
 	  }
 	  return null;
   }
+  
+  public SharedURL fromRequest(HttpServletRequest req) {
+      if (Strings.isNullOrEmpty(req.getParameter("url"))) {
+        return null;
+      }
+      
+      URI url;
+      try {
+        url = new URI(req.getParameter("url"));
+      } catch (URISyntaxException err) {
+        return null;
+      }
+
+      String annotation = req.getParameter("annotation");
+      if (annotation == null) {
+        annotation = "";
+      }
+
+      String title = req.getParameter("title");
+      if (title == null) {
+        title = "";
+      }
+      
+      String description = req.getParameter("description");
+      if (description == null) {
+        description = "";
+      }
+      
+      if (title.isEmpty() && description.isEmpty()) {
+        UrlInfo urlInfo = ChainedUrlInfoService.DEFAULT_SERVICE.getUrlInfo(url);
+        title = urlInfo.getTitle();
+        description = urlInfo.getDescription();
+      }
+
+      return new SharedURL(null, url, annotation, title, description);
+    }
 }

@@ -61,7 +61,7 @@ public class ConcurrencyTestServlet extends HttpServlet {
         .setMessageType(MessageType.XMPP)
         .build();
 
-    Command.getCommandHandler(message).doCommand(message);
+    Command.getCommandHandler(message)/*.doCommand(message)*/;
     
     datastore.endRequest();
     

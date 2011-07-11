@@ -8,7 +8,7 @@ import com.imjasonh.partychapp.testing.FakeDatastore;
 import com.imjasonh.partychapp.testing.MockXMPPService;
 
 public abstract class CommandHandlerTestCase extends TestCase {
-  MockXMPPService xmpp = new MockXMPPService();
+  public MockXMPPService xmpp = new MockXMPPService();
 
   @Override
   public void setUp() {

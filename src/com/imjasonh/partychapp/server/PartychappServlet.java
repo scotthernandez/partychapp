@@ -135,7 +135,7 @@ public class PartychappServlet extends HttpServlet {
           .setMessageType(MessageType.XMPP)
           .build();
   
-      Command.getCommandHandler(message).doCommand(message);
+      Command.getCommandHandler(message)/*.doCommand(message)*/;
       
       // {@link User#fixUp} can't be called by {@link FixingDatastore}, since
       // it can't know what channel the user is currently messaging, so we have

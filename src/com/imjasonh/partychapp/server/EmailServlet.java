@@ -191,7 +191,7 @@ public class EmailServlet extends HttpServlet {
       for (InternetAddress ia : email.to) {
         Message msg = extractPchappMessageFromEmail(email, ia);
         if (msg != null) {
-          Command.getCommandHandler(msg).doCommand(msg);
+          Command.getCommandHandler(msg)/*.doCommand(msg)*/;
           msg.user.maybeMarkAsSeen();
         }
       }
