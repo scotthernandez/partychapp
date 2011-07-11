@@ -37,7 +37,7 @@ public class LogEntriesJsonServlet extends JsonServlet {
 			    	Message msg = Message.createForTests("test "+i, channelName);
 		    		LogDAO.put(new LogEntry(msg));
 		    	}
-		    	LogDAO.put(new LogEntry(Message.createForTests("This is a message with a TICKET-9876", channelName)));
+		    	LogDAO.put(new LogEntry(Message.createForTests("This is a message with a TICKET-9876 and sone <b>html</b>", channelName)));
 		    	log = LogDAO.getLogByChannel(channelName, limit, offset);
 		    }
 		    for(LogEntry entry : log){

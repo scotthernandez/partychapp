@@ -32,7 +32,10 @@ var myLog = function(channelName){
 				var entries = xhr.getResponseJson()['entries'];
 				
 				for (var i in entries){
-					entries[i]['content'].escape();
+					entries[i]['content'] = entries[i]['content'].replace(/&/g,'&amp;')                                        
+													             .replace(/>/g,'&gt;')                                           
+													             .replace(/</g,'&lt;')                                         
+													             .replace(/"/g,'&quot;');
 					entries[i]['content'] = ticketFilter(entries[i]['content']);
 				}
 				
