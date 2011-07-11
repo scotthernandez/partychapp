@@ -92,7 +92,7 @@ goog.exportSymbol('myLog', myLog);
  * @returns {string} modified
  */
 function ticketFilter(message){
-	var re = /\b[A-Z]+-[0-9]+\b/;
+	var re = /\b[A-Z]+-[0-9]+\b/g;
 	var newstr = message.replace(re, function(match){
 											return '<a href="http://jira.mongodb.org/browse/' + match + '">' + match + '</a>';
 											});

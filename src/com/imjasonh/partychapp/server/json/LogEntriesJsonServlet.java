@@ -31,13 +31,14 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	    JSONArray entriesJson = new JSONArray();
 	    String error = "";
 	    if (offset >= 0){
+	    	LogDAO.deleteAll();
 	    	List<LogEntry> log = LogDAO.getLogByChannel(channelName, limit, offset);
 		    if (log.size() == 0){
-		    	for (int i = 0; i < 50; i++){
-			    	Message msg = Message.createForTests("test "+i, channelName);
-		    		LogDAO.put(new LogEntry(msg));
-		    	}
-		    	LogDAO.put(new LogEntry(Message.createForTests("This is a message with a TICKET-9876 and sone <b>html</b>", channelName)));
+//		    	for (int i = 0; i < 50; i++){
+//			    	Message msg = Message.createForTests("test "+i, channelName);
+//		    		LogDAO.put(new LogEntry(msg));
+//		    	}
+		    	LogDAO.put(new LogEntry(Message.createForTests("This is a message with a TICKET-9876, TIC-4 and sone <b>html</b>", channelName)));
 		    	log = LogDAO.getLogByChannel(channelName, limit, offset);
 		    }
 		    for(LogEntry entry : log){
