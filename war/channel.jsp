@@ -9,7 +9,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link type="text/css" rel="stylesheet" href="/datepicker.css">
 <script>if (window.name == 'partychat-share') window.close();</script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>  
 <%
@@ -206,7 +205,8 @@
     <td><select id="end-min-picker" name="endMin"></select></td>
   </tr>
 </table>
-	 <input type="submit" value="Download Log">
+	 <input type="submit" name="Download" value="Download Log">
+	 <input type="submit" name="Delete" value="Delete Log">
 </form>
 <script>
   new partychapp.ScoreTable('<%= channel.getName() %>',

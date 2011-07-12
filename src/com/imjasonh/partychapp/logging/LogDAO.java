@@ -48,4 +48,13 @@ public class LogDAO {
 		  .list();
 	  return log;
     }
+    
+    public static void deleteLogByDates(String channel, Date start, Date finish){
+	  ofy.delete(ofy.query(LogEntry.class)
+			  		.filter("channelName", channel)
+			  		.filter("timestamp >=", start)
+			  		.filter("timestamp <=", finish)
+			  		.order("-timestamp")
+			  		.fetchKeys());
+    }
 }
