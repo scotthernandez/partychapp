@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link type="text/css" rel="stylesheet" href="/datepicker.css">
 <script>if (window.name == 'partychat-share') window.close();</script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>  
 <%
@@ -164,12 +165,60 @@
 	</div>
 <div style="clear: both;"></div>
 
+
+<h3>Download Log</h3>
+
+<form action="/log/download" method="POST">
+	 <input type="hidden" name="name" value="<%=channel.getName()%>"/>
+<table id="date-picker-table">
+  <tr>
+  	<td class="label">Start Date:</td>
+    <td>
+	 <div>
+		 <input id="start-date-text" type="text" 
+		 							 name="startDate" 
+		 							 size="10" 
+		 							 placeholder="mm/dd/yyyy"
+		 							 onfocus="document.getElementById('start-date-picker').style.visibility = 'visible';">
+		 <div id="start-date-picker" style="visibility: hidden; position: absolute;"></div>
+     </div>
+    </td>
+    <td>at</td>
+    <td><select id="start-hour-picker" name="startHour"></select></td>
+    <td>:</td> 
+    <td><select id="start-min-picker" name="startMin"></select></td>
+  </tr>
+  <tr>
+  	<td class="label">End Date:</td>
+    <td>
+	 <div>
+		 <input id="end-date-text" type="text" 
+		 							 name="endDate" 
+		 							 size="10" 
+		 							 placeholder="mm/dd/yyyy"
+		 							 onfocus="document.getElementById('end-date-picker').style.visibility = 'visible';">
+		 <div id="end-date-picker" style="visibility: hidden; position: absolute;"></div>
+	 </div>
+	</td>
+    <td>at</td>
+    <td><select id="end-hour-picker" name="endHour"></select></td>
+    <td>:</td> 
+    <td><select id="end-min-picker" name="endMin"></select></td>
+  </tr>
+</table>
+	 <input type="submit" value="Download Log">
+</form>
 <script>
   new partychapp.ScoreTable('<%= channel.getName() %>',
                             <%= (String) request.getAttribute("targetInfo") %>);
   window.myInstance = myLog('<%= channel.getName() %>');
+  
+  numbersDropdown('start-hour-picker', 0, 23);
+  numbersDropdown('start-min-picker', 0, 59);
+  
+  numbersDropdown('end-hour-picker', 0, 23);
+  numbersDropdown('end-min-picker', 0, 59);
 </script>
-<div id="test"></div>
 <jsp:include page="include/footer.jsp"/>
 </body>
 </html>

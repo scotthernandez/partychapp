@@ -2,6 +2,7 @@ package com.imjasonh.partychapp.logging;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.persistence.Id;
 
@@ -12,7 +13,13 @@ import com.imjasonh.partychapp.Message;
 public class LogEntry {
 
 
-	static final SimpleDateFormat timeStampFormatter = new SimpleDateFormat("MMM/dd '\n' HH:mm");
+	static final SimpleDateFormat webFormatter = new SimpleDateFormat("MMM/dd '\n' HH:mm");
+	static final SimpleDateFormat logFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss', 'z");
+	
+	static{
+		webFormatter.setTimeZone(TimeZone.getTimeZone("EST"));
+		logFormatter.setTimeZone(TimeZone.getTimeZone("EST"));
+	}
 	
 	@Id Long id;
 	
@@ -44,8 +51,8 @@ public class LogEntry {
 		return content;
 	}
 	
-	public String timeStamp(){
-		return timeStampFormatter.format(timestamp);
+	public String webTimestamp(){
+		return webFormatter.format(timestamp);
 	}
 	
 	public String userID(){
@@ -62,6 +69,6 @@ public class LogEntry {
 	
 	@Override
 	public String toString() {
-		return timestamp.toString()+"("+userID+")" + ": " + content;
+		return logFormatter.format(timestamp)+"("+userID+")" + ": " + content;
 	}
 }
