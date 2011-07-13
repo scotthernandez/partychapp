@@ -23,27 +23,30 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	protected JSONObject getJson(HttpServletRequest req,
 			HttpServletResponse resp, User user, Datastore datastore)
 			throws JSONException {
+	    JSONObject response = new JSONObject();
+	    String error = "";
+	    
 	    String channelName = req.getParameter("channelName");
+	    
+	    try{
 	    int limit = Integer.parseInt(req.getParameter("limit"));
 	    int offset = Integer.parseInt(req.getParameter("offset"));
 	    
 	    //TODO: some kind of security check?
 	    JSONArray entriesJson = new JSONArray();
-	    String error = "";
 	    if (offset >= 0){
-	    	LogDAO.deleteAll();
 	    	List<LogEntry> log = LogDAO.getLogByChannel(channelName, limit, offset);
 		    if (log.size() == 0){
-//		    	for (int i = 0; i < 50; i++){
-//			    	Message msg = Message.createForTests("test "+i, channelName);
-//		    		LogDAO.put(new LogEntry(msg));
-//		    	}
+		    	for (int i = 0; i < 50; i++){
+			    	Message msg = Message.createForTests("test "+i, channelName);
+		    		LogDAO.put(new LogEntry(msg));
+		    	}
 		    	LogDAO.put(new LogEntry(Message.createForTests("This is a message with a TICKET-9876, TIC-4 and sone <b>html</b>", channelName)));
 		    	log = LogDAO.getLogByChannel(channelName, limit, offset);
 		    }
 		    for(LogEntry entry : log){
 		    	JSONObject entryJson = new JSONObject();
-		    	entryJson.put("time", entry.timeStamp());
+		    	entryJson.put("time", entry.webTimestamp());
 		    	entryJson.put("content", entry.content());
 		    	entryJson.put("user", entry.userID());
 		    	entriesJson.put(entryJson);
@@ -52,14 +55,20 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	    	error = "Offset is less than zero.";
 	    }
 	    
-	    JSONObject response = new JSONObject();
 	    response.put("entries", entriesJson);
-	    
-	    if (!error.isEmpty()){
-	    	response.put("error", error);
-		}
-	    
-	    return response;
+	   
+	}catch(NumberFormatException e){
+		error = "Number parsing error.";
+		response.put("limit", req.getParameter("limit"));
+		response.put("offset", req.getParameter("offset"));
+		System.out.println("limit: "+req.getParameter("limit"));
+	}
+	
+	if (!error.isEmpty()){
+    	response.put("error", error);
+	}
+	
+	return response;
 	}
 
 }

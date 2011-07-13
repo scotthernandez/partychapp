@@ -3,6 +3,9 @@
  * For now, it's the primary way to see the log for a channel.
  */
 
+goog.require('goog.ui.DatePicker');
+goog.require('goog.i18n.DateTimeSymbols');
+goog.require('goog.i18n.DateTimeSymbols_en_ISO');
 goog.provide('partychapp.Log');
 
 
@@ -30,7 +33,9 @@ var myLog = function(channelName){
 			goog.net.XhrIo.send('/logentriesjson/', function(e){
 				var xhr = e.target;
 				var entries = xhr.getResponseJson()['entries'];
-				
+				if (xhr.getResponseJson()['error']){
+					return;
+				}
 				for (var i in entries){
 					entries[i]['content'] = entries[i]['content'].replace(/&/g,'&amp;')                                        
 													             .replace(/>/g,'&gt;')                                           
@@ -43,8 +48,8 @@ var myLog = function(channelName){
 			},
 			'POST',
 			'channelName=' + encodeURIComponent(channel) +
-			  '&limit=' + lim + 
-			  '&offset=' + offset);
+			  '&limit=' + encodeURIComponent(lim+'') + 
+			  '&offset=' + encodeURIComponent(offset+''));
 		}
 		
 		/**
@@ -100,3 +105,15 @@ function ticketFilter(message){
 }
 goog.exportSymbol('ticketFilter', ticketFilter);
 
+
+function numbersDropdown(id, start, finish){
+	var select = document.getElementById(id);
+	var option;
+	for (var i = start; i <= finish; i++){
+		option = document.createElement('option');
+		option.value = i >= 10 ? i : '0'+i;
+		option.text = i >= 10 ? i : '0'+i;
+		select.add(option);
+	}
+}
+goog.exportSymbol("numbersDropdown", numbersDropdown);

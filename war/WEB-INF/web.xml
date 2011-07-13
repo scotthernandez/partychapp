@@ -215,6 +215,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>userinfojsonhandler</servlet-name>
     <url-pattern>/userinfo</url-pattern>
   </servlet-mapping>
+  
+  <!-- Downloads -->
+  <servlet>
+    <servlet-name>downloadlogservlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.logging.DownloadLogServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>downloadlogservlet</servlet-name>
+    <url-pattern>/log/download</url-pattern>
+  </servlet-mapping>
 
   <!-- Redirects -->
   <servlet>
