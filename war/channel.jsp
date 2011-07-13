@@ -165,7 +165,7 @@
 <div style="clear: both;"></div>
 
 
-<h3>Download Log</h3>
+<h3>Manage Log</h3>
 
 <form action="/log/download" method="POST">
 	 <input type="hidden" name="name" value="<%=channel.getName()%>"/>
@@ -205,8 +205,8 @@
     <td><select id="end-min-picker" name="endMin"></select></td>
   </tr>
 </table>
-	 <input type="submit" name="Download" value="Download Log">
-	 <input type="submit" name="Delete" value="Delete Log">
+	 <input type="submit" name="Download" value="Download Entries">
+	 <input type="submit" name="Delete" value="Delete Entries">
 </form>
 <script>
   new partychapp.ScoreTable('<%= channel.getName() %>',

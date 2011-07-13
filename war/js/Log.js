@@ -33,7 +33,9 @@ var myLog = function(channelName){
 			goog.net.XhrIo.send('/logentriesjson/', function(e){
 				var xhr = e.target;
 				var entries = xhr.getResponseJson()['entries'];
-				
+				if (xhr.getResponseJson()['error']){
+					return;
+				}
 				for (var i in entries){
 					entries[i]['content'] = entries[i]['content'].replace(/&/g,'&amp;')                                        
 													             .replace(/>/g,'&gt;')                                           
@@ -46,8 +48,8 @@ var myLog = function(channelName){
 			},
 			'POST',
 			'channelName=' + encodeURIComponent(channel) +
-			  '&limit=' + lim + 
-			  '&offset=' + offset);
+			  '&limit=' + encodeURIComponent(lim+'') + 
+			  '&offset=' + encodeURIComponent(offset+''));
 		}
 		
 		/**
