@@ -2,6 +2,7 @@ package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message.MessageType;
 
 /**
@@ -18,13 +19,13 @@ public class CreateAndJoinCommand implements CommandHandler {
 
     msg.channel = new Channel(msg.serverJID);
     msg.member = msg.channel.addMember(msg.user);
+    msg.member.setPermissions(Permissions.ADMIN);
     msg.channel.put();
     
     String reply = "The channel '" + msg.channel.getName() + "' has been created, " +
-        "and you have joined with the alias '" + msg.member.getAlias() + "'";
+        "you have joined with the alias '" + msg.member.getAlias() + "', and you are an administrator.";
     msg.channel.sendDirect(reply, msg.member);
     
-    //Command.getCommandHandler(msg).doCommand(msg);
   }
 
   public String documentation() {

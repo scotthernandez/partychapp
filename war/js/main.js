@@ -128,3 +128,88 @@ function printEmail(opt_anchorText) {
                  '<' + '/a>');
 }
 goog.exportSymbol('printEmail', printEmail);
+
+var tieCollapseButton = function(headerId, targetId){
+	var collapsed;
+	var header = document.getElementById(headerId);
+	var button = document.createElement('div');
+	var target = document.getElementById(targetId);
+	
+	var change = function(){
+		if(collapsed){
+			collapsed = false;
+			button.innerHTML = '[-]';
+			target.style.display = 'inherit';
+		}else{
+			collapsed = true;
+			button.innerHTML = '[+]';
+			target.style.display = 'none';
+		}
+	}
+
+	//Init button div
+	button.onclick = change;
+	button.style.display = 'inline';
+	header.insertBefore(button);
+	
+	//Init state
+	button.innerHTML = '[+]';
+	collapsed = true;
+	target.style.display = 'none';
+}
+goog.exportSymbol('tieCollapseButton', tieCollapseButton);
+
+
+var kickOnClick = function(c, j, b, r){
+	var channel = c;
+	var jid = j;
+	var button = b;
+	
+	var kick = function(){
+		goog.net.XhrIo.send('/channel/kick', function(e){
+				var xhr = e.target;
+				if(xhr.getResponseText() == 'success'){
+					r.parentNode.removeChild(r);
+				}else{
+					alert(xhr.getResponseText());
+				}
+			},
+			'POST',
+			'name=' + encodeURIComponent(channel) +
+			'&member=' + encodeURIComponent(jid));
+	}
+	button.onclick = kick;
+}
+goog.exportSymbol('kickOnClick', kickOnClick);
+
+var adminOnClick = function(c, j, d, current){
+	var channel = c;
+	var jid = j;
+	var permissions = ['member', 'mod', 'admin'];
+	var dropdown = d;
+
+	/**
+	 * @param {number} toSet
+	 */
+	var change = function(){
+		var toSet = d.selectedIndex;
+		goog.net.XhrIo.send('/channel/changePermissions', function(e){
+				var xhr = e.target;
+				if(xhr.getResponseText() != 'success'){
+					alert(xhr.getResponseText());
+				}
+				window.location.reload(true);
+			},
+			'POST',
+			'name=' + encodeURIComponent(channel) +
+			'&toModify=' + encodeURIComponent(jid) +
+			'&permissions=' + encodeURIComponent(permissions[toSet]));
+	}
+	for (var i = 0; i < permissions.length; i++){
+		if (current.toLowerCase() == permissions[i].toLowerCase()){
+			d.selectedIndex = i;
+		}
+	}
+	d.onchange = change;
+}
+goog.exportSymbol('adminOnClick', adminOnClick);

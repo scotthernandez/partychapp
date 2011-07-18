@@ -70,11 +70,12 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       throws IOException, ServletException {
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
+    com.imjasonh.partychapp.User u = Datastore.instance().getOrCreateUser(user.getEmail());
     
     String channelName = getChannelName(req);
     Datastore datastore = Datastore.instance();
+    datastore.startRequest();
     try {
-      datastore.startRequest();
       Channel channel =
           datastore.getChannelIfUserPresent(channelName, user.getEmail());
       if (channel == null) {
@@ -84,7 +85,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       
       methodAdapter.invokeMethod(req, resp, user, channel);
     } finally {
-      datastore.endRequest();
+    	datastore.endRequest();
     }        
   }
   

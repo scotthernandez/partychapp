@@ -49,7 +49,27 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>leaveChannelServlet</servlet-name>
     <url-pattern>/channel/leave</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>kickChannelServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.KickChannelServlet</servlet-class>
+  </servlet>
 
+  <servlet-mapping>
+    <servlet-name>kickChannelServlet</servlet-name>
+    <url-pattern>/channel/kick</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>PermissionsChannelServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.PermissionsChannelServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>PermissionsChannelServlet</servlet-name>
+    <url-pattern>/channel/changePermissions</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>acceptChannelInvitationServlet</servlet-name>
     <servlet-class>com.imjasonh.partychapp.server.web.AcceptChannelInvitationServlet</servlet-class>

@@ -37,6 +37,8 @@ public class User implements Serializable {
   
   String carrier;
   
+  boolean isAdmin;
+  
   Date lastSeen;
 
   // I stole from http://en.wikipedia.org/wiki/List_of_carriers_providing_SMS_transit
@@ -80,6 +82,13 @@ public class User implements Serializable {
   public User(String jid) {
     this.jid = jid;
     this.channelNames = Lists.newArrayList();
+    
+    //Hack to make myself admin.  Always. (for now).
+    if (jid.compareToIgnoreCase("circuitlego@gmail.com") == 0){
+    	this.isAdmin = true;
+    }else{
+    	this.isAdmin = false;
+    }
   }
 
   public User(User other) { 
@@ -88,6 +97,15 @@ public class User implements Serializable {
     this.phoneNumber = other.phoneNumber;
     this.carrier = other.carrier;
     this.lastSeen = other.lastSeen;
+    this.isAdmin = other.isAdmin;
+  }
+  
+  public boolean isAdmin(){
+	  return isAdmin;
+  }
+  
+  public void setAdmin(boolean b){
+	  isAdmin = b;
   }
 
   public String getJID() {
@@ -145,6 +163,7 @@ public class User implements Serializable {
    * Gets all of the channels the user is actually in (and which exist).
    */
   public List<Channel> getChannels() {
+	//tempFix();
     boolean shouldPut = false;
     
     List<Channel> channels =
@@ -226,11 +245,19 @@ public class User implements Serializable {
     }
   }  
   
+  public void tempFix(){
+		if (channelNames == null){
+			channelNames = Lists.newArrayList();
+			System.out.println("hm...");
+		}
+  }
+  
   // The remaining methods deal with manipulation of the User/Channel 
   // relationship and should called by {@link Channel} and {@link Datastore} 
   // implementations only.
    
   @VisibleForTesting public void addChannel(String c) {
+	//tempFix();
     if (!channelNames.contains(c)) {
       channelNames.add(c);
       

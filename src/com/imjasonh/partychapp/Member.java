@@ -1,6 +1,8 @@
 package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
+import com.imjasonh.partychapp.server.command.Command;
+import com.imjasonh.partychapp.server.command.Command.Type;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -28,6 +30,8 @@ public class Member implements Serializable {
   private String jid;
 
   private String alias;
+  
+  private Permissions permissions;
 
   private Date snoozeUntil;
   
@@ -48,6 +52,27 @@ public class Member implements Serializable {
     NOT_SNOOZING,
     SHOULD_WAKE;
   }
+  public enum Permissions {
+	  MEMBER("member"),
+	  MOD("mod"),
+	  ADMIN("admin");
+	  
+	  private String s;
+
+	  private Permissions(String s){
+		  this.s = s;
+	  }
+	  
+	  public static Permissions fromString(String s){
+		  System.out.println("in: "+s); 
+		  for (Permissions permissions : Permissions.values()) {
+		      if (s.equals(permissions.s)){
+		    	  return permissions;
+		      }
+	      }
+		  return null; //Not found
+	  }
+  }
   
   public Member(){} //Objectify
   
@@ -56,6 +81,7 @@ public class Member implements Serializable {
     this.alias = this.jid.split("@")[0]; // remove anything after "@" for default alias
     this.debugOptions = new DebuggingOptions();
     this.channel = c;
+    this.permissions = Permissions.MEMBER;
   }
   
   public Member(Member other) {
@@ -65,13 +91,28 @@ public class Member implements Serializable {
     if (other.lastMessages != null) {
       this.lastMessages = Lists.newArrayList(other.lastMessages);
     }
+    this.permissions = other.permissions;
     this.debugOptions = new DebuggingOptions(other.debugOptions());
     this.phoneNumber = other.phoneNumber;
     this.carrier = other.carrier;
     // to simulate the not-persistent-ness, let's zero these out
     this.channel = null;
+    
   }
 
+  public boolean hasPermissions(Permissions p){
+	  permissions = permissions == null ? Permissions.ADMIN : permissions;
+	  return permissions.compareTo(p) >= 0 ? true : false;
+  }
+  
+  public Permissions getPermissions(){
+	  return permissions;
+  }
+  
+  public void setPermissions(Permissions p){
+	  permissions = p;
+  }
+  
   public String getAlias() {
     return alias;
   }

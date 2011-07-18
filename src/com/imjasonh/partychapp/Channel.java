@@ -156,7 +156,6 @@ public class Channel implements Serializable {
     }
     addedMember.setAlias(dedupedAlias);
     mutableMembers().add(addedMember);
-    
     userToAdd.addChannel(getName());
     userToAdd.put();
     
@@ -169,12 +168,13 @@ public class Channel implements Serializable {
 
   public void removeMember(User userToRemove) {
     Member memberToRemove = getMemberByLiteralJID(userToRemove.getJID());
+    
     if (!mutableMembers().remove(memberToRemove)) {
       logger.warning(
           userToRemove.getJID() + " was not actually in channel " +
           getName() + " when removing");
     }
-    
+
     userToRemove.removeChannel(getName());
     userToRemove.put();
   }
@@ -291,7 +291,7 @@ public class Channel implements Serializable {
   }
 
   /**
-   * Remove a user or invitee by alias or ID.
+   * Remove a user or invitee by alias ID.
    * @return True if someone was removed
    */
   public boolean kick(String id) {
@@ -300,6 +300,7 @@ public class Channel implements Serializable {
       member = getMemberByJID(new JID(id));
     }
     if (member != null) {
+      invite(member.getJID());
       removeMember(Datastore.instance().getUserByJID(member.getJID()));
       return true;
     }

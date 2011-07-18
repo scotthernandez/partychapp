@@ -29,6 +29,7 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException {
+	  
     channel.setInviteOnly(
         Boolean.parseBoolean(req.getParameter("inviteonly")));
     channel.setMiniLogDisabled(
@@ -46,6 +47,7 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
     
     Message msg;
     
+    //It's important to let the room know if they are being recorded or not.
     if (Boolean.parseBoolean(req.getParameter("logging"))){
         channel.setLoggingDisabled(false);
     	msg = builder.setContent(member.getAlias() + " has enabled logging.").build();
@@ -58,7 +60,6 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
     Command.BROADCAST.commandHandler.doCommand(msg);
     
     channel.put();
-    
-    resp.sendRedirect(channel.webUrl());
+    //resp.sendRedirect(channel.webUrl());
   }
 }
