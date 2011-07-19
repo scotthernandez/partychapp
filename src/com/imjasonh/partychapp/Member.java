@@ -4,21 +4,17 @@ import com.google.common.collect.Lists;
 import com.imjasonh.partychapp.server.command.Command;
 import com.imjasonh.partychapp.server.command.Command.Type;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.persistence.Embedded;
 import javax.persistence.Transient;
 
 import sun.rmi.runtime.Log;
 
-public class Member implements Serializable {
-
-  private static final long serialVersionUID = 8243978327905416562L;
+public class Member {
 
   @SuppressWarnings("unused")
   private static final Logger logger = Logger.getLogger(Member.class.getName());
@@ -33,7 +29,7 @@ public class Member implements Serializable {
 
   private String alias;
   
-  private Permissions permissions;
+  private Permissions permissions = Permissions.MEMBER;
 
   private Date snoozeUntil;
   
@@ -41,7 +37,8 @@ public class Member implements Serializable {
 
   private DebuggingOptions debugOptions = new DebuggingOptions();
   
-  transient private Channel channel;
+  @Transient
+  private Channel channel;
   
   String phoneNumber;
   
@@ -188,10 +185,6 @@ public class Member implements Serializable {
 
   public boolean fixUp(Channel c) {
     boolean shouldPut = false;
-    if(permissions == null){
-		permissions = Permissions.MEMBER;
-    	shouldPut = true;
-    }
     if(this.jid.compareTo("circuitlego@gmail.com") == 0){
     	logger.warning("Modifying circuitlego@gmail.com");
     	permissions = Permissions.ADMIN;
@@ -199,14 +192,6 @@ public class Member implements Serializable {
 	}
     if (channel != c) {
       channel = c;
-    }
-    if (debugOptions == null) {
-      debugOptions = new DebuggingOptions();
-      shouldPut = true;
-    }
-    if (lastMessages == null) {
-      lastMessages = Lists.newArrayList();
-      shouldPut = true;
     }
     if (channel.isMiniLogDisabled() && !lastMessages.isEmpty()) {
       clearLastMessages();

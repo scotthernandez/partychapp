@@ -6,10 +6,11 @@ import java.util.TimeZone;
 
 import javax.persistence.Id;
 
+import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Unindexed;
 import com.imjasonh.partychapp.Message;
 
-
+@Cached
 public class LogEntry {
 
 

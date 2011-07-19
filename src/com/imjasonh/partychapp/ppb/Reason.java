@@ -5,6 +5,7 @@ package com.imjasonh.partychapp.ppb;
 
 import com.google.appengine.api.xmpp.JID;
 import com.google.common.annotations.VisibleForTesting;
+import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Indexed;
 import com.googlecode.objectify.annotation.Unindexed;
 
@@ -18,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 @Unindexed
+@Cached
 public class Reason {
   /** 500 is the maximum length of text fields in AppEngine */
   private static final int MAX_REASON_LENGTH = 500;

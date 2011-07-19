@@ -2,11 +2,9 @@ package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class DebuggingOptions implements Serializable {
-  private static final long serialVersionUID = 98432798750987435L;
+public class DebuggingOptions {
   
   public static enum Option {
     /** 

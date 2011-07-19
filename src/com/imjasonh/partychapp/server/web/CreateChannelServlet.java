@@ -10,7 +10,6 @@ import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Configuration;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.server.InviteUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.command.InviteHandler;
@@ -64,9 +63,7 @@ public class CreateChannelServlet extends HttpServlet {
       com.imjasonh.partychapp.User pchapUser =
           datastore.getOrCreateUser(user.getEmail());
       
-      channel = new Channel(serverJID);
-      Member m = channel.addMember(pchapUser);
-      m.setPermissions(Permissions.ADMIN);
+      channel = new Channel(serverJID, pchapUser);
       
       // works for "true" ignoring case
       if (Boolean.parseBoolean(req.getParameter("inviteonly"))) {

@@ -5,10 +5,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Serialized;
 import com.googlecode.objectify.annotation.Unindexed;
 
 import com.imjasonh.partychapp.DebuggingOptions.Option;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.server.MailUtil;
@@ -17,7 +19,6 @@ import com.imjasonh.partychapp.server.live.ChannelUtil;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -29,11 +30,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.Embedded;
 import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
 
 @Unindexed
-public class Channel implements Serializable {
+@Cached
+public class Channel {
   private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());
   
@@ -45,9 +48,9 @@ public class Channel implements Serializable {
 
   @Id private String name;
 
-  @Serialized 
+  @Embedded
   private Set<Member> members = Sets.newHashSet();
-   
+  
   private Boolean inviteOnly = false;
 
   private List<String> invitedIds = Lists.newArrayList();
@@ -73,8 +76,10 @@ public class Channel implements Serializable {
   
   public Channel(){}
     
-  public Channel(JID serverJID) {
+  public Channel(JID serverJID, User creator) {
     this.name = serverJID.getId().split("@")[0];
+    this.addMember(creator).setPermissions(Permissions.ADMIN);
+    
   }
    
   public Channel(Channel other) {
