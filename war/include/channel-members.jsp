@@ -14,6 +14,7 @@
 	UserService userService = UserServiceFactory.getUserService();
 	User user = userService.getCurrentUser();
 	Member member = channel.getMemberByJID(user.getEmail());
+	System.out.println("MEMBER: " + member);
 	
 %>
 
@@ -25,10 +26,10 @@
 <%  if (member != null && member.hasPermissions(Member.Permissions.MOD)){
 %>
     <th>Kick</th>
+    <th>Permissions</th>
 <% 
   } 
 %>
-    <th>Permissions</th>
   </tr>
   <%
     List<Member> members = Lists.newArrayList(channel.getMembers());
@@ -50,7 +51,6 @@
 	    		kickOnClick('<%=channel.getName()%>', '<%=m.getJID()%>', button, row);
 	    		</script>
 			</td>
-<%} %>
 			    <td>
 			    <%if (member.hasPermissions(m.getPermissions())){ %>
 			    	<select id=<%=i+"-permissions-select"%>>
@@ -71,7 +71,7 @@
 			    <%} %>
 		    	</td>
 			  </tr>
-<%} %>
+<%}} %>
 </table>
 
 <% if (!channel.getInvitees().isEmpty()) {%>

@@ -222,6 +222,15 @@ public class User implements Serializable {
    */
   public void fixUp(Channel channel) {
     boolean shouldPut = false;
+    if (channelNames == null){
+    	logger.warning("channelNames is null in user " + this.jid);
+		channelNames = Lists.newArrayList();
+		shouldPut = true;
+	}else if(channelNames.contains("fake") && channelNames.size() > 1){
+		logger.warning("User " + this.jid + " had a placeholder in channelNames.  Should be good now.");
+		channelNames.remove("fake");
+		shouldPut = true;
+	}
     
     String channelName = channel.getName();
     if (channel.getMemberByJID(jid) == null &&
@@ -241,23 +250,16 @@ public class User implements Serializable {
     }
     
     if (shouldPut) {
+      logger.warning("Put User");
       put();
     }
   }  
-  
-  public void tempFix(){
-		if (channelNames == null){
-			channelNames = Lists.newArrayList();
-			System.out.println("hm...");
-		}
-  }
   
   // The remaining methods deal with manipulation of the User/Channel 
   // relationship and should called by {@link Channel} and {@link Datastore} 
   // implementations only.
    
   @VisibleForTesting public void addChannel(String c) {
-	//tempFix();
     if (!channelNames.contains(c)) {
       channelNames.add(c);
       

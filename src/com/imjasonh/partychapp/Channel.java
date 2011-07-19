@@ -552,6 +552,7 @@ public class Channel implements Serializable {
       }
       if (m.fixUp(this)) {
         shouldPut = true;
+        logger.warning("Put member");
       }
     }
     
@@ -574,6 +575,10 @@ public class Channel implements Serializable {
     if (shouldPut) {
       logger.warning("Channel " + name + " needed fixing up");
       put();
+    }
+    if (mutableMembers().size() == 0){
+  	  Datastore.instance().delete(this);
+  	  logger.warning("Channel " + name + "was removed. It had no members.");
     }
   }
   

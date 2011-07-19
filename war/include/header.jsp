@@ -5,10 +5,12 @@
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.imjasonh.partychapp.server.HttpUtil"%>
+<%@ page import="com.imjasonh.partychapp.Configuration"%>
 
 <div id="main"> <!-- closed in footer.jsp -->
   <div id="loginlogout" style="text-align: right">
     <%
+      Configuration.persistentConfig().fixAll();
       UserService userService = UserServiceFactory.getUserService();
       User user = userService.getCurrentUser();
 

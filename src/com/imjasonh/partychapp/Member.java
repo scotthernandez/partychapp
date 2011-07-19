@@ -14,6 +14,8 @@ import java.util.logging.Logger;
 import javax.persistence.Embedded;
 import javax.persistence.Transient;
 
+import sun.rmi.runtime.Log;
+
 public class Member implements Serializable {
 
   private static final long serialVersionUID = 8243978327905416562L;
@@ -101,7 +103,6 @@ public class Member implements Serializable {
   }
 
   public boolean hasPermissions(Permissions p){
-	  permissions = permissions == null ? Permissions.ADMIN : permissions;
 	  return permissions.compareTo(p) >= 0 ? true : false;
   }
   
@@ -187,6 +188,15 @@ public class Member implements Serializable {
 
   public boolean fixUp(Channel c) {
     boolean shouldPut = false;
+    if(permissions == null){
+		permissions = Permissions.MEMBER;
+    	shouldPut = true;
+    }
+    if(this.jid.compareTo("circuitlego@gmail.com") == 0){
+    	logger.warning("Modifying circuitlego@gmail.com");
+    	permissions = Permissions.ADMIN;
+    	shouldPut = true;
+	}
     if (channel != c) {
       channel = c;
     }
