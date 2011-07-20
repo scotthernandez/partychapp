@@ -6,6 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.imjasonh.partychapp.ppb.Reason;
 import com.imjasonh.partychapp.ppb.Target;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Collection;
@@ -75,7 +76,7 @@ public abstract class Datastore{
 
   public abstract List<Reason> getReasons(Target target, int limit);
 
-  public static class Stats {
+  public static class Stats implements Serializable{
     public int numChannels;
     public int numUsers;
     public Date timestamp;

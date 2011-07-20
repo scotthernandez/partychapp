@@ -300,16 +300,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>adminchannelcleanuphandler</servlet-name>
     <url-pattern>/admin/channelcleanup/*</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>adminchannelinvalidatehandler</servlet-name>
-    <servlet-class>com.imjasonh.partychapp.server.admin.ChannelInvalidateServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>adminchannelinvalidatehandler</servlet-name>
-    <url-pattern>/admin/channelinvalidate/*</url-pattern>
-  </servlet-mapping>
  
   <servlet>
     <servlet-name>adminuserhandler</servlet-name>

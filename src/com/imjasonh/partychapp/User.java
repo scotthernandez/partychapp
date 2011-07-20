@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import javax.persistence.Id;
 
 @Unindexed
-@Cached
+//@Cached
 public class User {
   
   private static final Logger logger = Logger.getLogger(User.class.getName());
@@ -163,7 +163,6 @@ public class User {
    * Gets all of the channels the user is actually in (and which exist).
    */
   public List<Channel> getChannels() {
-	//tempFix();
     boolean shouldPut = false;
     
     List<Channel> channels =
@@ -172,6 +171,7 @@ public class User {
     List<String> toRemove = Lists.newArrayList();
     
     for (String channelName : channelNames) {
+      System.out.println("User "+this.jid+" has channel "+channelName);
       Channel channel = Datastore.instance().getChannelByName(channelName);
       if (channel != null) {
         if (channel.getMemberByJID(jid) != null) {

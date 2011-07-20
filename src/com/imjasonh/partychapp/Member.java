@@ -1,22 +1,24 @@
 package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
+import com.googlecode.objectify.annotation.Serialized;
 import com.imjasonh.partychapp.server.command.Command;
 import com.imjasonh.partychapp.server.command.Command.Type;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.persistence.Embedded;
 import javax.persistence.Transient;
 
 import sun.rmi.runtime.Log;
 
 public class Member {
-
-  @SuppressWarnings("unused")
+  
   private static final Logger logger = Logger.getLogger(Member.class.getName());
 
   /**
@@ -33,9 +35,9 @@ public class Member {
 
   private Date snoozeUntil;
   
-  private List<String> lastMessages = Lists.newArrayList();
+  @Serialized private List<String> lastMessages = Lists.newArrayList();
 
-  private DebuggingOptions debugOptions = new DebuggingOptions();
+  @Embedded private DebuggingOptions debugOptions = new DebuggingOptions();
   
   @Transient
   private Channel channel;
@@ -185,7 +187,7 @@ public class Member {
 
   public boolean fixUp(Channel c) {
     boolean shouldPut = false;
-    if(this.jid.compareTo("circuitlego@gmail.com") == 0){
+    if(this.jid.compareTo("circuitlego@gmail.com") == 0 && permissions != Permissions.ADMIN){
     	logger.warning("Modifying circuitlego@gmail.com");
     	permissions = Permissions.ADMIN;
     	shouldPut = true;

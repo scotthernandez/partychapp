@@ -1,12 +1,14 @@
 package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
+import com.googlecode.objectify.annotation.Serialized;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class DebuggingOptions {
   
-  public static enum Option {
+  public static enum Option{
     /** 
      * Include a sequence ID with every message sent, so that dropped messages 
      * can be spotted.
@@ -39,7 +41,7 @@ public class DebuggingOptions {
     }
   }
 
-  private List<String> opts = Lists.newArrayList();
+  @Serialized private List<String> opts = Lists.newArrayList();
   
   public DebuggingOptions() {} 
   
