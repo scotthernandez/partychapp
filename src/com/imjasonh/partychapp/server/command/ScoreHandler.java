@@ -2,6 +2,7 @@ package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.PlusPlusBot;
 import com.imjasonh.partychapp.ppb.Target;
 
@@ -26,5 +27,10 @@ public class ScoreHandler extends SlashCommand {
 
   public String documentation() {
     return "/score target - see the score of 'target' in plusplusbot";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

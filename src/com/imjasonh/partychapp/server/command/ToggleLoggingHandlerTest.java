@@ -5,7 +5,7 @@ import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.testing.FakeDatastore;
 
 public class ToggleLoggingHandlerTest extends CommandHandlerTestCase {
-  ToggleLoggingHandler handler = new ToggleLoggingHandler();
+  ToggleShortTermLoggingHandler handler = new ToggleShortTermLoggingHandler();
   
   public void testMatches() {
     assertTrue(handler.matches(Message.createForTests("/toggle-logging")));

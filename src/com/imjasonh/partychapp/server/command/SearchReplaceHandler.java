@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.PlusPlusBot;
 
 import java.util.List;
@@ -123,6 +124,11 @@ public class SearchReplaceHandler implements CommandHandler {
 
   public boolean matches(Message msg) {
     return pattern.matcher(msg.content.trim()).matches();
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 
 }

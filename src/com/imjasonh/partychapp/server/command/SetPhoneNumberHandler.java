@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class SetPhoneNumberHandler extends SlashCommand {
   public SetPhoneNumberHandler() {
@@ -16,5 +17,10 @@ public class SetPhoneNumberHandler extends SlashCommand {
 
   public String documentation() {
     return null;
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 /**
  * Make a room invite-only.
@@ -28,5 +29,10 @@ public class InviteOnlyHandler extends SlashCommand {
 
   public String documentation() {
     return "/inviteonly - Set the room to invite-only";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.ADMIN);
   }
 }

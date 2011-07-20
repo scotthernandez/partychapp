@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.Graphs;
 import com.imjasonh.partychapp.ppb.Target;
 
@@ -41,5 +42,10 @@ public class GraphScoreHandler extends SlashCommand {
 
   public String documentation() {
     return "/graph-score <target1> <target2> ... - prints a link to a graph of the changes to up to three targets' scores."; 
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

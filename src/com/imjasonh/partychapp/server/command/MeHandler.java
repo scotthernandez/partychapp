@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 /**
  * Action taken when the user
@@ -28,5 +29,10 @@ public class MeHandler extends SlashCommand {
 
   public String documentation() {
     return "/me - describe what you're doing in the third person";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

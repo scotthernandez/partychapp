@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Member;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message;
 
 public class AliasHandler extends SlashCommand {
@@ -41,4 +42,9 @@ public class AliasHandler extends SlashCommand {
   public String documentation() {
     return "/alias name - rename yourself to 'name'";
   }
+
+@Override
+public boolean allows(Message msg) {
+	return msg.member.hasPermissions(Permissions.MEMBER);
+}
 }

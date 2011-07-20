@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.filters.SlashMistakeHandler;
 import com.imjasonh.partychapp.filters.TicketFilter;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 
@@ -29,7 +30,7 @@ public enum Command {
   SHARE(new ShareHandler(ChainedUrlInfoService.DEFAULT_SERVICE), Type.GRAB),
   SHARED(new SharedHandler(), Type.GRAB),
   INVITE_ONLY(new InviteOnlyHandler(), Type.GRAB),
-  TOGGLE_LOGGING(new ToggleLoggingHandler(), Type.GRAB),
+  TOGGLE_LOGGING(new ToggleShortTermLoggingHandler(), Type.GRAB),
   INVITE(new InviteHandler(), Type.GRAB),
   KICK(new KickHandler(), Type.GRAB),
   STATUS(new StatusHandler(), Type.GRAB),
@@ -44,6 +45,8 @@ public enum Command {
   BROADCAST_SMS(new SendBroadcastSMSHandler(), Type.GRAB, Category.HIDDEN),
   BUG(new BugHandler(), Type.GRAB),
   DELETELOG(new DeleteLogHandler(), Type.GRAB),
+  
+  
   //Must go here to filter out bad SlashCommands
   SLASHMISTAKE(new SlashMistakeHandler(), Type.GRAB),
   
@@ -86,7 +89,7 @@ public enum Command {
 
   public static void getCommandHandler(Message msg) {
     for (Command command : Command.values()) {
-      if (command.commandHandler.matches(msg)) {
+      if (command.commandHandler.matches(msg) && command.commandHandler.allows(msg)) {
     	  command.commandHandler.doCommand(msg);
     	  if (command.type == Type.GRAB){
     		  return; 

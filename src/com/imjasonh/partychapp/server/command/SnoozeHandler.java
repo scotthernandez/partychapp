@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class SnoozeHandler extends SlashCommand {
   private static final String DETAILED_USAGE = 
@@ -92,6 +93,11 @@ public class SnoozeHandler extends SlashCommand {
 
   public String documentation() {
     return "/snooze (20s|45m|1h|2d) - snooze for a specified amount of time in seconds, minutes, hours, or days.";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 
 }

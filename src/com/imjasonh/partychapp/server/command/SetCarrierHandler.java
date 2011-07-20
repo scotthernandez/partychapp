@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.User;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class SetCarrierHandler extends SlashCommand {
 
@@ -48,6 +49,11 @@ public class SetCarrierHandler extends SlashCommand {
 
   public String documentation() {
     return null; 
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 
 }

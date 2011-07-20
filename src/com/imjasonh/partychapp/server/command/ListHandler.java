@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.server.SendUtil;
 
@@ -84,5 +85,10 @@ public class ListHandler extends SlashCommand {
   public String documentation() {
 	  return "/list [filter] - show members of room, optionally filtered " +
 	      "to only matching members";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

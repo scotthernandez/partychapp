@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.server.command.Command;
@@ -54,5 +55,9 @@ public class TicketFilter implements CommandHandler {
 		return null;
 	}
 
+	@Override
+	public boolean allows(Message msg) {
+		return msg.member.hasPermissions(Permissions.MEMBER);
+	}
 
 }

@@ -2,6 +2,7 @@ package com.imjasonh.partychapp.server.command;
 
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.logging.LogDAO;
 import com.imjasonh.partychapp.logging.LogEntry;
 
@@ -23,4 +24,8 @@ public class LogHandler implements CommandHandler {
 		return null;
 	}
 
+	@Override
+	public boolean allows(Message msg) {
+		return msg.member.hasPermissions(Permissions.MEMBER);
+	}
 }

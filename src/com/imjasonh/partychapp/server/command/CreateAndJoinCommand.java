@@ -32,4 +32,9 @@ public class CreateAndJoinCommand implements CommandHandler {
   public boolean matches(Message msg) {
     return (msg.channel == null) && msg.messageType.equals(MessageType.XMPP);
   }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return true;
+  }
 }

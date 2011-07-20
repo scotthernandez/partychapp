@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 import java.util.List;
 
@@ -29,5 +30,10 @@ public class UndoHandler extends SlashCommand {
 
   public String documentation() {
     return "/undo - undo the pluspluses and minusminuses from your last message";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

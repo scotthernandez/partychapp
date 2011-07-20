@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.PlusPlusBot;
 import com.imjasonh.partychapp.ppb.Reason;
 
@@ -95,6 +96,11 @@ public class PPBHandler implements CommandHandler {
 
   public String documentation() {
     return "plusplusbot: handles ++'s and --'s";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }
 

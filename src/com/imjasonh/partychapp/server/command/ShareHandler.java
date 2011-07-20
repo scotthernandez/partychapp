@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.command;
 import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.filters.SharedURLDAO;
 import com.imjasonh.partychapp.Datastore;
@@ -99,6 +100,11 @@ public class ShareHandler extends SlashCommand {
   public String documentation() {
     return "/share http://example.com/ [annotation] - " +
         "shares a URL with the room";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
   
 }
