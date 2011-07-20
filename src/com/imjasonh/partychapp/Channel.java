@@ -591,33 +591,4 @@ public class Channel implements Serializable{
     }
   }
   
-
-  @Embedded
-  private List<SharedURL> shared = Lists.newArrayListWithCapacity(SharedURL.SHARED_URL_LIMIT);
-  
-  public boolean storeShared(SharedURL toShare){
-	  for (SharedURL existing : shared){
-		  if (existing.getUrl().equals(toShare.getUrl())){
-			  return false;
-		  }
-	  }
-	  shared.add(0, toShare);
-	  if (shared.size() > SharedURL.SHARED_URL_LIMIT){
-		  shared.remove(SharedURL.SHARED_URL_LIMIT);
-	  }
-	  return true;
-  }
-  
-
-  public List<SharedURL> getShared(){
-	  logger.warning("shared is " + shared);
-	  return Collections.unmodifiableList(shared);
-  }
-  
-  public String getLink(int index){
-	  if (shared.size() > index){
-		  return shared.get(index).getUrl();
-	  }
-	  return null;
-  }
 }

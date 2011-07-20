@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.filters.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURLDAO;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
@@ -56,13 +57,14 @@ public class ShareHandler extends SlashCommand {
     UrlInfo urlInfo = urlInfoService.getUrlInfo(uri);
     
     SharedURL shareUrl = new SharedURL(
+    		msg.channel.getName(),
             msg.member.getJID(),
             uri.toString(),
             annotation,
             urlInfo.getTitle(),
             urlInfo.getDescription());
     
-    if (msg.channel.storeShared(shareUrl)){
+    if (SharedURLDAO.storeURL(shareUrl)){
         sendShareBroadcast(shareUrl, msg.channel);
     }else{
     	msg.channel.sendDirect("_That link is currently being shared._", msg.member);

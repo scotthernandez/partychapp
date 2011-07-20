@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.base.Strings;
 import com.imjasonh.partychapp.filters.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURLDAO;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
 
@@ -26,7 +27,7 @@ public class SharedHandler extends SlashCommand{
 			String[] pieces = argument.split("\\s+", 1);
 			try{
 				int i = Integer.parseInt(pieces[0]);
-				String url = msg.channel.getLink(i);
+				String url = SharedURLDAO.getURLByIndex(msg.channel.getName(), i);
 				if (url == null){
 					msg.channel.sendDirect("_That index is invalid._", msg.member);
 				}else{
@@ -39,7 +40,7 @@ public class SharedHandler extends SlashCommand{
 		}
 
 		//No args means user wants to see list of link descriptions
-		List<SharedURL> shared = msg.channel.getShared();
+		List<SharedURL> shared = SharedURLDAO.getURLsByChannelByDate(msg.channel.getName());
 		if (!shared.isEmpty()){
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < shared.size(); i++){
