@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 import sun.rmi.runtime.Log;
 
 public class Member implements Serializable{
+	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
   
   private static final Logger logger = Logger.getLogger(Member.class.getName());
 

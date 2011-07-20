@@ -27,7 +27,7 @@ public class TicketFilter implements CommandHandler {
             String urlStr = "http://jira.mongodb.org/browse/" + m.group();
             try{
             	URI url = new URI(urlStr);
-            	SharedURL toShare = new SharedURL(msg.member, url, "", m.group(), "");
+            	SharedURL toShare = new SharedURL(msg.member.getJID(), url.toString(), "", m.group(), "");
             	if (msg.channel.storeShared(toShare)){
 	            	ShareHandler sh = (ShareHandler) Command.SHARE.commandHandler;
 	            	sh.sendShareBroadcast(toShare, msg.channel);

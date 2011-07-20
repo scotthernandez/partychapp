@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.List;
 
 public class DebuggingOptions implements Serializable{
+	
+	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
   
   public static enum Option{
     /** 

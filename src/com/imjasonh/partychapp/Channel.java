@@ -38,6 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 @Unindexed
 @Cached
 public class Channel implements Serializable{
+	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
+    
   private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());
   
@@ -589,7 +592,7 @@ public class Channel implements Serializable{
   }
   
 
-  @Serialized
+  @Embedded
   private List<SharedURL> shared = Lists.newArrayListWithCapacity(SharedURL.SHARED_URL_LIMIT);
   
   public boolean storeShared(SharedURL toShare){
@@ -607,10 +610,11 @@ public class Channel implements Serializable{
   
 
   public List<SharedURL> getShared(){
+	  logger.warning("shared is " + shared);
 	  return Collections.unmodifiableList(shared);
   }
   
-  public URI getLink(int index){
+  public String getLink(int index){
 	  if (shared.size() > index){
 		  return shared.get(index).getUrl();
 	  }

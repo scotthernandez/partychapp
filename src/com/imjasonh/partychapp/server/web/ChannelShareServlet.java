@@ -105,6 +105,6 @@ public class ChannelShareServlet extends AbstractChannelUserServlet {
         description = urlInfo.getDescription();
       }
 
-      return new SharedURL(member, url, annotation, title, description);
+      return new SharedURL(member.getJID(), url.toString(), annotation, title, description);
     }
 }

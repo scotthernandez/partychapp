@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.filters.SharedURL;
+import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
@@ -55,8 +56,8 @@ public class ShareHandler extends SlashCommand {
     UrlInfo urlInfo = urlInfoService.getUrlInfo(uri);
     
     SharedURL shareUrl = new SharedURL(
-            msg.member,
-            uri,
+            msg.member.getJID(),
+            uri.toString(),
             annotation,
             urlInfo.getTitle(),
             urlInfo.getDescription());
@@ -72,8 +73,9 @@ public class ShareHandler extends SlashCommand {
   
   public static void sendShareBroadcast(SharedURL sharedUrl, Channel channel) {
 	
-	
-    String shareBroadcast = "_" + sharedUrl.getMember().getAlias() + " is sharing " + sharedUrl.getUrl();
+	Member m = channel.getMemberByJID(sharedUrl.getJID());
+	  
+    String shareBroadcast = "_" + m.getAlias() + " is sharing " + sharedUrl.getUrl();
     
     if (!sharedUrl.getTitle().isEmpty()) {
       shareBroadcast += " (" + sharedUrl.getTitle() + ")";
