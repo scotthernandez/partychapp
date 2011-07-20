@@ -44,6 +44,8 @@ public enum Command {
   BROADCAST_SMS(new SendBroadcastSMSHandler(), Type.GRAB, Category.HIDDEN),
   BUG(new BugHandler(), Type.GRAB),
   DELETELOG(new DeleteLogHandler(), Type.GRAB),
+  //Must go here to filter out bad SlashCommands
+  SLASHMISTAKE(new SlashMistakeHandler(), Type.GRAB),
   
   // these have to be after the slash-commands
   SEARCHREPLACE(new SearchReplaceHandler(), Type.GRAB),
