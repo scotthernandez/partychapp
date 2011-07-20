@@ -19,6 +19,7 @@ import com.imjasonh.partychapp.server.live.ChannelUtil;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Unindexed
 @Cached
-public class Channel {
+public class Channel implements Serializable{
   private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());
   
@@ -48,7 +49,7 @@ public class Channel {
 
   @Id private String name;
 
-  @Embedded
+  @Serialized
   private Set<Member> members = Sets.newHashSet();
   
   private Boolean inviteOnly = false;

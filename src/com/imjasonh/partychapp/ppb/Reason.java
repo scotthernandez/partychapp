@@ -19,7 +19,6 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 @Unindexed
-@Cached
 public class Reason {
   /** 500 is the maximum length of text fields in AppEngine */
   private static final int MAX_REASON_LENGTH = 500;

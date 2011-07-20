@@ -6,7 +6,7 @@ import com.googlecode.objectify.annotation.Serialized;
 import java.io.Serializable;
 import java.util.List;
 
-public class DebuggingOptions {
+public class DebuggingOptions implements Serializable{
   
   public static enum Option{
     /** 
@@ -41,7 +41,7 @@ public class DebuggingOptions {
     }
   }
 
-  @Serialized private List<String> opts = Lists.newArrayList();
+  private List<String> opts = Lists.newArrayList();
   
   public DebuggingOptions() {} 
   

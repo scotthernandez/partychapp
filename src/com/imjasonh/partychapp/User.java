@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import javax.persistence.Id;
 
 @Unindexed
-//@Cached
+@Cached
 public class User {
   
   private static final Logger logger = Logger.getLogger(User.class.getName());

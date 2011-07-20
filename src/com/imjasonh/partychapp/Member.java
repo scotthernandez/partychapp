@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 
 import sun.rmi.runtime.Log;
 
-public class Member {
+public class Member implements Serializable{
   
   private static final Logger logger = Logger.getLogger(Member.class.getName());
 
@@ -35,12 +35,11 @@ public class Member {
 
   private Date snoozeUntil;
   
-  @Serialized private List<String> lastMessages = Lists.newArrayList();
+  private List<String> lastMessages = Lists.newArrayList();
 
-  @Embedded private DebuggingOptions debugOptions = new DebuggingOptions();
+  private DebuggingOptions debugOptions = new DebuggingOptions();
   
-  @Transient
-  private Channel channel;
+  transient private Channel channel;
   
   String phoneNumber;
   
