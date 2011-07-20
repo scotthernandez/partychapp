@@ -5,10 +5,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Serialized;
 import com.googlecode.objectify.annotation.Unindexed;
 
 import com.imjasonh.partychapp.DebuggingOptions.Option;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.server.MailUtil;
@@ -29,11 +31,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.Embedded;
 import javax.persistence.Id;
 import javax.servlet.http.HttpServletRequest;
 
 @Unindexed
-public class Channel implements Serializable {
+@Cached
+public class Channel implements Serializable{
+	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
+    
   private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());
   
@@ -45,9 +52,9 @@ public class Channel implements Serializable {
 
   @Id private String name;
 
-  @Serialized 
+  @Serialized
   private Set<Member> members = Sets.newHashSet();
-   
+  
   private Boolean inviteOnly = false;
 
   private List<String> invitedIds = Lists.newArrayList();
@@ -73,8 +80,10 @@ public class Channel implements Serializable {
   
   public Channel(){}
     
-  public Channel(JID serverJID) {
+  public Channel(JID serverJID, User creator) {
     this.name = serverJID.getId().split("@")[0];
+    this.addMember(creator).setPermissions(Permissions.ADMIN);
+    
   }
    
   public Channel(Channel other) {
@@ -156,7 +165,6 @@ public class Channel implements Serializable {
     }
     addedMember.setAlias(dedupedAlias);
     mutableMembers().add(addedMember);
-    
     userToAdd.addChannel(getName());
     userToAdd.put();
     
@@ -169,12 +177,13 @@ public class Channel implements Serializable {
 
   public void removeMember(User userToRemove) {
     Member memberToRemove = getMemberByLiteralJID(userToRemove.getJID());
+    
     if (!mutableMembers().remove(memberToRemove)) {
       logger.warning(
           userToRemove.getJID() + " was not actually in channel " +
           getName() + " when removing");
     }
-    
+
     userToRemove.removeChannel(getName());
     userToRemove.put();
   }
@@ -291,7 +300,7 @@ public class Channel implements Serializable {
   }
 
   /**
-   * Remove a user or invitee by alias or ID.
+   * Remove a user or invitee by alias ID.
    * @return True if someone was removed
    */
   public boolean kick(String id) {
@@ -300,6 +309,7 @@ public class Channel implements Serializable {
       member = getMemberByJID(new JID(id));
     }
     if (member != null) {
+      invite(member.getJID());
       removeMember(Datastore.instance().getUserByJID(member.getJID()));
       return true;
     }
@@ -551,6 +561,7 @@ public class Channel implements Serializable {
       }
       if (m.fixUp(this)) {
         shouldPut = true;
+        logger.warning("Put member");
       }
     }
     
@@ -574,34 +585,10 @@ public class Channel implements Serializable {
       logger.warning("Channel " + name + " needed fixing up");
       put();
     }
+    if (mutableMembers().size() == 0){
+  	  Datastore.instance().delete(this);
+  	  logger.warning("Channel " + name + "was removed. It had no members.");
+    }
   }
   
-
-  @Serialized
-  private List<SharedURL> shared = Lists.newArrayListWithCapacity(SharedURL.SHARED_URL_LIMIT);
-  
-  public boolean storeShared(SharedURL toShare){
-	  for (SharedURL existing : shared){
-		  if (existing.getUrl().equals(toShare.getUrl())){
-			  return false;
-		  }
-	  }
-	  shared.add(0, toShare);
-	  if (shared.size() > SharedURL.SHARED_URL_LIMIT){
-		  shared.remove(SharedURL.SHARED_URL_LIMIT);
-	  }
-	  return true;
-  }
-  
-
-  public List<SharedURL> getShared(){
-	  return Collections.unmodifiableList(shared);
-  }
-  
-  public URI getLink(int index){
-	  if (shared.size() > index){
-		  return shared.get(index).getUrl();
-	  }
-	  return null;
-  }
 }

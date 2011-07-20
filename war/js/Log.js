@@ -57,7 +57,7 @@ var myLog = function(channelName){
 		 * @param {number} offset
 		 */
 		var renderLog = function(data, offset){
-			if (data.length <= 1){
+			if (data.length < 1){
 				return;
 			}
 			soy.renderElement(
@@ -69,16 +69,13 @@ var myLog = function(channelName){
 		}
 		
 		var showOlder = function(){
-			 getEntries(end, limit);
+			 getEntries(end + 1, limit);
 		}
 		that.showOlder = showOlder;
 		
 		var showNewer = function(){
-			 var offset = start - limit + 1;
-			 
-			 if (offset < 0){
-				 return;
-			 }
+			 var offset = start - limit;
+			 offset = offset < 0 ? 0 : offset;
 
 			 getEntries(offset, limit);
 		}

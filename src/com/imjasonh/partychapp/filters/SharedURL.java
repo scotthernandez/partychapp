@@ -7,60 +7,80 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Embedded;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Strings;
+import com.googlecode.objectify.annotation.AlsoLoad;
+import com.googlecode.objectify.annotation.Indexed;
+import com.googlecode.objectify.annotation.Serialized;
+import com.googlecode.objectify.annotation.Unindexed;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
 
-
-  public class SharedURL implements Serializable{
+@Unindexed
+public class SharedURL {
 	  
 
 	  //private list sharedURL
 	  public static final int SHARED_URL_LIMIT = 5;
 	  
+	  @Id
+	  private String urlString;
 	  
-	  private final URI url;
-	  private final String title;
-	  private final String description;
-	  private final String annotation;
-	  private final Date time;
-	  private final Member member;
+	  @Indexed
+	  private String channelName;
 	  
-	  public SharedURL(Member m, URI u, String a, String t, String d){
-		  url = u;
-		  member = m;
+	  @Indexed
+	  private Date time;
+	  
+	  private String title;
+	  private String description;
+	  private String annotation;
+	  private String jid;
+	  
+	  public SharedURL(){}
+	  
+	  public SharedURL(String c, String j, String u, String a, String t, String d){
+		  channelName = c;
+		  urlString = u;
+		  jid = j;
 		  annotation = a;
 		  title = t;
 		  description = d;
 		  time = new Date();
-		  
 	  }
 	  
-	  public URI getUrl(){
-		  return url;
+	  public String getUrl(){
+		  return urlString;
 	  }
-	  
+  
 	  public String getTitle(){
 		  return title;
 	  }
 
-	public String getDescription() {
-		return description;
-	}
+	  public String getDescription() {
+		  return description;
+	  }
 
-	public String getAnnotation() {
-		return annotation;
-	}
+	  public String getAnnotation() {
+		  return annotation;
+	  }
 
-	public Date getTime() {
-		return time;
-	}
+	  public Date getTime() {
+		  return time;
+	  }
 
-	public Member getMember() {
-		return member;
-	}
+	  public String getJID() {
+		  return jid;
+	  }
+	  
+	  public String getChannel(){
+		  return channelName;
+	  }
+
 	
   }

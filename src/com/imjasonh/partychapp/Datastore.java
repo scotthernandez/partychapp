@@ -28,8 +28,8 @@ public abstract class Datastore{
     if (instance == null) {
       // We have to do this lazily because tests won't have the
       // live datastore dependencies set up
-      instance = new FixingDatastore(new MemcacheCachingDatastore(
-          new LiveDatastore()));
+      instance = new FixingDatastore(/*new MemcacheCachingDatastore(*/
+          new LiveDatastore()/*)*/);
     }
     return instance;
   }
@@ -76,7 +76,7 @@ public abstract class Datastore{
 
   public abstract List<Reason> getReasons(Target target, int limit);
 
-  public static class Stats implements Serializable {
+  public static class Stats implements Serializable{
     public int numChannels;
     public int numUsers;
     public Date timestamp;

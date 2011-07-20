@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import com.googlecode.objectify.annotation.Unindexed;
 import com.imjasonh.partychapp.Message;
 
-
 public class LogEntry {
 
 

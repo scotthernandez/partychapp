@@ -4,8 +4,6 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.Stats;
 
-import com.imjasonh.partychapp.MemcacheCachingDatastore;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.text.NumberFormat;

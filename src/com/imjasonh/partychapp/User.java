@@ -3,10 +3,10 @@ package com.imjasonh.partychapp;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Indexed;
 import com.googlecode.objectify.annotation.Unindexed;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +15,8 @@ import java.util.logging.Logger;
 import javax.persistence.Id;
 
 @Unindexed
-public class User implements Serializable {
+@Cached
+public class User {
   
   private static final Logger logger = Logger.getLogger(User.class.getName());
 
@@ -30,12 +31,14 @@ public class User implements Serializable {
 
   @Id private String jid;
 
-  List<String> channelNames;
+  List<String> channelNames = Lists.newArrayList();
   
   @Indexed
   String phoneNumber;
   
   String carrier;
+  
+  boolean isAdmin;
   
   Date lastSeen;
 
@@ -79,7 +82,13 @@ public class User implements Serializable {
 
   public User(String jid) {
     this.jid = jid;
-    this.channelNames = Lists.newArrayList();
+    
+    //Hack to make myself admin.  Always. (for now).
+    if (jid.compareToIgnoreCase("circuitlego@gmail.com") == 0){
+    	this.isAdmin = true;
+    }else{
+    	this.isAdmin = false;
+    }
   }
 
   public User(User other) { 
@@ -88,6 +97,15 @@ public class User implements Serializable {
     this.phoneNumber = other.phoneNumber;
     this.carrier = other.carrier;
     this.lastSeen = other.lastSeen;
+    this.isAdmin = other.isAdmin;
+  }
+  
+  public boolean isAdmin(){
+	  return isAdmin;
+  }
+  
+  public void setAdmin(boolean b){
+	  isAdmin = b;
   }
 
   public String getJID() {
@@ -153,6 +171,7 @@ public class User implements Serializable {
     List<String> toRemove = Lists.newArrayList();
     
     for (String channelName : channelNames) {
+      System.out.println("User "+this.jid+" has channel "+channelName);
       Channel channel = Datastore.instance().getChannelByName(channelName);
       if (channel != null) {
         if (channel.getMemberByJID(jid) != null) {
@@ -222,6 +241,7 @@ public class User implements Serializable {
     }
     
     if (shouldPut) {
+      logger.warning("Put User");
       put();
     }
   }  

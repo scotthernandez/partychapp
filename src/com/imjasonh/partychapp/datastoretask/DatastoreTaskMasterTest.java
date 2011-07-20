@@ -35,7 +35,7 @@ public class DatastoreTaskMasterTest extends TestCase {
     User user = Datastore.instance().getOrCreateUser("neil@gmail.com");
     for (int i = 0; i < n; ++i) {
       String name = "pancake" + numbers[i];
-      Channel c = new Channel(new JID(name + "@" + Configuration.chatDomain));
+      Channel c = new Channel(new JID(name + "@" + Configuration.chatDomain), user);
       c.addMember(user);
       c.put();
     }
