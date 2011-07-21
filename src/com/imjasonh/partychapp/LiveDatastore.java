@@ -72,10 +72,22 @@ public class LiveDatastore extends Datastore {
 	  return Ofy.instance();
   }
   
+  private <T> T getAndLog(Class<? extends T> c, String s){
+
+		try{
+			throw new Exception("");
+		}catch (Exception e){
+		logger.log(Level.INFO, c.getName() + " read: \n" + 
+	                             e.getStackTrace());
+		}
+		
+	  return ofy().get(c, s);
+  }
+  
   @Override
   public Channel getChannelByName(String name) {
 	  try {
-		  return ofy().get(Channel.class, name);
+		  return getAndLog(Channel.class, name);
 	  }catch(NotFoundException e){
 	      return null;
 	  }
@@ -84,7 +96,7 @@ public class LiveDatastore extends Datastore {
   @Override
   public PersistentConfiguration getPersistentConfig() {
 	  try{
-		  return ofy().get(PersistentConfiguration.class, "config");
+		  return getAndLog(PersistentConfiguration.class, "config");
 	  }catch(NotFoundException e){
 		  return null;
 	  }
@@ -93,7 +105,7 @@ public class LiveDatastore extends Datastore {
   @Override
   public User getUserByJID(String jid) {
     try {
-    	User user = ofy().get(User.class, jid);
+    	User user = getAndLog(User.class, jid);
       	return user;
     } catch (NotFoundException notFound) {
 	      return null;
@@ -110,7 +122,7 @@ public class LiveDatastore extends Datastore {
   @Override
   public Target getTargetByID(String key) {
     try {
-    	return ofy().get(Target.class, key);
+    	return getAndLog(Target.class, key);
     } catch (NotFoundException e) {
       // TODO(nsanch): there has to be a better way
       return null;

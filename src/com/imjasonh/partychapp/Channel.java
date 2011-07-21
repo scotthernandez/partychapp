@@ -78,11 +78,19 @@ public class Channel implements Serializable{
    */
   private Boolean loggingDisabled = false;
   
+  /**
+   * Keep track of the logging break.
+   */
+  private Date logSectionStart = new Date();
+  private Date logSectionEnd = new Date();
+  
   public Channel(){}
     
   public Channel(JID serverJID, User creator) {
     this.name = serverJID.getId().split("@")[0];
     this.addMember(creator).setPermissions(Permissions.ADMIN);
+    this.logSectionStart = new Date();
+    this.logSectionEnd = new Date();
     
   }
    
@@ -97,6 +105,8 @@ public class Channel implements Serializable{
     this.sequenceId = other.sequenceId;
     this.minilogDisabled = other.minilogDisabled;
     this.loggingDisabled = other.loggingDisabled;
+    this.logSectionStart = other.logSectionStart;
+    this.logSectionEnd = other.logSectionEnd;
   }
   
   public JID serverJID() {
@@ -145,7 +155,25 @@ public class Channel implements Serializable{
 	    this.loggingDisabled = loggingDisabled;
   }
   
-  /**
+
+
+public Date getLogSectionStart() {
+	return logSectionStart;
+}
+
+public void setLogSectionStart(Date logSectionStart) {
+	this.logSectionStart = logSectionStart;
+}
+
+public Date getLogSectionEnd() {
+	return logSectionEnd;
+}
+
+public void setLogSectionEnd(Date logSectionEnd) {
+	this.logSectionEnd = logSectionEnd;
+}
+
+/**
    * Adds a member to the channel. This may alter the member's alias by
    * prepending a _ if the channel already has a member with that alias. Removes
    * from invite list if invite-only room.
@@ -323,6 +351,15 @@ public class Channel implements Serializable{
   }
 
   public void put() {
+	try{
+		throw new Exception("");
+	}catch (Exception e){
+	logger.log(Level.INFO, "Channel put by " + 
+                             e.getStackTrace()[1].getClassName() + 
+                             "." +
+                             e.getStackTrace()[1].getMethodName() + 
+                             "()!" );
+	}
     Datastore.instance().put(this);
   }
 

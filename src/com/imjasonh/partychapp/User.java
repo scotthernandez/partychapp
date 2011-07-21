@@ -7,6 +7,7 @@ import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Indexed;
 import com.googlecode.objectify.annotation.Unindexed;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javax.persistence.Id;
 
 @Unindexed
 @Cached
-public class User {
+public class User implements Serializable{
+	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
   
   private static final Logger logger = Logger.getLogger(User.class.getName());
 
