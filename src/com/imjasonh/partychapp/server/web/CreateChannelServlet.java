@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Configuration;
 import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.server.InviteUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.command.InviteHandler;
@@ -62,8 +63,7 @@ public class CreateChannelServlet extends HttpServlet {
       com.imjasonh.partychapp.User pchapUser =
           datastore.getOrCreateUser(user.getEmail());
       
-      channel = new Channel(serverJID);
-      channel.addMember(pchapUser);
+      channel = new Channel(serverJID, pchapUser);
       
       // works for "true" ignoring case
       if (Boolean.parseBoolean(req.getParameter("inviteonly"))) {
@@ -87,7 +87,7 @@ public class CreateChannelServlet extends HttpServlet {
   
       channel.put();
       resp.getWriter().write(
-          "Created! Just accept the chat request and start talking. " +
+          "Created! You are now an admin of " + channel.getName() + ". Just accept the chat request and start talking. " +
       		"To add users later, type '/invite user@whatever.com'.");
       
       resp.getWriter().write(

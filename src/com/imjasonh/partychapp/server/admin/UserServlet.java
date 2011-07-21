@@ -3,7 +3,7 @@ package com.imjasonh.partychapp.server.admin;
 import com.google.appengine.api.xmpp.JID;
 import com.google.common.base.Strings;
 
-import com.imjasonh.partychapp.CachingDatastore;
+//import com.imjasonh.partychapp.CachingDatastore;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
@@ -49,10 +49,10 @@ public class UserServlet extends HttpServlet {
       Writer writer = resp.getWriter();
       
       writer.write("JID: " + user.getJID() + "\n");
-      CachingDatastore cachingDatastore = WrappingDatastore.findWrappedInstance(datastore, CachingDatastore.class);
-      if (cachingDatastore != null) {
-        writer.write("Cache key: " + cachingDatastore.getKey(user) + "\n");
-      }      
+//      CachingDatastore cachingDatastore = WrappingDatastore.findWrappedInstance(datastore, CachingDatastore.class);
+//      if (cachingDatastore != null) {
+//        writer.write("Cache key: " + cachingDatastore.getKey(user) + "\n");
+//      }      
       writer.write("Email: " + user.getEmail() + "\n");
       writer.write("Channels:\n");
       for (Channel channel : user.getChannels()) {

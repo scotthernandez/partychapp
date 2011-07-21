@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.command;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message.MessageType;
 import com.imjasonh.partychapp.server.SendUtil;
 
@@ -38,7 +39,7 @@ public class JoinCommand implements CommandHandler {
         + msg.member.getAlias() + "'";
     msg.channel.broadcast(broadcast, msg.member);
     
-    Command.getCommandHandler(msg).doCommand(msg);
+    //Command.getCommandHandler(msg).doCommand(msg);
   }
 
   public String documentation() {
@@ -49,4 +50,8 @@ public class JoinCommand implements CommandHandler {
     return msg.channel != null && msg.member == null && msg.messageType.equals(MessageType.XMPP);
   }
 
+  @Override
+  public boolean allows(Message msg) {
+  	return true;
+  }
 }

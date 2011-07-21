@@ -64,11 +64,12 @@ public class LiveDatastore extends Datastore {
 
   
   private Objectify ofy(){
-//	  if (manager.get()!=null){
+//	  if (manager.get() == null){
 //		  manager.set(ObjectifyService.begin());
 //	  }
 //	  return manager.get();
-	  return constantofy;
+	 // return constantofy;
+	  return Ofy.instance();
   }
   
   @Override
@@ -146,6 +147,7 @@ public class LiveDatastore extends Datastore {
   @Override
   public void put(Object o) {
 	try{
+		logger.warning(o.toString() + " was put.");
 		ofy().put(o);
 	}catch(Exception e){
 	      logger.log(Level.SEVERE, "Could not put a "+o.getClass().getCanonicalName()+" using objectify.", e);

@@ -63,6 +63,11 @@ public abstract class JsonServlet extends HttpServlet {
 
     datastore.endRequest();
   }
+  
+  @Override
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+	  doGet(req, resp);
+  }
 
 
   protected abstract JSONObject getJson(

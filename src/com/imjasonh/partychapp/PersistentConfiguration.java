@@ -1,5 +1,7 @@
 package com.imjasonh.partychapp;
 
+import java.util.logging.Logger;
+
 import javax.persistence.Id;
 
 import com.googlecode.objectify.annotation.Unindexed;
@@ -15,6 +17,9 @@ import com.googlecode.objectify.annotation.Unindexed;
 @Unindexed
 public class PersistentConfiguration {
   private static final long serialVersionUID = 7984372525340987L;
+  
+  private static final Logger logger = 
+      Logger.getLogger(Channel.class.getName());
 
   @SuppressWarnings("unused")
   @Id private String name = "config";
@@ -47,5 +52,12 @@ public class PersistentConfiguration {
   
   public void setChannelStatsEnabled(boolean areChannelStatsEnabled) {
     this.areChannelStatsEnabled = areChannelStatsEnabled;
+  }
+  
+  public void fixAll(){
+	  Datastore.instance().startRequest();
+	  logger.warning("Had to fixAll()");
+	  Ofy.fixAll();
+	  Datastore.instance().endRequest();
   }
 }

@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.command;
 import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 /**
  * Allows current members to remove other members, invitees, or those who have
@@ -21,6 +22,11 @@ public class KickHandler extends SlashCommand {
     assert msg.channel != null;
     assert msg.member != null;
     
+    if(!msg.member.hasPermissions(Permissions.MOD)){
+    	msg.channel.sendDirect("You do not have enough permissions to /kick someone.", msg.member);
+    	return;
+    }
+    
     if (Strings.isNullOrEmpty(action)) {
       msg.channel.sendDirect("You must specify someone to kick", msg.member);
       return;
@@ -38,5 +44,10 @@ public class KickHandler extends SlashCommand {
 
   public String documentation() {
     return "/kick - Remove a user or invitation from this room";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MOD);
   }
 }

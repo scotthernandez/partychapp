@@ -10,7 +10,7 @@ import com.imjasonh.partychapp.Message;
  * 
  * @author kushaldave@gmail.com
  */
-abstract class SlashCommand implements CommandHandler {
+public abstract class SlashCommand implements CommandHandler {
 
   private final Pattern pattern;
 

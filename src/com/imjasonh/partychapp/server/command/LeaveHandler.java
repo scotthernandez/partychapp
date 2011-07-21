@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class LeaveHandler extends SlashCommand {
   
@@ -23,5 +24,10 @@ public class LeaveHandler extends SlashCommand {
   
   public String documentation() {
     return "/leave - leave the room";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

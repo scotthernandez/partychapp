@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class SendBroadcastSMSHandler extends SlashCommand {
 
@@ -31,4 +32,8 @@ public class SendBroadcastSMSHandler extends SlashCommand {
     return null;
   }
 
+  @Override
+  public boolean allows(Message msg) {
+  	return true;
+  }
 }

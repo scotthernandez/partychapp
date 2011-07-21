@@ -1,8 +1,14 @@
 package com.imjasonh.partychapp.server.web;
 
 import com.google.appengine.api.users.User;
+import com.google.appengine.api.xmpp.JID;
 
 import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
+import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Message.Builder;
+import com.imjasonh.partychapp.server.command.Command;
 
 import java.io.IOException;
 
@@ -23,13 +29,37 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException {
+	  
     channel.setInviteOnly(
         Boolean.parseBoolean(req.getParameter("inviteonly")));
-    channel.setLoggingDisabled(
-        !Boolean.parseBoolean(req.getParameter("logging")));
+    channel.setMiniLogDisabled(
+        !Boolean.parseBoolean(req.getParameter("minilog")));
+    
+    com.imjasonh.partychapp.User partychapp_user = Datastore.instance().getUserByJID(user.getEmail());
+    Member member = channel.getMemberByJID(user.getEmail());
+    Builder builder = new Builder()
+    							.setChannel(channel)
+    							.setUser(partychapp_user)
+    							.setUserJID(new JID(user.getEmail()))
+    							.setMember(member)
+    							.setServerJID(channel.serverJID())
+    							.setMessageType(Message.MessageType.XMPP);
+    
+    Message msg;
+    
+    //It's important to let the room know if they are being recorded or not.
+    if (Boolean.parseBoolean(req.getParameter("logging"))){
+        channel.setLoggingDisabled(false);
+    	msg = builder.setContent(member.getAlias() + " has enabled logging.").build();
+    }else{
+    	channel.setLoggingDisabled(true);
+    	msg = builder.setContent(member.getAlias() + " has disabled logging.").build();
+    }
+    
+    Command.LOG.commandHandler.doCommand(msg);
+    Command.BROADCAST.commandHandler.doCommand(msg);
     
     channel.put();
-    
-    resp.sendRedirect(channel.webUrl());
+    //resp.sendRedirect(channel.webUrl());
   }
 }

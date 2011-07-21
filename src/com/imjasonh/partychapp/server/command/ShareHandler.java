@@ -3,6 +3,10 @@ package com.imjasonh.partychapp.server.command;
 import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Member.Permissions;
+import com.imjasonh.partychapp.filters.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURLDAO;
+import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
@@ -52,36 +56,42 @@ public class ShareHandler extends SlashCommand {
     }
 
     UrlInfo urlInfo = urlInfoService.getUrlInfo(uri);
-    sendShareBroadcast(
-        msg.channel,
-        msg.member,
-        uri,
-        annotation,
-        urlInfo.getTitle(),
-        urlInfo.getDescription());
-  }
-  
-  public static void sendShareBroadcast(
-      Channel channel,
-      Member member,
-      URI url,
-      String annotation,
-      String title,
-      String description) {
-    String shareBroadcast = "_" + member.getAlias() + " is sharing " + url;
     
-    if (!title.isEmpty()) {
-      shareBroadcast += " (" + title + ")";
+    SharedURL shareUrl = new SharedURL(
+    		msg.channel.getName(),
+            msg.member.getJID(),
+            uri.toString(),
+            annotation,
+            urlInfo.getTitle(),
+            urlInfo.getDescription());
+    
+    if (SharedURLDAO.storeURL(shareUrl)){
+        sendShareBroadcast(shareUrl, msg.channel);
+    }else{
+    	msg.channel.sendDirect("_That link is currently being shared._", msg.member);
     }
     
-    if (!Strings.isNullOrEmpty(annotation)) {
-      shareBroadcast += " : " + annotation;
+
+  }
+  
+  public static void sendShareBroadcast(SharedURL sharedUrl, Channel channel) {
+	
+	Member m = channel.getMemberByJID(sharedUrl.getJID());
+	  
+    String shareBroadcast = "_" + m.getAlias() + " is sharing " + sharedUrl.getUrl();
+    
+    if (!sharedUrl.getTitle().isEmpty()) {
+      shareBroadcast += " (" + sharedUrl.getTitle() + ")";
+    }
+    
+    if (!Strings.isNullOrEmpty(sharedUrl.getAnnotation())) {
+      shareBroadcast += " : " + sharedUrl.getAnnotation();
     }
     
     shareBroadcast += "_";
 
-    if (!description.isEmpty()) {
-      shareBroadcast += "\n  " + description;
+    if (!sharedUrl.getDescription().isEmpty()) {
+      shareBroadcast += "\n  " + sharedUrl.getDescription();
     }
 
     channel.broadcastIncludingSender(shareBroadcast);
@@ -91,4 +101,10 @@ public class ShareHandler extends SlashCommand {
     return "/share http://example.com/ [annotation] - " +
         "shares a URL with the room";
   }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
+  }
+  
 }

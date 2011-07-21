@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.ppb.Target;
 
 public class ChannelServlet extends HttpServlet {
@@ -48,14 +49,15 @@ public class ChannelServlet extends HttpServlet {
     datastore.startRequest();
     try {
       Channel channel = datastore.getChannelByName(channelName);
-      
+		
       if (channel == null) {
         resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
       }
       
+		
       if (channel.getMemberByJID(user.getEmail()) != null) {
-        handleChannelWithMember(req, resp, channel);
+        handleChannelWithMember(req, resp, channel, user.getEmail());
       } else if (channel.getInvitees().contains(user.getEmail())) {
         handleChannelWithInvitee(req, resp, channel);
       } else if (channel.isInviteOnly()) {
@@ -71,7 +73,8 @@ public class ChannelServlet extends HttpServlet {
   private void handleChannelWithMember(
       HttpServletRequest req,
       HttpServletResponse resp,
-      Channel channel) throws ServletException, IOException {
+      Channel channel,
+      String email) throws ServletException, IOException {
     RequestDispatcher disp =
         getServletContext().getRequestDispatcher("/channel.jsp");
     
@@ -90,6 +93,7 @@ public class ChannelServlet extends HttpServlet {
     
     req.setAttribute("targetInfo", targetsJson.toString());
     req.setAttribute("channel", channel);
+    req.setAttribute("email", email);
     disp.forward(req, resp);    
   }
   

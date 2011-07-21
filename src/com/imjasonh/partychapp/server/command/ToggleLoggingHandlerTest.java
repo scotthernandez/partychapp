@@ -5,7 +5,7 @@ import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.testing.FakeDatastore;
 
 public class ToggleLoggingHandlerTest extends CommandHandlerTestCase {
-  ToggleLoggingHandler handler = new ToggleLoggingHandler();
+  ToggleShortTermLoggingHandler handler = new ToggleShortTermLoggingHandler();
   
   public void testMatches() {
     assertTrue(handler.matches(Message.createForTests("/toggle-logging")));
@@ -16,9 +16,9 @@ public class ToggleLoggingHandlerTest extends CommandHandlerTestCase {
 
   public void testToggling() {
     Channel channel = FakeDatastore.fakeChannel();
-    assertFalse(channel.isLoggingDisabled());
+    assertFalse(channel.isMiniLogDisabled());
     handler.doCommand(Message.createForTests("/toggle-logging"));
-    assertTrue(channel.isLoggingDisabled());
+    assertTrue(channel.isMiniLogDisabled());
     assertEquals(1, xmpp.messages.size());
     assertEquals(
         "_neil has disabled logging._", xmpp.messages.get(0).getBody());
@@ -28,16 +28,16 @@ public class ToggleLoggingHandlerTest extends CommandHandlerTestCase {
     assertEquals(1, xmpp.messages.size());
     assertEquals(
         "_neil has enabled logging._", xmpp.messages.get(0).getBody());    
-    assertFalse(channel.isLoggingDisabled());
+    assertFalse(channel.isMiniLogDisabled());
   }
   
   public void testMessagesAreCleared() {
     Channel channel = FakeDatastore.fakeChannel();
-    assertFalse(channel.isLoggingDisabled());
+    assertFalse(channel.isMiniLogDisabled());
     FakeDatastore.fakeChannel().
         getMemberByAlias("jason").addToLastMessages("hack the gibson");
     handler.doCommand(Message.createForTests("/toggle-logging"));
-    assertTrue(channel.isLoggingDisabled());
+    assertTrue(channel.isMiniLogDisabled());
     assertTrue(FakeDatastore.fakeChannel().
         getMemberByAlias("jason").getLastMessages().isEmpty());
   }

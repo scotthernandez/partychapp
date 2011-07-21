@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class BugHandler extends SlashCommand {
   private static final Logger LOG = Logger.getLogger(BugHandler.class.getName());
@@ -36,5 +37,10 @@ public class BugHandler extends SlashCommand {
 
   public String documentation() {
     return "/bug <summary> - returns a link to a pre-populated form to file a bug.";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

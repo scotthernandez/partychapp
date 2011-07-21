@@ -29,7 +29,7 @@ public class ListHandlerTest extends CommandHandlerTestCase {
   
   public void testRoomInfo() {
     FakeDatastore.fakeChannel().setInviteOnly(true);
-    FakeDatastore.fakeChannel().setLoggingDisabled(true);
+    FakeDatastore.fakeChannel().setMiniLogDisabled(true);
     handler.doCommand(Message.createForTests("/list"));
     assertEquals(1, xmpp.messages.size());
     assertEquals("Listing members of 'pancake'\n" +

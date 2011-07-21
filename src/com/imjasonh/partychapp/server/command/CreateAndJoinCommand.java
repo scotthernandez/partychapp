@@ -16,15 +16,13 @@ public class CreateAndJoinCommand implements CommandHandler {
     assert msg.channel == null;
     assert msg.member == null;
 
-    msg.channel = new Channel(msg.serverJID);
-    msg.member = msg.channel.addMember(msg.user);
+    msg.channel = new Channel(msg.serverJID, msg.user);
     msg.channel.put();
     
     String reply = "The channel '" + msg.channel.getName() + "' has been created, " +
-        "and you have joined with the alias '" + msg.member.getAlias() + "'";
+        "you have joined with the alias '" + msg.member.getAlias() + "', and you are an administrator.";
     msg.channel.sendDirect(reply, msg.member);
     
-    Command.getCommandHandler(msg).doCommand(msg);
   }
 
   public String documentation() {
@@ -33,5 +31,10 @@ public class CreateAndJoinCommand implements CommandHandler {
 
   public boolean matches(Message msg) {
     return (msg.channel == null) && msg.messageType.equals(MessageType.XMPP);
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return true;
   }
 }

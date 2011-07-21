@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message.MessageType;
 
 public class IncomingEmailHandler implements CommandHandler {
@@ -16,5 +17,10 @@ public class IncomingEmailHandler implements CommandHandler {
 
   public boolean matches(Message msg) {
     return msg.messageType.equals(MessageType.EMAIL);
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return true;
   }
 }

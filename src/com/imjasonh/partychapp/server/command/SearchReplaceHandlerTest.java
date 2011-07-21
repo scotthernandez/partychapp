@@ -207,7 +207,7 @@ public class SearchReplaceHandlerTest extends CommandHandlerTestCase {
   
   public void testLoggingDisabled() {
     Channel c = FakeDatastore.fakeChannel();
-    c.setLoggingDisabled(true);
+    c.setMiniLogDisabled(true);
     c.put();
 
     handler.doCommand(Message.createForTests("s/foo/bar/"));

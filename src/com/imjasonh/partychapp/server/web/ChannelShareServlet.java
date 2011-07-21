@@ -4,6 +4,8 @@ import com.google.appengine.api.users.User;
 import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.filters.SharedURL;
+import com.imjasonh.partychapp.filters.SharedURLDAO;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.server.command.ShareHandler;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
@@ -25,37 +27,53 @@ import javax.servlet.http.HttpServletResponse;
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
 public class ChannelShareServlet extends AbstractChannelUserServlet {
-  public static class ShareData {
-    private final URI url;
-    private final String annotation;
-    private final String title;
-    private final String description;
-    
-    private ShareData(
-        URI url, String annotation, String title, String description) {
-      this.url = url;
-      this.annotation = annotation;
-      this.title = title;
-      this.description = description;
+  
+  @Override protected void doChannelGet(
+      HttpServletRequest req,
+      HttpServletResponse resp,
+      User user,
+      Channel channel)
+      throws IOException, ServletException {
+	  
+
+      Member member = channel.getMemberByJID(user.getEmail());   
+      
+    SharedURL shareUrl = fromRequest(req, member, channel);
+    if (shareUrl == null) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+      return;
     }
     
-    public URI getUrl() {
-      return url;
-    }
+    RequestDispatcher disp =
+      getServletContext().getRequestDispatcher(
+          "/channel-share.jsp");
+    req.setAttribute("channel", channel);
+    req.setAttribute("shareUrl", shareUrl);
+    disp.forward(req, resp);
+  }
+  
+  @Override protected void doChannelPost(
+      HttpServletRequest req,
+      HttpServletResponse resp,
+      User user,
+      Channel channel)
+      throws IOException {
+
+      Member member = channel.getMemberByJID(user.getEmail());   
+      
+    SharedURL shareUrl = fromRequest(req, member, channel);
+    if (shareUrl == null) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }  
     
-    public String getAnnotation() {
-      return annotation;
-    }
+    SharedURLDAO.storeURL(shareUrl);
+    ShareHandler.sendShareBroadcast(shareUrl, channel);
     
-    public String getTitle() {
-      return title;
-    }
-    
-    public String getDescription() {
-      return description;
-    }
-    
-    public static ShareData fromRequest(HttpServletRequest req) {
+    resp.sendRedirect(channel.webUrl());
+  }
+
+  public static SharedURL fromRequest(HttpServletRequest req, Member member, Channel channel) {
       if (Strings.isNullOrEmpty(req.getParameter("url"))) {
         return null;
       }
@@ -88,53 +106,6 @@ public class ChannelShareServlet extends AbstractChannelUserServlet {
         description = urlInfo.getDescription();
       }
 
-      return new ShareData(url, annotation, title, description);
+      return new SharedURL(channel.getName(), member.getJID(), url.toString(), annotation, title, description);
     }
-  }
-  
-  @Override protected void doChannelGet(
-      HttpServletRequest req,
-      HttpServletResponse resp,
-      User user,
-      Channel channel)
-      throws IOException, ServletException {
-    ShareData shareData = ShareData.fromRequest(req);
-    if (shareData == null) {
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-      return;
-    }
-    
-    RequestDispatcher disp =
-      getServletContext().getRequestDispatcher(
-          "/channel-share.jsp");
-    req.setAttribute("channel", channel);
-    req.setAttribute("shareData", shareData);
-    disp.forward(req, resp);
-  }
-  
-  @Override protected void doChannelPost(
-      HttpServletRequest req,
-      HttpServletResponse resp,
-      User user,
-      Channel channel)
-      throws IOException {
-    ShareData shareData = ShareData.fromRequest(req);
-    if (shareData == null) {
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-      return;
-    }
-    
-    Member member = channel.getMemberByJID(user.getEmail());    
-    
-    ShareHandler.sendShareBroadcast(
-        channel,
-        member,
-        shareData.getUrl(),
-        shareData.getAnnotation(),
-        shareData.getTitle(),
-        shareData.getDescription());
-    
-    resp.sendRedirect(channel.webUrl());
-  }
-
 }

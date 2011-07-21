@@ -4,7 +4,7 @@ import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
-import com.imjasonh.partychapp.CachingDatastore;
+//import com.imjasonh.partychapp.CachingDatastore;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
@@ -54,12 +54,12 @@ public class ChannelServlet extends HttpServlet {
       
       Writer writer = resp.getWriter();
       writer.write("Name: " + channel.getName() + "\n");
-      CachingDatastore cachingDatastore = WrappingDatastore.findWrappedInstance(datastore, CachingDatastore.class);
-      if (cachingDatastore != null) {
-        writer.write("Cache key: " + cachingDatastore.getKey(channel) + "\n");
-      }
+//      CachingDatastore cachingDatastore = WrappingDatastore.findWrappedInstance(datastore, CachingDatastore.class);
+//      if (cachingDatastore != null) {
+//        writer.write("Cache key: " + cachingDatastore.getKey(channel) + "\n");
+//      }
       writer.write("Invite only: " + channel.isInviteOnly() + "\n");
-      writer.write("Logging disabled: " + channel.isLoggingDisabled() + "\n");
+      writer.write("Logging disabled: " + channel.isMiniLogDisabled() + "\n");
       writer.write("Invitees:\n");
       for (String invitee : channel.getInvitees()) {
         writer.write("\t" + invitee + "\n");

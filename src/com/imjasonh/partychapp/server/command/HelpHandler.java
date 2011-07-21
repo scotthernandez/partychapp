@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.Member.Permissions;
 
 public class HelpHandler extends SlashCommand {
 
@@ -15,7 +16,7 @@ public class HelpHandler extends SlashCommand {
     StringBuilder sb = new StringBuilder().append("List of commands:").append('\n');
     for (Command command : Command.values()) {
       String docs = command.commandHandler.documentation();
-      if (docs != null && command.category != Command.Category.HIDDEN) {
+      if (docs != null && command.category != Command.Category.HIDDEN && command.commandHandler.allows(msg)) {
         sb.append("* ")
             .append(command.commandHandler.documentation())
             .append('\n');
@@ -30,5 +31,10 @@ public class HelpHandler extends SlashCommand {
 
   public String documentation() {
     return "/help - shows this";
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

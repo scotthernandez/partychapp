@@ -41,4 +41,37 @@
     <td class="score-cell">{$target['score']}</td>
   </tr>
 {/template}
+
+/**
+ * Build Log table.
+ * @param data
+ */
+{template .logTable}
+	<table class="log-table">
+		<tr>
+			<th class="timestamp-col">Time</th>
+			<th class="user-col">User</th>
+			<th class="content-col">Message</th>
+		</tr>
+		{foreach $entry in $data}
+			{call .simpleEntry}
+				{param entry: $entry /}
+			{/call}
+		{/foreach}
+	</table>
+{/template}
+
+/**
+ * One row for one entry.
+ * @param entry
+ */
+{template .simpleEntry}
+ 	<tr>
+ 		<td class="timestamp-cell">{$entry['time']}</td>
+ 		<td class="user-cell">
+ 			<div class="user-container">{$entry['user']}</div>
+		</td>
+ 		<td class="content-cell">{$entry['content']|noAutoescape}</td>
+ 	</tr>
+{/template} 
  

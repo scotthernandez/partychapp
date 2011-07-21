@@ -49,7 +49,27 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>leaveChannelServlet</servlet-name>
     <url-pattern>/channel/leave</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>kickChannelServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.KickChannelServlet</servlet-class>
+  </servlet>
 
+  <servlet-mapping>
+    <servlet-name>kickChannelServlet</servlet-name>
+    <url-pattern>/channel/kick</url-pattern>
+  </servlet-mapping>
+    
+  <servlet>
+    <servlet-name>PermissionsChannelServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.PermissionsChannelServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>PermissionsChannelServlet</servlet-name>
+    <url-pattern>/channel/changePermissions</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>acceptChannelInvitationServlet</servlet-name>
     <servlet-class>com.imjasonh.partychapp.server.web.AcceptChannelInvitationServlet</servlet-class>
@@ -185,6 +205,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-name>targetdetailsjsonhandler</servlet-name>
     <url-pattern>/targetdetailsjson/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>logentriesjsonhandler</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.json.LogEntriesJsonServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>logentriesjsonhandler</servlet-name>
+    <url-pattern>/logentriesjson/</url-pattern>
+  </servlet-mapping>
 
   <servlet>
     <servlet-name>channeljsonhandler</servlet-name>
@@ -204,6 +234,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   <servlet-mapping>
     <servlet-name>userinfojsonhandler</servlet-name>
     <url-pattern>/userinfo</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Downloads -->
+  <servlet>
+    <servlet-name>downloadlogservlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.logging.DownloadLogServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>downloadlogservlet</servlet-name>
+    <url-pattern>/log/download</url-pattern>
   </servlet-mapping>
 
   <!-- Redirects -->
@@ -258,16 +299,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   <servlet-mapping>
     <servlet-name>adminchannelcleanuphandler</servlet-name>
     <url-pattern>/admin/channelcleanup/*</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>adminchannelinvalidatehandler</servlet-name>
-    <servlet-class>com.imjasonh.partychapp.server.admin.ChannelInvalidateServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>adminchannelinvalidatehandler</servlet-name>
-    <url-pattern>/admin/channelinvalidate/*</url-pattern>
   </servlet-mapping>
  
   <servlet>
