@@ -10,7 +10,8 @@
 <html>
 <head>
 <script>if (window.name == 'partychat-share') window.close();</script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>  
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> 
+<script type="text/javascript" src="../js/tabber.js"></script>
 <%
   Channel channel = (Channel) request.getAttribute("channel");
   Datastore datastore = Datastore.instance();
@@ -24,25 +25,137 @@
   <jsp:include page="include/header.jsp">
     <jsp:param name="subtitle" value="<%=&quot; Room: &quot; + channel.getName()%>"/>
   </jsp:include>
+  
+<div class="tabber">
 
-<p>
-  You're in the room <b><%=channel.getName()%></b> along with the people below.
-  You can  <a href="#invite-section">invite more people</a> or
-  <a href="/channel/leave?name=<%=channel.getName()%>">leave</a> the room.
-</p>
+  <div class="tabbertab">
+    <h3>Members</h3>
 
-<jsp:include page="include/channel-members.jsp"/>
+	<p style="font-size:20px"><b>Members of <%=channel.getName()%>:</b></p>
 
-<h3>Helpful links</h3>
+	<jsp:include page="include/channel-members.jsp"/>
+	<%if (member.hasPermissions(Member.Permissions.MOD)){%>
+	<br><b>Invite others to <%=channel.getName()%>:</b>
+	<table>
+	  <tr>
+	    <td>
+	    <form action="/channel/invite" method="post" target="inviteResults">	
+	    <input type="hidden" name="name" value="<%=channel.getName()%>"/>
+	    Email addresses you would like to invite? (separated by commas)<br>
+	    <textarea name="invitees" rows="4" cols="40"></textarea> <br>
+	    <input type="submit" value="Invite!"></form>
+	    </td>
+	    <td><iframe frameborder=0 name="inviteResults"> </iframe></td>
+	  </tr>
+	</table>
+	<%} %>
+  </div>
 
-<p>Send messages to this room by chatting with <a href="xmpp:<%=channel.serverJIDAsString()%>"><%=channel.serverJIDAsString()%></a>.</p>
 
-<p>When you're on the go, you can also email them to <a href="mailto:<%=channel.mailingAddress()%>"><%=channel.mailingAddress()%></a> (as long as the account you're emailing from is in the room).</p>
+  <div class="tabbertab" title="Logs">
+    <p style="font-size:20px"><b>Log History:</b></p>
+	<div id="log-history-container">
+		<div id="log-table"></div>
+			<div id="newerlog-button-container">
+				<input id="newerlog-button" class="log-button" type="button" value="Newer" />
+			</div>
+			<div id="olderlog-button-container">
+				<input id="olderlog-button" class="log-button" type="button" value="Older" />
+			</div>
+		<div style="clear: both;"></div>
+	</div>
+	<script>	window.myInstance = myLog('<%= channel.getName() %>');
+	</script>
+	
+	<%if (member.hasPermissions(Member.Permissions.ADMIN)){%>
+	<p style="font-size:20px"><b>Manage Logs:</b></p>
+	
+	<form action="/log/download" method="POST">
+		 <input type="hidden" name="name" value="<%=channel.getName()%>"/>
+	<table id="date-picker-table">
+	  <tr>
+	  	<td class="label">Start Date:</td>
+	    <td>
+		 <div>
+			 <input id="start-date-text" type="text" 
+			 							 name="startDate" 
+			 							 size="10" 
+			 							 placeholder="mm/dd/yyyy"
+			 							 onfocus="document.getElementById('start-date-picker').style.visibility = 'visible';">
+			 <div id="start-date-picker" style="visibility: hidden; position: absolute;"></div>
+	     </div>
+	    </td>
+	    <td>at</td>
+	    <td><select id="start-hour-picker" name="startHour"></select></td>
+	    <td>:</td> 
+	    <td><select id="start-min-picker" name="startMin"></select></td>
+	  </tr>
+	  <tr>
+	  	<td class="label">End Date:</td>
+	    <td>
+		 <div>
+			 <input id="end-date-text" type="text" 
+			 							 name="endDate" 
+			 							 size="10" 
+			 							 placeholder="mm/dd/yyyy"
+			 							 onfocus="document.getElementById('end-date-picker').style.visibility = 'visible';">
+			 <div id="end-date-picker" style="visibility: hidden; position: absolute;"></div>
+		 </div>
+		</td>
+	    <td>at</td>
+	    <td><select id="end-hour-picker" name="endHour"></select></td>
+	    <td>:</td> 
+	    <td><select id="end-min-picker" name="endMin"></select></td>
+	  </tr>
+	</table>
+		 <input type="submit" name="Download" value="Download Entries">
+		 <input type="submit" name="Delete" value="Delete Entries">
+	</form>
+	
+	<script>
+	  numbersDropdown('start-hour-picker', 0, 23);
+	  numbersDropdown('start-min-picker', 0, 59);
+	  
+	  numbersDropdown('end-hour-picker', 0, 23);
+	  numbersDropdown('end-min-picker', 0, 59);
+	</script>
+	<%} %>
+  </div>
 
-<p>If you'd like to share links with this room, you can drag the <a href="javascript:window.open('http://<%=Configuration.webDomain%>/room/share?name=<%=channel.getName()%>&url='+escape(location.href),'partychat-share','scrollbars=no,width=700,height=315,top=175,left=75,status=yes,resizable=yes');void(0);
+  <div class="tabbertab" title="PlusPlusBot">
+
+	<p style="font-size:20px"><b>The ever-so-useful ++Bot:</b></p>
+	<div id="score-table"></div>
+
+	<script>
+ 	 new partychapp.ScoreTable('<%= channel.getName() %>',
+    	                        <%= (String) request.getAttribute("targetInfo") %>);
+	</script>
+
+	</div>
+
+
+  <div class="tabbertab" title="Tips and Tricks">
+<p style="font-size:20px"><b>Tips and tricks:</b></p>
+
+	<p>Send messages to this room by chatting with <a href="xmpp:<%=channel.serverJIDAsString()%>"><%=channel.serverJIDAsString()%></a>.</p>
+	
+	<p>When you're on the go, you can also email them to <a href="mailto:<%=channel.mailingAddress()%>"><%=channel.mailingAddress()%></a> (as long as the account you're emailing from is in the room).</p>
+
+	<p>If you'd like to share links with this room, you can drag the <a href="javascript:window.open('http://<%=Configuration.webDomain%>/room/share?name=<%=channel.getName()%>&url='+escape(location.href),'partychat-share','scrollbars=no,width=700,height=315,top=175,left=75,status=yes,resizable=yes');void(0);
 " class="bookmarklet" onclick="alert('Drag this link to your bookmarks bar');return false;">Share with <%=channel.getName()%></a> link to your bookmarks bar and press it when you're on the page you want to share.</p>
 
-<h3 id="settings-header">Settings</h3>
+
+
+  </div>
+
+
+
+  <div class="tabbertab" title="Settings">
+  
+  
+	<%if (member.hasPermissions(Member.Permissions.ADMIN)){%>
+<p style="font-size:20px"><b><%=channel.getName()%>'s settings:</b></p>
 <div id="settings-container">
 	<form action="/channel/edit" method="POST">
 	<input type="hidden" name="name" value="<%=channel.getName()%>"/>
@@ -133,102 +246,18 @@
 	  </tr>
 	</table>
 	</form>
-</div>
-<script>tieCollapseButton('settings-header', 'settings-container');</script>
-<h3>PlusPlusBot</h3>
-
-<div id="score-table"></div>
-
-<script>
-  new partychapp.ScoreTable('<%= channel.getName() %>',
-                            <%= (String) request.getAttribute("targetInfo") %>);
-</script>
-
-<h3 id="invite-section">Invite People!</h3>
-
-<table>
-  <tr>
-    <td>
-    <form action="/channel/invite" method="post" target="inviteResults">
-    <input type="hidden" name="name" value="<%=channel.getName()%>"/>
-    Email addresses you would like to invite? (separated by commas)<br>
-    <textarea name="invitees" rows="4" cols="40"></textarea> <br>
-    <br>
-    <input type="submit" value="Invite!"></form>
-    </td>
-    <td><iframe frameborder=0 name="inviteResults"> </iframe></td>
-  </tr>
-</table>
-
-<h3 id="log-history-header">Log History</h3>
-<div id="log-history-container">
-	<div id="log-table"></div>
-		<div id="newerlog-button-container">
-			<input id="newerlog-button" class="log-button" type="button" value="Newer" />
-		</div>
-		<div id="olderlog-button-container">
-			<input id="olderlog-button" class="log-button" type="button" value="Older" />
-		</div>
-	<div style="clear: both;"></div>
-</div>
-<script>
-tieCollapseButton('log-history-header', 'log-history-container');
-window.myInstance = myLog('<%= channel.getName() %>');
-</script>
-
-<%if (member.hasPermissions(Member.Permissions.ADMIN)){%>
-<h3>Manage Log</h3>
-
-<form action="/log/download" method="POST">
-	 <input type="hidden" name="name" value="<%=channel.getName()%>"/>
-<table id="date-picker-table">
-  <tr>
-  	<td class="label">Start Date:</td>
-    <td>
-	 <div>
-		 <input id="start-date-text" type="text" 
-		 							 name="startDate" 
-		 							 size="10" 
-		 							 placeholder="mm/dd/yyyy"
-		 							 onfocus="document.getElementById('start-date-picker').style.visibility = 'visible';">
-		 <div id="start-date-picker" style="visibility: hidden; position: absolute;"></div>
-     </div>
-    </td>
-    <td>at</td>
-    <td><select id="start-hour-picker" name="startHour"></select></td>
-    <td>:</td> 
-    <td><select id="start-min-picker" name="startMin"></select></td>
-  </tr>
-  <tr>
-  	<td class="label">End Date:</td>
-    <td>
-	 <div>
-		 <input id="end-date-text" type="text" 
-		 							 name="endDate" 
-		 							 size="10" 
-		 							 placeholder="mm/dd/yyyy"
-		 							 onfocus="document.getElementById('end-date-picker').style.visibility = 'visible';">
-		 <div id="end-date-picker" style="visibility: hidden; position: absolute;"></div>
-	 </div>
-	</td>
-    <td>at</td>
-    <td><select id="end-hour-picker" name="endHour"></select></td>
-    <td>:</td> 
-    <td><select id="end-min-picker" name="endMin"></select></td>
-  </tr>
-</table>
-	 <input type="submit" name="Download" value="Download Entries">
-	 <input type="submit" name="Delete" value="Delete Entries">
-</form>
-
-<script>
-  numbersDropdown('start-hour-picker', 0, 23);
-  numbersDropdown('start-min-picker', 0, 59);
-  
-  numbersDropdown('end-hour-picker', 0, 23);
-  numbersDropdown('end-min-picker', 0, 59);
-</script>
+<%} else {%>
+<p style="font-size:20px"><b>Sorry:</b></p>
+  You must be Admin to view or edit the settings.
 <%} %>
+</div>
+  </div>
+
+  </div>
+
+
+
+
 
 <jsp:include page="include/footer.jsp"/>
 </body>
