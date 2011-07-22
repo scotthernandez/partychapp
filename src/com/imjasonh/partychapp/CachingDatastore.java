@@ -197,4 +197,15 @@ public abstract class CachingDatastore extends WrappingDatastore {
     requestCache.get().clear();
     wrapped.endRequest();
   }
+  
+  @Override public void deleteChannelByName(String name) {
+	    String key = getKey(Channel.class, name);
+	    Channel channel = (Channel) getFromRequestCacheOrCache(key);
+	    if (channel == null) {
+	      channel = wrapped.getChannelByName(name);
+	      if (channel != null) {
+	        delete(channel);
+	      }
+	    }
+  }
 }

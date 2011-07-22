@@ -48,11 +48,6 @@ public class LiveDatastore extends Datastore {
     }
   }
   
-  // Created transiently for each request.
-  private ThreadLocal<Objectify> manager =
-        new ThreadLocal<Objectify>();
-  
-  private Objectify constantofy = ObjectifyService.begin();
   
   static {
 	  ObjectifyService.register(Channel.class);
@@ -64,11 +59,6 @@ public class LiveDatastore extends Datastore {
 
   
   private Objectify ofy(){
-//	  if (manager.get() == null){
-//		  manager.set(ObjectifyService.begin());
-//	  }
-//	  return manager.get();
-	 // return constantofy;
 	  return Ofy.instance();
   }
   
@@ -186,12 +176,10 @@ public class LiveDatastore extends Datastore {
   
   @Override
   public void startRequest(){
-	  manager.set(ObjectifyService.begin());
   }
   
   @Override
   public void endRequest(){
-	  manager.remove();
   }
 
   int countUsersActiveInLastNDays(DatastoreService ds, int numDays) {
@@ -277,4 +265,10 @@ public class LiveDatastore extends Datastore {
     FetchOptions fetchOptions = FetchOptions.Builder.withOffset(0);
     return new ExtractingKeyIterable(pq.asIterator(fetchOptions));
   }
+
+	@Override
+	public void deleteChannelByName(String name) {
+		ofy().delete(Channel.class, name);
+	}
+  
 }

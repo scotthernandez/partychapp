@@ -33,8 +33,9 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	    int offset = Integer.parseInt(req.getParameter("offset"));
 	    
 	    //TODO: some kind of security check?
-	    JSONArray entriesJson = new JSONArray();
 	    if (offset >= 0){
+		    JSONArray entriesJson = new JSONArray();
+		    
 	    	List<LogEntry> log = LogDAO.getLogByChannel(channelName, limit, offset);
 	    	
 		    for(LogEntry entry : log){
@@ -44,17 +45,17 @@ public class LogEntriesJsonServlet extends JsonServlet {
 		    	entryJson.put("user", entry.userID());
 		    	entriesJson.put(entryJson);
 		    }
+		    
+		    response.put("entries", entriesJson);
 	    }else{
 	    	error = "Offset is less than zero.";
 	    }
 	    
-	    response.put("entries", entriesJson);
 	   
 	}catch(NumberFormatException e){
 		error = "Number parsing error.";
 		response.put("limit", req.getParameter("limit"));
 		response.put("offset", req.getParameter("offset"));
-		System.out.println("limit: "+req.getParameter("limit"));
 	}
 	
 	if (!error.isEmpty()){

@@ -200,5 +200,11 @@ public class FakeDatastore extends Datastore {
     return ret.iterator();
   }
 
+	@Override
+	public void deleteChannelByName(String name) {
+		channels.remove(name);
+		
+	}
+
 
 }

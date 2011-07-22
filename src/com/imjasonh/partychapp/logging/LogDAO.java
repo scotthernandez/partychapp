@@ -1,12 +1,14 @@
 package com.imjasonh.partychapp.logging;
 
 import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Logger;
 
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.imjasonh.partychapp.Ofy;
+
 
 public class LogDAO {
 	private static Objectify ofy = Ofy.instance();

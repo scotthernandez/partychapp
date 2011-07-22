@@ -97,4 +97,10 @@ public class FixingDatastore extends WrappingDatastore {
   public PersistentConfiguration getPersistentConfig() {
     return wrapped.getPersistentConfig();
   }
+
+	@Override
+	public void deleteChannelByName(String name) {
+		wrapped.deleteChannelByName(name);
+		
+	}
 }

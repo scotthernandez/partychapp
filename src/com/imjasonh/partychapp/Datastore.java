@@ -139,6 +139,6 @@ public abstract class Datastore{
   public abstract Iterator<String> getAllEntityKeys(
       Class<?> entityClass, String lastKey);
 
-
+  public abstract void deleteChannelByName(String names);
 
 }

@@ -132,6 +132,26 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
   
   <servlet>
+    <servlet-name>deleteChannelServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.DeleteChannelServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>deleteChannelServlet</servlet-name>
+    <url-pattern>/channel/delete</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>autoJoinChannelServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.AutoJoinChannelServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>autoJoinChannelServlet</servlet-name>
+    <url-pattern>/channel/join</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>LivePingServlet</servlet-name>
     <servlet-class>com.imjasonh.partychapp.server.live.PingServlet</servlet-class>
   </servlet>
