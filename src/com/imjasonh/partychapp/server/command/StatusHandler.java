@@ -12,6 +12,7 @@ public class StatusHandler extends SlashCommand {
 
   @Override
   public void doCommand(Message msg, String argument) {
+	  //TODO show hidden and alerted
     String reply = "You are currently in '" + msg.channel.getName() + "' as '" + msg.member.getAlias() + ".'";
     User u = msg.user;
     if (u.phoneNumber() != null) {

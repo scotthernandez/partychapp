@@ -16,7 +16,6 @@ import com.googlecode.objectify.annotation.Unindexed;
 
 @Unindexed
 public class PersistentConfiguration {
-  private static final long serialVersionUID = 7984372525340987L;
   
   private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());

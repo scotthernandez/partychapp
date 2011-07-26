@@ -1,9 +1,7 @@
 package com.imjasonh.partychapp;
 
 import com.google.appengine.api.xmpp.JID;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Serialized;
@@ -12,34 +10,27 @@ import com.googlecode.objectify.annotation.Unindexed;
 import com.imjasonh.partychapp.DebuggingOptions.Option;
 import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
-import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
-import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
-import com.imjasonh.partychapp.urlinfo.UrlInfo;
 
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.Embedded;
 import javax.persistence.Id;
-import javax.servlet.http.HttpServletRequest;
 
 @Unindexed
 @Cached
+@SuppressWarnings("serial")
 public class Channel implements Serializable{
 	/** start with 1 for all classes */
-	private static final long serialVersionUID = 1L;
+
     
   private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());
@@ -191,11 +182,13 @@ public void setLogSectionEnd(Date logSectionEnd) {
     while (null != getMemberByAlias(dedupedAlias)) {
       dedupedAlias = "_" + dedupedAlias;
     }
+    addedMember.setHidden(false);
+    addedMember.setAlerted(true);
     addedMember.setAlias(dedupedAlias);
     mutableMembers().add(addedMember);
     userToAdd.addChannel(getName());
     userToAdd.put();
-    
+    this.put();
     return addedMember;    
   }
   
@@ -339,12 +332,15 @@ public void setLogSectionEnd(Date logSectionEnd) {
     if (member != null) {
       invite(member.getJID());
       removeMember(Datastore.instance().getUserByJID(member.getJID()));
+      this.put();
       return true;
     }
     if (invitedIds.remove(id)) {
+      this.put();
       return true;
     }
     if (requestedInvitations.remove(id)) {
+      this.put();
       return true;
     }
     return false;
@@ -406,6 +402,9 @@ public void setLogSectionEnd(Date logSectionEnd) {
     List<JID> withSequenceId = Lists.newArrayList();
     List<JID> noSequenceId = Lists.newArrayList();
     for (Member m : recipients) {
+      if (!m.isAlerted()) {
+    	  continue;
+      }
       if (m.debugOptions().isEnabled(Option.SEQUENCE_IDS)) {
         withSequenceId.add(new JID(m.getJID()));
       } else {

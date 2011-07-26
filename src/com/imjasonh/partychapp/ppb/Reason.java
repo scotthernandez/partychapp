@@ -5,7 +5,6 @@ package com.imjasonh.partychapp.ppb;
 
 import com.google.appengine.api.xmpp.JID;
 import com.google.common.annotations.VisibleForTesting;
-import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Indexed;
 import com.googlecode.objectify.annotation.Unindexed;
 

@@ -18,7 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.server.json.JsonServlet;
 
+
+@SuppressWarnings("serial")
 public class DownloadLogServlet extends HttpServlet{
+
 	  private static final Logger logger =
 	      Logger.getLogger(JsonServlet.class.getName());
 	  private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH mm");

@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class ConfigReloadServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -37,6 +39,6 @@ public class ConfigReloadServlet extends HttpServlet {
     datastore.put(Configuration.persistentConfig());
     datastore.endRequest();
     
-    resp.getWriter().write("Re-saved configuration");
+    writer.write("Re-saved configuration");
   }
 }

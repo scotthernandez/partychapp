@@ -3,6 +3,7 @@
 <%@ page import="com.imjasonh.partychapp.Channel"%>
 <%@ page import="com.imjasonh.partychapp.Datastore"%>
 <%@ page import="com.imjasonh.partychapp.Member"%>
+<%@ page import="com.imjasonh.partychapp.User"%>
 <%@ page import="com.imjasonh.partychapp.ppb.Reason"%>
 <%@ page import="com.imjasonh.partychapp.ppb.Target"%>
 
@@ -15,8 +16,10 @@
 <%
   Channel channel = (Channel) request.getAttribute("channel");
   Datastore datastore = Datastore.instance();
-  Member member = channel.getMemberByJID((String) request.getAttribute("email"));
+  User user = datastore.getUserByJID((String) request.getAttribute("email"));
+  Member member = channel.getMemberByJID(user.getEmail());
 %>
+
 <jsp:include page="include/head.jsp">
   <jsp:param name="subtitle" value="<%=&quot;Room &quot; + channel.getName()%>"/>
 </jsp:include>
@@ -34,7 +37,7 @@
 	<p style="font-size:20px"><b>Members of <%=channel.getName()%>:</b></p>
 
 	<jsp:include page="include/channel-members.jsp"/>
-	<%if (member.hasPermissions(Member.Permissions.MOD)){%>
+	<%if (user.isAdmin() || member.hasPermissions(Member.Permissions.MOD)){%>
 	<br><b>Invite others to <%=channel.getName()%>:</b>
 	<table>
 	  <tr>
@@ -67,7 +70,7 @@
 	<script>	window.myInstance = myLog('<%= channel.getName() %>');
 	</script>
 	
-	<%if (member.hasPermissions(Member.Permissions.ADMIN)){%>
+	<%if (user.isAdmin() || member.hasPermissions(Member.Permissions.ADMIN)){%>
 	<p style="font-size:20px"><b>Manage Logs:</b></p>
 	
 	<form action="/log/download" method="POST">
@@ -154,7 +157,7 @@
   <div class="tabbertab" title="Settings">
   
   
-	<%if (member.hasPermissions(Member.Permissions.ADMIN)){%>
+	<%if (user.isAdmin() || member.hasPermissions(Member.Permissions.ADMIN)){%>
 <p style="font-size:20px"><b><%=channel.getName()%>'s settings:</b></p>
 <div id="settings-container">
 	<form action="/channel/edit" method="POST">
@@ -246,6 +249,13 @@
 	  </tr>
 	</table>
 	</form>
+<% if (user.isAdmin()) {%>
+	  <button id="removechannel">Delete Channel</button>
+	<script>
+	    		var button = document.getElementById('removechannel');
+	    		deleteOnClick('<%=channel.getName()%>','<%=user.getEmail()%>', button);
+	</script>
+<%   } %>
 <%} else {%>
 <p style="font-size:20px"><b>Sorry:</b></p>
   You must be Admin to view or edit the settings.

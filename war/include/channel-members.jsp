@@ -36,6 +36,9 @@
     Collections.sort(members, new Member.SortMembersForListComparator());
     int i = 0;
     for (Member m : members) {
+    	if (m.isHidden()) {  
+    	  continue;  	
+    	}
     	i++;
   %>
 		  <tr id="<%=i+"-kick-row"%>">
@@ -44,7 +47,7 @@
 <%  if (member != null && member.hasPermissions(Member.Permissions.MOD)){
 %>
 		    <td>
-	    		<div id="<%=i+"-kick-button"%>"><b>x</b></div>
+	    		<div style="height:16px; width:43px; color:#00e; background-color:transparent; text-decoration:underline; border:0px; cursor:pointer;" id="<%=i+"-kick-button"%>"><b>[x]</b></div>
 	    		<script>
 	    		var button = document.getElementById('<%=i+"-kick-button"%>');
 	    		var row = document.getElementById('<%=i+"-kick-row"%>');
@@ -92,12 +95,12 @@
       for (String invitedMember : invitedMembers) {
     	  i++;
     %>
-      <tr id="<%=i+"-kick-invitee-row"%>">
+      <tr id="<%=i+"-kick-invitee-row"%>" >
         <td><%=invitedMember%></td>
 <%  if (member != null && member.hasPermissions(Member.Permissions.ADMIN)){
 %>
 		    <td>
-	    		<div id="<%=i+"-kick-invitee-button"%>"><b>x</b></div>
+	    		<div style="height:16px; width:43px; color:#00e; background-color:transparent; text-decoration:underline; border:0px; cursor:pointer;" id="<%=i+"-kick-invitee-button"%>" ><b>[x]</b></div>
 	    		<script>
 	    		var button = document.getElementById('<%=i+"-kick-invitee-button"%>');
 	    		var row = document.getElementById('<%=i+"-kick-invitee-row"%>');

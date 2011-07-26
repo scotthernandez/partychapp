@@ -21,7 +21,10 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class TopChannelsServlet extends HttpServlet {
+	
   private static final NumberFormat NUMBER_FORMAT =
       NumberFormat.getIntegerInstance(Locale.US);
 

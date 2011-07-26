@@ -32,7 +32,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class ConcurrencyTestServlet extends HttpServlet {
+	
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {

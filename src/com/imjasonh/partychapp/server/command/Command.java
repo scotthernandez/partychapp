@@ -21,6 +21,8 @@ public enum Command {
   
   // these can be in any order
   LEAVE(new LeaveHandler(), Type.GRAB),
+  ALERTME(new AlertedHandler(), Type.GRAB),
+  HIDDEN(new HiddenHandler(), Type.GRAB),
   LIST(new ListHandler(), Type.GRAB),
   HELP(new HelpHandler(), Type.GRAB),
   ALIAS(new AliasHandler(), Type.GRAB),
@@ -35,7 +37,6 @@ public enum Command {
   KICK(new KickHandler(), Type.GRAB),
   STATUS(new StatusHandler(), Type.GRAB),
   SUMMON(new SummonHandler(), Type.GRAB),
-  UNDO(new UndoHandler(), Type.GRAB),
   DEBUG(new DebugHandler(), Type.GRAB, Category.HIDDEN),
   STATS(new StatsHandler(), Type.GRAB, Category.HIDDEN),
   GRAPH_SCORES(new GraphScoreHandler(), Type.GRAB),
@@ -43,7 +44,6 @@ public enum Command {
   SET_PHONE_NUMBER(new SetPhoneNumberHandler(), Type.GRAB, Category.HIDDEN),
   SET_CARRIER(new SetCarrierHandler(), Type.GRAB, Category.HIDDEN),
   BROADCAST_SMS(new SendBroadcastSMSHandler(), Type.GRAB, Category.HIDDEN),
-  BUG(new BugHandler(), Type.GRAB),
   DELETELOG(new DeleteLogHandler(), Type.GRAB),
   
   

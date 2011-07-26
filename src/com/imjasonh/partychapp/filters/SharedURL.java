@@ -1,25 +1,11 @@
 package com.imjasonh.partychapp.filters;
 
-import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Id;
-import javax.persistence.Transient;
-import javax.servlet.http.HttpServletRequest;
 
-import com.google.common.base.Strings;
-import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Indexed;
-import com.googlecode.objectify.annotation.Serialized;
 import com.googlecode.objectify.annotation.Unindexed;
-import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
-import com.imjasonh.partychapp.urlinfo.UrlInfo;
 
 @Unindexed
 public class SharedURL {

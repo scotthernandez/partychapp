@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class ChannelServlet extends AbstractChannelUserServlet {
   @Override protected String getChannelName(HttpServletRequest req) {
     return req.getPathInfo().substring(1);

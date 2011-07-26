@@ -76,6 +76,7 @@ public abstract class Datastore{
 
   public abstract List<Reason> getReasons(Target target, int limit);
 
+@SuppressWarnings("serial")
   public static class Stats implements Serializable{
     public int numChannels;
     public int numUsers;

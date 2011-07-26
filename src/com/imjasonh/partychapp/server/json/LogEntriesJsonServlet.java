@@ -9,14 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.json.JSONArray;
-import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
-import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.logging.LogDAO;
 import com.imjasonh.partychapp.logging.LogEntry;
 
-
+@SuppressWarnings("serial")
 public class LogEntriesJsonServlet extends JsonServlet {
 
 	@Override

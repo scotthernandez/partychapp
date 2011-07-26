@@ -62,15 +62,15 @@ public class MemcacheCachingDatastore extends CachingDatastore {
   
   @Override protected void addToCache(String key, Object o) {
     if (cache == null) return;
+
+    if (o == null) {
+      logger.warning("Not caching null values for " + key);
+      return;
+    }
     
     if (!(o instanceof Serializable)) {
       logger.warning(
           key + " does not implement Serializable, cannot be cached");
-      return;
-    }
-    
-    if (o == null) {
-      logger.warning("Not caching null values for " + key);
       return;
     }
     

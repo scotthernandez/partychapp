@@ -203,9 +203,10 @@ public abstract class CachingDatastore extends WrappingDatastore {
 	    Channel channel = (Channel) getFromRequestCacheOrCache(key);
 	    if (channel == null) {
 	      channel = wrapped.getChannelByName(name);
+	    }
 	      if (channel != null) {
 	        delete(channel);
 	      }
-	    }
+	    
   }
 }

@@ -19,24 +19,25 @@ public class DeleteChannelServlet extends AbstractChannelUserServlet {
       Logger.getLogger(DeleteChannelServlet.class.getName());
   
   @Override
-  protected void doChannelPost(HttpServletRequest req, 
+  protected void doChannelPost(
+		  HttpServletRequest req, 
 		  HttpServletResponse resp,
 	      User user,
 	      Channel channel)
       throws IOException {
     
     Datastore datastore = Datastore.instance();
-  
     datastore.startRequest();
     try {
         if (datastore.getOrCreateUser(user.getEmail()).isAdmin()){
         	datastore.deleteChannelByName(channel.getName());
-            resp.getWriter().write("Success");
+            resp.getWriter().write("success");
         }else{
             resp.getWriter().write("Sorry, only all powerful people like can delete a channel.");
         }
     } finally {
       datastore.endRequest();      
     }
+    return;
   }
 }

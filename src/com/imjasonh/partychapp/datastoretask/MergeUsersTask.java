@@ -24,7 +24,6 @@ public class MergeUsersTask extends DatastoreTask {
   @Override
   public void handle(WebRequest req, TestableQueue q) {
     List<String> keys = keys(req);
-    int dirtyCount = 0;
     for (String key : keys) {
       User user = Datastore.instance().getUserByJID(key);
       if (user == null) {

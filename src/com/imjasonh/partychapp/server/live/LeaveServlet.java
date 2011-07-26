@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class LeaveServlet extends AbstractChannelUserServlet {
   @Override protected void doChannelGet(
       HttpServletRequest req,

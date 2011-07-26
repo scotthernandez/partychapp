@@ -54,6 +54,9 @@ public class ListHandler extends SlashCommand {
       sb.append(" that match '" + argument + "'");
     }
     for (Member m : members) {
+      if (m.isHidden()) {
+        continue;
+      }
       sb.append('\n')
           .append("* ")
           .append(m.getAlias())

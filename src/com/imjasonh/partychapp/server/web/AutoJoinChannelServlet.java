@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.web;
 import com.google.appengine.api.users.User;
 
 import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Datastore;
 
 import java.io.IOException;
@@ -19,23 +20,30 @@ public class AutoJoinChannelServlet extends AbstractChannelUserServlet {
       Logger.getLogger(DeleteChannelServlet.class.getName());
   
   @Override
-  protected void doChannelPost(HttpServletRequest req, 
+  protected void doChannelPost(
+		  HttpServletRequest req, 
 		  HttpServletResponse resp,
 	      User user,
 	      Channel channel)
       throws IOException {
     
     Datastore datastore = Datastore.instance();
-  
+    
     datastore.startRequest();
     try {
-        if (datastore.getOrCreateUser(user.getEmail()).isAdmin()){
-            resp.getWriter().write("Success");
-        }else{
-            resp.getWriter().write("Sorry, only all powerful people like can join any channel.");
+        if (channel == null || !datastore.getOrCreateUser(user.getEmail()).isAdmin()){
+          resp.getWriter().write("you are not an admin user and should not have this button in the first place sorry");
+          return;
+        } else {
+        	Member member = channel.getMemberByJID(user.getEmail());
+        	member.setHidden(false);
+        	member.setAlerted(true);
+        	channel.put();
+            resp.getWriter().write("success");
         }
     } finally {
       datastore.endRequest();      
     }
+    return;
   }
 }

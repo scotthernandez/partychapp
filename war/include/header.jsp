@@ -2,6 +2,8 @@
 
 <%@ page import="com.google.common.base.Strings"%>
 <%@ page import="com.google.appengine.api.users.User" %>
+<%@ page import="com.imjasonh.partychapp.Channel"%>
+<%@ page import="com.imjasonh.partychapp.Member"%>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.imjasonh.partychapp.server.HttpUtil"%>
@@ -10,7 +12,7 @@
 <div id="main"> <!-- closed in footer.jsp -->
   <div id="loginlogout" style="text-align: right">
     <%
-      Configuration.persistentConfig().fixAll();
+      //Configuration.persistentConfig().fixAll();
       UserService userService = UserServiceFactory.getUserService();
       User user = userService.getCurrentUser();
 
@@ -21,7 +23,18 @@
      %> <a href="<%=userService.createLoginURL(HttpUtil.getRequestUri(request))%>">sign
     in</a> <%
       }
-     %>
+      if (request.getAttribute("channel") != null) {
+        Channel channel = (Channel) request.getAttribute("channel");
+        if (channel.getMemberByJID(user.getEmail()).isHidden()) {
+     %> 
+     |
+     <a id="joinbutton" style="height:16px; width:43px; color:#00e; background-color:transparent; text-decoration:underline; border:0px; cursor:pointer;" >join <%=channel.getName()%></a> 
+     	        <script>
+	    		var button = document.getElementById("joinbutton");
+	    		joinOnClick('<%=channel.getName()%>', '<%=user.getEmail()%>', button);
+	    		</script>
+     <% }
+       }%>
      |
      <a href="/about/faq">FAQ</a>
   </div>

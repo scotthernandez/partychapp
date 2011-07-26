@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message.MessageType;
 
 public class IncomingEmailHandler implements CommandHandler {

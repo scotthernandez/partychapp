@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class ChannelEditServlet extends AbstractChannelUserServlet {
   @Override
   protected void doChannelPost(

@@ -182,6 +182,55 @@ var kickOnClick = function(c, j, b, r){
 }
 goog.exportSymbol('kickOnClick', kickOnClick);
 
+
+var joinOnClick = function(c, j, b){
+	var channel = c;
+	var jid = j;
+	var button = b;
+	
+	var join = function(){
+		goog.net.XhrIo.send('/channel/join', function(e){
+				var xhr = e.target;
+				if(xhr.getResponseText() == 'success'){
+					window.location.reload(true);
+				}else{
+					alert(xhr.getResponseText());
+				}
+			},
+			'POST',
+			'name=' + encodeURIComponent(channel) +
+			'&member=' + encodeURIComponent(jid));
+	}
+	button.onclick = join;
+}
+goog.exportSymbol('joinOnClick', joinOnClick);
+
+
+var deleteOnClick = function(c, j, b){
+	var channel = c;
+	var jid = j;
+	var button = b;
+	
+	var deletechan = function(){
+		if(confirm('Are you sure you would like to delete this room?\n(this action cannot be undone)')){
+			goog.net.XhrIo.send('/channel/delete', function(e){
+					var xhr = e.target;
+					if(xhr.getResponseText() == 'success'){
+						window.location = "/index.jsp";
+					}else{
+						alert(xhr.getResponseText());
+					}
+				},
+				'POST',
+				'name=' + encodeURIComponent(channel) +
+				'&member=' + encodeURIComponent(jid));
+		}
+	}
+	button.onclick = deletechan;
+}
+goog.exportSymbol('deleteOnClick', deleteOnClick);
+
+
 var adminOnClick = function(c, j, d, current){
 	var channel = c;
 	var jid = j;

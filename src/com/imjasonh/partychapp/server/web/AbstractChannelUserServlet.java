@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public abstract class AbstractChannelUserServlet extends HttpServlet {
   private interface MethodAdapter {
     void invokeMethod(
@@ -70,7 +72,6 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       throws IOException, ServletException {
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
-    com.imjasonh.partychapp.User u = Datastore.instance().getOrCreateUser(user.getEmail());
     
     String channelName = getChannelName(req);
     Datastore datastore = Datastore.instance();
@@ -89,7 +90,6 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
     }        
   }
   
-  @SuppressWarnings("unused")
   protected void doChannelGet(
       HttpServletRequest req,
       HttpServletResponse resp,
@@ -99,7 +99,6 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
     resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
   }
   
-  @SuppressWarnings("unused")
   protected void doChannelPost(
       HttpServletRequest req,
       HttpServletResponse resp,

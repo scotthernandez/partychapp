@@ -9,7 +9,6 @@ import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.User;
-import com.imjasonh.partychapp.WrappingDatastore;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -28,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+@SuppressWarnings("serial")
 public class ChannelServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)

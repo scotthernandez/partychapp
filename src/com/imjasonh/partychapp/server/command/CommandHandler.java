@@ -1,6 +1,5 @@
 package com.imjasonh.partychapp.server.command;
 
-import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
 
 public interface CommandHandler {

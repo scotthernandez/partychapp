@@ -1,6 +1,5 @@
 package com.imjasonh.partychapp.server.command;
 
-import java.net.URI;
 import java.util.List;
 
 import com.google.common.base.Strings;

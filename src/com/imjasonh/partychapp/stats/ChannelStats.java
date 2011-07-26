@@ -33,6 +33,8 @@ import java.util.logging.Logger;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class ChannelStats implements Serializable {
   public static class ChannelStat implements Serializable {
     private final String channelName;

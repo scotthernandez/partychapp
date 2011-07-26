@@ -63,7 +63,7 @@ public class LogEntry {
 	}
 
 	public void put() {
-		new LogDAO().put(this);
+		 LogDAO.put(this);
 	}
 	
 	@Override

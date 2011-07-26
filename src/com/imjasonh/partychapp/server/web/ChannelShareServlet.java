@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mihai.parparita@gmail.com (Mihai Parparita)
  */
+
+@SuppressWarnings("serial")
 public class ChannelShareServlet extends AbstractChannelUserServlet {
   
   @Override protected void doChannelGet(

@@ -1,9 +1,6 @@
 package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
-import com.googlecode.objectify.annotation.Serialized;
-import com.imjasonh.partychapp.server.command.Command;
-import com.imjasonh.partychapp.server.command.Command.Type;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -11,11 +8,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.persistence.Embedded;
-import javax.persistence.Transient;
-
-import sun.rmi.runtime.Log;
 
 public class Member implements Serializable{
 	/** start with 1 for all classes */
@@ -40,6 +32,10 @@ public class Member implements Serializable{
   private List<String> lastMessages = Lists.newArrayList();
 
   private DebuggingOptions debugOptions = new DebuggingOptions();
+  
+  private boolean alerted = true;
+  
+  private boolean hidden = false;
   
   transient private Channel channel;
   
@@ -112,6 +108,22 @@ public class Member implements Serializable{
   
   public void setPermissions(Permissions p){
 	  permissions = p;
+  }
+
+  public boolean isAlerted() {
+	  return alerted;
+  }
+  
+  public void setAlerted(boolean b){
+	  alerted = b;
+  }
+
+  public boolean isHidden() {
+	  return hidden;  
+  }
+  
+  public void setHidden(boolean b){
+	  hidden = b;
   }
   
   public String getAlias() {

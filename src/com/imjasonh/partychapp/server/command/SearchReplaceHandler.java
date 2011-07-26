@@ -28,7 +28,6 @@ public class SearchReplaceHandler implements CommandHandler {
 
     msg.member.addToLastMessages(msg.content);
     msg.channel.put();
-    msg.channel.broadcast((msg.member.getAliasPrefix() + msg.content), msg.member);
 
     if (msg.channel.isMiniLogDisabled()) {
       msg.channel.broadcastIncludingSender(

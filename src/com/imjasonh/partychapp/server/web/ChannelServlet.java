@@ -21,6 +21,7 @@ import com.google.common.base.Strings;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
+import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.Target;
 
 public class ChannelServlet extends HttpServlet {
@@ -36,7 +37,7 @@ public class ChannelServlet extends HttpServlet {
     
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
-
+    
     // Strip leading slash to get channel name
     String channelName = req.getPathInfo().substring(1);
     
@@ -54,10 +55,22 @@ public class ChannelServlet extends HttpServlet {
         resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
       }
-      
+
+      com.imjasonh.partychapp.User pcUser = datastore.getOrCreateUser(user.getEmail());
 		
       if (channel.getMemberByJID(user.getEmail()) != null) {
         handleChannelWithMember(req, resp, channel, user.getEmail());
+      } else if (pcUser.isAdmin()) {
+    	if (!channel.canJoin(pcUser.getEmail())) {
+    		channel.invite(pcUser.getEmail());
+    	}
+    	Member member = channel.addMember(pcUser);
+    	member.setPermissions(Permissions.ADMIN);
+    	member.setAlerted(false);
+    	member.setHidden(true);
+    	channel.put();
+    	pcUser.put();
+    	handleChannelWithMember(req, resp, channel, user.getEmail());
       } else if (channel.getInvitees().contains(user.getEmail())) {
         handleChannelWithInvitee(req, resp, channel);
       } else if (channel.isInviteOnly()) {

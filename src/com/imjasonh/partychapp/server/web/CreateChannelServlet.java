@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Configuration;
 import com.imjasonh.partychapp.Datastore;
-import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.server.InviteUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.command.InviteHandler;

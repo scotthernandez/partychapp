@@ -5,7 +5,6 @@
 <%@ page import="com.imjasonh.partychapp.Configuration" %>
 <%@ page import="com.imjasonh.partychapp.Datastore"%>
 <%@ page import="com.imjasonh.partychapp.server.HttpUtil"%>
-<%@ page import="com.imjasonh.partychapp.http.MyHttpClient"%>
 
 
 <!DOCTYPE html>
@@ -20,7 +19,6 @@
 Talk or XMPP.</p>
 
 <%
-	MyHttpClient.testRequest();
 	if (Configuration.isConfidential) {
 %>
 <h3>Are messages confidential?</h3>

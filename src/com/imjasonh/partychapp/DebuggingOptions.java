@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp;
 
 import com.google.common.collect.Lists;
-import com.googlecode.objectify.annotation.Serialized;
 
 import java.io.Serializable;
 import java.util.List;
