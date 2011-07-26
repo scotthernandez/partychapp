@@ -38,7 +38,7 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	    	
 		    for(LogEntry entry : log){
 		    	JSONObject entryJson = new JSONObject();
-		    	entryJson.put("time", entry.webTimestamp());
+		    	entryJson.put("time", entry.webDate());
 		    	entryJson.put("content", entry.content());
 		    	entryJson.put("user", entry.userID());
 		    	entriesJson.put(entryJson);

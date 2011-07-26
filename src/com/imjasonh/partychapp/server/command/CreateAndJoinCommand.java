@@ -18,6 +18,7 @@ public class CreateAndJoinCommand implements CommandHandler {
 
     msg.channel = new Channel(msg.serverJID, msg.user);
     msg.channel.put();
+    msg.member = msg.channel.getMemberByJID(msg.userJID);
     
     String reply = "The channel '" + msg.channel.getName() + "' has been created, " +
         "you have joined with the alias '" + msg.member.getAlias() + "', and you are an administrator.";

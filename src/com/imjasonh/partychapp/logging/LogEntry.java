@@ -50,8 +50,12 @@ public class LogEntry {
 		return content;
 	}
 	
-	public String webTimestamp(){
+	public String webDate(){
 		return webFormatter.format(timestamp);
+	}
+	
+	public Long millisecondDate(){
+		return timestamp.getTime();
 	}
 	
 	public String userID(){

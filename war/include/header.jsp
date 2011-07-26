@@ -12,7 +12,6 @@
 <div id="main"> <!-- closed in footer.jsp -->
   <div id="loginlogout" style="text-align: right">
     <%
-      //Configuration.persistentConfig().fixAll();
       UserService userService = UserServiceFactory.getUserService();
       User user = userService.getCurrentUser();
 

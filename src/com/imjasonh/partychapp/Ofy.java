@@ -19,18 +19,4 @@ public class Ofy {
 		}
 		return ofy;
 	}
-
-	public static void fixAll(){
-		//Clear cache
-		MemcacheServiceFactory.getMemcacheService().clearAll();
-		
-		List<User> users = Ofy.instance().query(User.class).list();
-		
-		for(Channel c : Ofy.instance().query(Channel.class).fetch()){
-			c.fixUp();
-			for(User u : users){
-				u.fixUp(c);
-			}
-		}
-	}
 }

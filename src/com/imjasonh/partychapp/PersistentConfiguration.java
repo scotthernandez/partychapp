@@ -53,10 +53,4 @@ public class PersistentConfiguration {
     this.areChannelStatsEnabled = areChannelStatsEnabled;
   }
   
-  public void fixAll(){
-	  Datastore.instance().startRequest();
-	  logger.warning("Had to fixAll()");
-	  Ofy.fixAll();
-	  Datastore.instance().endRequest();
-  }
 }

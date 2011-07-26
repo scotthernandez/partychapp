@@ -64,12 +64,12 @@ public class LiveDatastore extends Datastore {
   
   private <T> T getAndLog(Class<? extends T> c, String s){
 
-		try{
-			throw new Exception("");
-		}catch (Exception e){
-		logger.log(Level.INFO, c.getName() + " read: \n" + 
-	                             e.getStackTrace());
-		}
+//		try{
+//			throw new Exception("");
+//		}catch (Exception e){
+//		logger.log(Level.INFO, c.getName() + " read: \n" + 
+//	                             e.getStackTrace());
+//		}
 		
 	  return ofy().get(c, s);
   }
