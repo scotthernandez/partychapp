@@ -13,6 +13,7 @@ import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.logging.LogDAO;
 import com.imjasonh.partychapp.logging.LogEntry;
+import com.imjasonh.partychapp.logging.LogJSONUtil;
 
 @SuppressWarnings("serial")
 public class LogEntriesJsonServlet extends JsonServlet {
@@ -30,19 +31,10 @@ public class LogEntriesJsonServlet extends JsonServlet {
 	    int limit = Integer.parseInt(req.getParameter("limit"));
 	    int offset = Integer.parseInt(req.getParameter("offset"));
 	    
-	    //TODO: some kind of security check?
+	    //TODO: some kind of permissions check?
 	    if (offset >= 0){
-		    JSONArray entriesJson = new JSONArray();
-		    
 	    	List<LogEntry> log = LogDAO.getLogByChannel(channelName, limit, offset);
-	    	
-		    for(LogEntry entry : log){
-		    	JSONObject entryJson = new JSONObject();
-		    	entryJson.put("time", entry.webDate());
-		    	entryJson.put("content", entry.content());
-		    	entryJson.put("user", entry.userID());
-		    	entriesJson.put(entryJson);
-		    }
+		    JSONArray entriesJson = LogJSONUtil.entriesWebDate(log);
 		    
 		    response.put("entries", entriesJson);
 	    }else{

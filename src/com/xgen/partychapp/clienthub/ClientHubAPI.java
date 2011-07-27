@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.*;
 import java.util.logging.Logger;
 
+import net.rtep.nosockHttpClient.GAEConnectionManager;
+
 import org.apache.http.*;
 import org.apache.http.auth.*;
 import org.apache.http.auth.params.*;
@@ -17,15 +19,18 @@ import org.apache.http.impl.client.*;
 import org.apache.http.message.BasicNameValuePair;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.io.CharStreams;
+import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.logging.LogDAO;
+import com.imjasonh.partychapp.logging.LogEntry;
+import com.imjasonh.partychapp.logging.LogJSONUtil;
 
 public class ClientHubAPI
 {
-    @SuppressWarnings("unused")
     private static final Logger logger = 
         Logger.getLogger(ClientHubAPI.class.getName());
 
@@ -42,7 +47,7 @@ public class ClientHubAPI
         List<String> authpref = new ArrayList<String>();
         authpref.add(AuthPolicy.DIGEST);
 
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = new DefaultHttpClient(new GAEConnectionManager());
         client.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, authpref);
 
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(USERNAME, PASSWORD);
@@ -55,18 +60,12 @@ public class ClientHubAPI
     }
     
     public static void runTest() throws Exception{
-        URI postUri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/", null, null);
-        HttpPost post = new HttpPost(postUri);
-        post.setEntity(new StringEntity("hello world."));
-
-        HttpResponse response = secureRequest(post);
-        System.out.print("Response: ");
-        response.getEntity().writeTo(System.out);
-        System.out.println(" ");
         
         System.out.println(getClientContactList("monster.co"));
         System.out.println(getClientContact("monster.com", "scott@10gen.com"));
         System.out.println(getClientContact("monster.co", "scott@10gen.com"));
+    	
+        System.out.println("postTest: " + postTest());
     }
     
     public static List<ClientHubContact> listFromEntity(HttpEntity entity) throws Exception{
@@ -123,7 +122,66 @@ public class ClientHubAPI
         HttpEntity entity = secureRequest(get).getEntity();
 
         List<ClientHubContact> list = listFromEntity(entity);
-        return list.size() > 0 ? list.get(0) : null;
+        return list != null && list.size() > 0 ? list.get(0) : null;
         
+    }
+    
+    //FIXME: Change uri from test to actual API call /clienthub/api/upload/chatlog/[client_name]
+    public static boolean postLogJSON(String client, JSONArray array) throws Exception{
+        URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/echo", null, null);
+        HttpPost post = new HttpPost(uri);
+        
+        post.setEntity(new StringEntity("{error:false, message:'stump'}"));
+        //FIXME: post.setEntity(new StringEntity(array.toString()));
+        
+        HttpEntity entity = secureRequest(post).getEntity();
+        
+    	InputStream stream = entity.getContent();
+        InputStreamReader reader = new InputStreamReader(stream);
+        String jsonString = CharStreams.toString(reader); 	
+        
+        if (jsonString.charAt(0) == '{'){
+
+        	JSONObject object = new JSONObject(jsonString);
+        	if (object.has("error")){
+        		if (object.getBoolean("error")){
+        			logger.warning("ClientHub returned error: " + object.optString("message", "Internal message: no error message found from ClientHub."));
+        		}else{
+        			return true;
+        		}
+        	}
+        	
+        }else{
+        	logger.severe("Unrecognized response from clienthub.");
+        }
+        
+    	return false;
+    }
+    
+    public static boolean postTest(){
+		
+		//TODO if(msg.channel.isHubLinked()){
+		Channel channel = Datastore.instance().getChannelByName("asdf");
+		
+		Calendar start = new GregorianCalendar();
+		start.set(1990, 1, 1);
+		
+			List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), start.getTime(), new Date());
+			JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
+			try{
+				if(ClientHubAPI.postLogJSON(channel.getName(), json)){
+					logger.info("Sent logs from " + channel.getLogSectionStart() 
+							    + " to " + channel.getLogSectionStart() 
+							    + " to ClientHub client " + channel.getName() + "successfully.");
+					return true;
+				}else{
+					logger.warning("Failed to send logs to ClientHub client " + channel.getName());
+				}
+			}catch(Exception e){
+				logger.severe(e.toString());
+				e.printStackTrace();
+			}
+			return false;
+		
     }
 }

@@ -34,7 +34,7 @@ public class LogEntry {
 	public LogEntry(){} 
 	
 	public LogEntry(Message msg){
-		this.content = msg.content.substring(0, Math.min(LogConfiguration.instance().maxLength(), msg.content.length()));
+		this.content = msg.content.substring(0, Math.min(msg.channel.logMaxLength(), msg.content.length()));
 		this.timestamp = new Date();
 		this.userID = msg.user.getEmail();
 		this.channelName = msg.channel.getName();

@@ -100,7 +100,7 @@ public class DownloadLogServlet extends HttpServlet{
 			
 			StringBuffer writer = new StringBuffer();
 		 
-		    writer.append("Log for room " + channelName + ": \n");
+		    writer.append("ChannelLog for room " + channelName + ": \n");
 		    
 		    for (LogEntry entry : log){
 		    	writer.append(entry.toString());

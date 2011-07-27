@@ -10,6 +10,7 @@ import com.googlecode.objectify.annotation.Unindexed;
 import com.imjasonh.partychapp.DebuggingOptions.Option;
 import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
+import com.imjasonh.partychapp.logging.ChannelLog;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.Embedded;
 import javax.persistence.Id;
 
 @Unindexed
@@ -64,24 +66,14 @@ public class Channel implements Serializable{
    */
   private Boolean minilogDisabled = false;
   
-  /**
-   * Turns off all messages for the room. 
-   */
-  private Boolean loggingDisabled = false;
-  
-  /**
-   * Keep track of the logging break.
-   */
-  private Date logSectionStart = new Date();
-  private Date logSectionEnd = new Date();
+  @Embedded
+  private ChannelLog channelLog = new ChannelLog();
   
   public Channel(){}
     
   public Channel(JID serverJID, User creator) {
     this.name = serverJID.getId().split("@")[0];
     this.addMember(creator).setPermissions(Permissions.ADMIN);
-    this.logSectionStart = new Date();
-    this.logSectionEnd = new Date();
     
   }
    
@@ -94,10 +86,7 @@ public class Channel implements Serializable{
       this.members.add(new Member(m));
     }
     this.sequenceId = other.sequenceId;
-    this.minilogDisabled = other.minilogDisabled;
-    this.loggingDisabled = other.loggingDisabled;
-    this.logSectionStart = other.logSectionStart;
-    this.logSectionEnd = other.logSectionEnd;
+    this.channelLog = other.channelLog;
   }
   
   public JID serverJID() {
@@ -143,25 +132,25 @@ public class Channel implements Serializable{
   }
   
   public void setLoggingDisabled(boolean loggingDisabled) {
-	    this.loggingDisabled = loggingDisabled;
+	    channelLog.enable(!loggingDisabled);
   }
   
 
-
+//TODO: Date is mutable, so this is unsafe.
 public Date getLogSectionStart() {
-	return logSectionStart;
+	return channelLog.sectionStart;
 }
 
 public void setLogSectionStart(Date logSectionStart) {
-	this.logSectionStart = logSectionStart;
+	channelLog.sectionStart = logSectionStart;
 }
 
 public Date getLogSectionEnd() {
-	return logSectionEnd;
+	return channelLog.sectionEnd;
 }
 
 public void setLogSectionEnd(Date logSectionEnd) {
-	this.logSectionEnd = logSectionEnd;
+	channelLog.sectionEnd = logSectionEnd;
 }
 
 /**
@@ -368,7 +357,7 @@ public void setLogSectionEnd(Date logSectionEnd) {
   }
   
   public boolean isLoggingDisabled() {
-	  return loggingDisabled;
+	  return channelLog.isEnabled();
   }
 
   public boolean isInviteOnly() {
@@ -564,10 +553,6 @@ public void setLogSectionEnd(Date logSectionEnd) {
       minilogDisabled = members.size() > LARGE_CHANNEL_THRESHOLD;
       shouldPut = true;
     }
-    if (loggingDisabled == null) {
-    	loggingDisabled = true;
-    	shouldPut = true;
-    }
     if (invitedIds == null) {
       invitedIds = Lists.newArrayList();
       shouldPut = true;
@@ -626,5 +611,9 @@ public void setLogSectionEnd(Date logSectionEnd) {
   	  logger.warning("Channel " + name + "was removed. It had no members.");
     }
   }
+
+public int logMaxLength() {
+	return channelLog.maxLength();
+}
   
 }

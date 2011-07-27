@@ -59,9 +59,5 @@ public class LogDAO {
 			  		.order("-timestamp")
 			  		.fetchKeys());
     }
-    
-    public static void sendLogToClientHub(String channel, Date start, Date finish){
-    	List<LogEntry> log = getLogByDates(channel, start, finish);
-    	//Call API
-    }
+
 }
