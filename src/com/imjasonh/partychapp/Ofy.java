@@ -8,6 +8,7 @@ import com.googlecode.objectify.ObjectifyService;
 
 public class Ofy {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Ofy.class.getName());
 	private static Objectify ofy;
 	

@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.command;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.filters.SlashMistakeHandler;
 import com.imjasonh.partychapp.filters.TicketFilter;
+import com.imjasonh.partychapp.filters.LinkFilter;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 
 import java.util.logging.Logger;
@@ -56,6 +57,7 @@ public enum Command {
 
   // this has to be last
   TICKETFILTER(new TicketFilter(), Type.GRAB),
+  LINKFILTER(new LinkFilter(ChainedUrlInfoService.DEFAULT_SERVICE), Type.GRAB),
   BROADCAST(new BroadcastHandler(), Type.GRAB),
   ;
   

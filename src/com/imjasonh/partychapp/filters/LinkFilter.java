@@ -11,12 +11,29 @@ import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.server.command.Command;
 import com.imjasonh.partychapp.server.command.CommandHandler;
 import com.imjasonh.partychapp.server.command.ShareHandler;
+import com.imjasonh.partychapp.urlinfo.UrlInfo;
+import com.imjasonh.partychapp.urlinfo.UrlInfoService;
 
 
-public class TicketFilter implements CommandHandler {
+public class LinkFilter implements CommandHandler {
+	  private final UrlInfoService urlInfoService;
+	  
+	  public LinkFilter(UrlInfoService urlInfoService){
+		    this.urlInfoService = urlInfoService;
+	  }
 	
 	  private static Pattern pattern =
-	      Pattern.compile("\\b[A-Z]+-[0-9]+\\b");
+	      Pattern.compile("(?xi)\\b" +
+	      				  "((?:" +
+	      				     "https?:\\/\\/" +
+	      				     "(www\\d{0,3}[.]" +
+	      				     "|[a-z0-9.\\-]+[.][a-z]{2,4}\\/)" +
+	      				   ")" +
+	      				   "(?:[^\\s()<>]+" +
+	      				      "|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)" +
+	      				    ")+" +
+	      				    "(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)" +
+	      				       "|[^\\s`!()\\[\\]{};:'\".,<>?гхрсту]))");
 
 	@Override
 	public void doCommand(Message msg) {
@@ -25,17 +42,18 @@ public class TicketFilter implements CommandHandler {
 
         Command.BROADCAST.commandHandler.doCommand(msg);
         while(m.find()){
-            String urlStr = "http://jira.mongodb.org/browse/" + m.group();
+            String urlStr = m.group();
             try{
             	URI url = new URI(urlStr);
-            	SharedURL toShare = new SharedURL(msg.channel.getName(), msg.member.getJID(), url.toString(), "", m.group(), "");
+                UrlInfo urlInfo = urlInfoService.getUrlInfo(url);
+            	SharedURL toShare = new SharedURL(msg.channel.getName(), msg.member.getJID(), url.toString(), "", urlInfo.getTitle(), urlInfo.getDescription());
             	if (SharedURLDAO.storeURL(toShare)){
 	            	ShareHandler.sendShareBroadcast(toShare, msg.channel);
             	}
             	
             } catch (URISyntaxException err) {
             	//This should never be called.
-                msg.channel.sendDirect("Internal error trying to share Jira ticket.  Please report.", msg.member);
+                msg.channel.sendDirect("Internal error trying to share parsed link.  Please report.", msg.member);
                 return;
             }
         }

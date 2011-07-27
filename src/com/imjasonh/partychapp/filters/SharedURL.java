@@ -30,14 +30,14 @@ public class SharedURL {
 	  
 	  public SharedURL(){}
 	  
-	  public SharedURL(String c, String j, String u, String a, String t, String d){
-		  channelName = c;
-		  urlString = u;
-		  jid = j;
-		  annotation = a;
-		  title = t;
-		  description = d;
-		  time = new Date();
+	  public SharedURL(String channel, String jid, String url, String annotation, String title, String description){
+		  this.channelName = channel;
+		  this.urlString = url;
+		  this.jid = jid;
+		  this.annotation = annotation;
+		  this.title = title;
+		  this.description = description;
+		  this.time = new Date();
 	  }
 	  
 	  public String getUrl(){

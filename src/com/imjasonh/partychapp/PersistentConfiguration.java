@@ -17,7 +17,8 @@ import com.googlecode.objectify.annotation.Unindexed;
 @Unindexed
 public class PersistentConfiguration {
   
-  private static final Logger logger = 
+  @SuppressWarnings("unused")
+private static final Logger logger = 
       Logger.getLogger(Channel.class.getName());
 
   @SuppressWarnings("unused")

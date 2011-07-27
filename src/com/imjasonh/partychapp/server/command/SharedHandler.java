@@ -17,7 +17,8 @@ public class SharedHandler extends SlashCommand{
 
 	@Override
 	public String documentation() {
-		return "/shared [index]- List of currently shared URLs in the channel.";
+		return "/shared -v | [index] - List of currently shared links in the channel. See URLs instead of titles with -v." +
+				" Specify an index to get the url.";
 	}
 
 	@Override
@@ -25,28 +26,36 @@ public class SharedHandler extends SlashCommand{
 		//When an arg is provided, user wants the URL.
 		if (!Strings.isNullOrEmpty(argument)){
 			String[] pieces = argument.split("\\s+", 1);
-			try{
-				int i = Integer.parseInt(pieces[0]);
-				String url = SharedURLDAO.getURLByIndex(msg.channel.getName(), i);
-				if (url == null){
-					msg.channel.sendDirect("_That index is invalid._", msg.member);
-				}else{
-					msg.channel.sendDirect("url: "+url, msg.member);
+			if(pieces[0].compareTo("-v")==0){
+				showList(msg, true);
+			}else{
+				try{
+					int i = Integer.parseInt(pieces[0]);
+					String url = SharedURLDAO.getURLByIndex(msg.channel.getName(), i);
+					if (url == null){
+						msg.channel.sendDirect("_That index is invalid._", msg.member);
+					}else{
+						msg.channel.sendDirect("url: "+url, msg.member);
+					}
+				}catch (NumberFormatException e){
+					msg.channel.sendDirect("_The argument format is incorrect._", msg.member);
 				}
-			}catch (NumberFormatException e){
-				msg.channel.sendDirect("_The argument format is incorrect._", msg.member);
 			}
 			return;
 		}
 
 		//No args means user wants to see list of link descriptions
+		showList(msg, false);
+	}
+	
+	private void showList(Message msg, boolean verbose){
 		List<SharedURL> shared = SharedURLDAO.getURLsByChannelByDate(msg.channel.getName());
 		if (!shared.isEmpty()){
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < shared.size(); i++){
 				Member m = msg.channel.getMemberByJID(shared.get(i).getJID());
 				String line = "("+i+") ["+m.getAlias()+"] - ";
-				if (!Strings.isNullOrEmpty(shared.get(i).getTitle())){
+				if (!Strings.isNullOrEmpty(shared.get(i).getTitle()) && !verbose){
 					line += shared.get(i).getTitle();
 				}else{
 					line += shared.get(i).getUrl().toString();
