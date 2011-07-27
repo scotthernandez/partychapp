@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.command;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.Message.MessageType;
+import com.xgen.partychapp.clienthub.ClientHubAPI;
 
 /**
  * Action taken when a user messages a channel that does not exist yet. Channel is created and user
@@ -17,6 +18,9 @@ public class CreateAndJoinCommand implements CommandHandler {
     assert msg.member == null;
     try {
 	    msg.channel = new Channel(msg.serverJID, msg.user);
+	    if (ClientHubAPI.hasClient(msg.channel.getName())) {
+	    	return;
+	    }
 	    msg.channel.put();
 	    msg.member = msg.channel.getMemberByJID(msg.userJID);
 	    

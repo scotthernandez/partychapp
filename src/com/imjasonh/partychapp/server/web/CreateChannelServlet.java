@@ -64,7 +64,8 @@ public class CreateChannelServlet extends HttpServlet {
       try{
           channel = new Channel(serverJID, pchapUser);
 	  }catch (Exception e) {
-		  resp.getWriter().write("Sorry, room name is the same as a client on client hub. You must be a member of that clienthub page to register this room.");
+		  resp.getWriter().write("Sorry, the room name you chose is the name of a client on clienthub.<br>You must be a member of that clienthub page to register this room.");
+		  return;
 	  } 
       // works for "true" ignoring case
       if (Boolean.parseBoolean(req.getParameter("inviteonly"))) {
