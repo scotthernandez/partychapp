@@ -133,6 +133,7 @@ public class ClientHubAPI
         HttpPost post = new HttpPost(uri);
         
         post.setEntity(new StringEntity("{error:false, message:'stump'}"));
+        logger.info(array.toString());
         //FIXME: post.setEntity(new StringEntity(array.toString()));
         
         HttpEntity entity = secureRequest(post).getEntity();

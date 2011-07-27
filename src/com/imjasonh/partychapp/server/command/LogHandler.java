@@ -20,7 +20,7 @@ public class LogHandler implements CommandHandler {
 	  private static final Logger logger = 
 	      Logger.getLogger(LogHandler.class.getName());
 
-	private static final long MAX_DELAY = 1000*60*10; //10m
+	private static final long MAX_DELAY = 1000*60; //10m
 	@Override
 	public void doCommand(Message msg) {
 		Channel channel = msg.channel;
@@ -35,7 +35,7 @@ public class LogHandler implements CommandHandler {
 				if(ClientHubAPI.postLogJSON(channel.getName(), json)){
 					logger.info("Sent logs from " + channel.getLogSectionStart() 
 							    + " to " + msg.channel.getLogSectionStart() 
-							    + " to ClientHub client " + msg.channel.getName() + "successfully.");
+							    + " to ClientHub client " + msg.channel.getName() + " successfully.");
 				}else{
 					logger.warning("Failed to send logs to ClientHub client " + channel.getName());
 				}
@@ -50,7 +50,7 @@ public class LogHandler implements CommandHandler {
 		channel.setLogSectionEnd(now);
 		LogDAO.put(new LogEntry(msg));
 	}
-
+ 
 	@Override
 	public boolean matches(Message msg) {
 		return !msg.channel.isLoggingDisabled();

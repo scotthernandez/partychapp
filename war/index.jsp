@@ -20,7 +20,7 @@
 Talk or XMPP.</p>
 
 <%
-	ClientHubAPI.runTest();
+	//ClientHubAPI.runTest();
 	if (Configuration.isConfidential) {
 %>
 <h3>Are messages confidential?</h3>
