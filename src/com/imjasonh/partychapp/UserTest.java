@@ -29,9 +29,12 @@ public class UserTest extends TestCase {
     assertNotSame(userLowercase, userUppercase);
     datastore.put(userLowercase);
     datastore.put(userUppercase);    
-    
+    try{
     channel1 = new Channel(new JID("channel1@partychat"), userLowercase);
     channel2 = new Channel(new JID("channel2@partychat"), userLowercase);
+    }catch (Exception e) {
+		 e.printStackTrace();
+	}
     datastore.put(channel1);
     datastore.put(channel2);
   }

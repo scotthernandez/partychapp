@@ -24,7 +24,8 @@
       }
       if (request.getAttribute("channel") != null) {
         Channel channel = (Channel) request.getAttribute("channel");
-        if (channel.getMemberByJID(user.getEmail()).isHidden()) {
+        if (channel.getMemberByJID(user.getEmail()) != null){
+        	if (channel.getMemberByJID(user.getEmail()).isHidden()) {
      %> 
      |
      <a id="joinbutton" style="height:16px; width:43px; color:#00e; background-color:transparent; text-decoration:underline; border:0px; cursor:pointer;" >join <%=channel.getName()%></a> 
@@ -33,6 +34,7 @@
 	    		joinOnClick('<%=channel.getName()%>', '<%=user.getEmail()%>', button);
 	    		</script>
      <% }
+       }
        }%>
      |
      <a href="/about/faq">FAQ</a>

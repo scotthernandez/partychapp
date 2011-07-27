@@ -24,6 +24,8 @@ import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.Target;
 
+import com.xgen.partychapp.clienthub.*;
+
 public class ChannelServlet extends HttpServlet {
   public static final long serialVersionUID = 985749740983755L;
 
@@ -71,6 +73,10 @@ public class ChannelServlet extends HttpServlet {
     	channel.put();
     	pcUser.put();
     	handleChannelWithMember(req, resp, channel, user.getEmail());
+      } else if (ClientHubAPI.getContactLevel(channel.getName(), user.getEmail()) != 0	) {
+    	  System.out.println("is client hub memeber");
+    	  channel.addMember(pcUser);
+    	  handleChannelWithMember(req, resp, channel, user.getEmail());
       } else if (channel.getInvitees().contains(user.getEmail())) {
         handleChannelWithInvitee(req, resp, channel);
       } else if (channel.isInviteOnly()) {

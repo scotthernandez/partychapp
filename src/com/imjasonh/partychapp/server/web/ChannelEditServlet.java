@@ -62,6 +62,6 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
     Command.BROADCAST.commandHandler.doCommand(msg);
     
     channel.put();
-    //resp.sendRedirect(channel.webUrl());
+    resp.sendRedirect(channel.getName());
   }
 }

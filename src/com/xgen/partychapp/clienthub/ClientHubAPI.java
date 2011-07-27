@@ -61,9 +61,9 @@ public class ClientHubAPI
     
     public static void runTest() throws Exception{
         
-        System.out.println(getClientContactList("monster.co"));
+        System.out.println(getClientContactList("monster.com"));
         System.out.println(getClientContact("monster.com", "scott@10gen.com"));
-        System.out.println(getClientContact("monster.co", "scott@10gen.com"));
+       // System.out.println(getClientContact("monster.co", "scott@10gen.com"));
     	
         System.out.println("postTest: " + postTest());
     }
@@ -76,7 +76,10 @@ public class ClientHubAPI
         stream.close();
         
         List<ClientHubContact>returnList = Lists.newArrayList();
-        if (jsonString.charAt(0) == '['){
+        
+
+		System.out.println("foo: " + jsonString);
+		if (jsonString.charAt(0) == '['){
         	
         	JSONArray array = new JSONArray(jsonString);
         	for (int i = 0; i < array.length(); i++){
@@ -107,8 +110,23 @@ public class ClientHubAPI
         HttpGet get = new HttpGet(getUri);
         
         HttpEntity entity = secureRequest(get).getEntity();
-        
+
+        System.out.println(listFromEntity(entity));
         return listFromEntity(entity);
+    }
+    
+    public static boolean hasClient(String client) {
+    	try {
+			if (getClientContactList(client) != null) {
+				System.out.println("clientexists");
+				return true;
+			}
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			return false;
+		}
+    	return false;
     }
     
     public static ClientHubContact getClientContact(String client, String email) throws Exception{
@@ -122,7 +140,8 @@ public class ClientHubAPI
         HttpEntity entity = secureRequest(get).getEntity();
 
         List<ClientHubContact> list = listFromEntity(entity);
-        return list != null && list.size() > 0 ? list.get(0) : null;
+        System.out.println(list);
+        return !list.isEmpty() ? list.get(0) : null;
         
     }
     
@@ -183,5 +202,23 @@ public class ClientHubAPI
 			}
 			return false;
 		
+    }
+    
+    public static int getContactLevel(String client, String email) {
+    	ClientHubContact chc = null;
+		try {
+			chc = getClientContact(client, email);
+		} catch (Exception e) {
+			logger.throwing("ClientHubAPI", "getClientContact", e);
+		}
+    	if (chc == null)
+    		return 0;
+    	else if (chc.isPrimary())
+    		return 3;
+    	else if (chc.isXgen())
+    		return 2;
+    	else
+    		return 1;
+    	
     }
 }
