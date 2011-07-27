@@ -14,6 +14,7 @@ import com.imjasonh.partychapp.logging.ChannelLog;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
+import com.xgen.partychapp.clienthub.*;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import javax.persistence.Embedded;
 import javax.persistence.Id;
@@ -47,6 +49,8 @@ public class Channel implements Serializable{
 
   @Serialized
   private Set<Member> members = Sets.newHashSet();
+
+  private Boolean hubLinked = false;
   
   private Boolean inviteOnly = false;
 
@@ -68,13 +72,29 @@ public class Channel implements Serializable{
   
   @Embedded
   private ChannelLog channelLog = new ChannelLog();
+
+private Date logSectionStart;
+
+private Date logSectionEnd;
   
   public Channel(){}
     
-  public Channel(JID serverJID, User creator) {
-    this.name = serverJID.getId().split("@")[0];
+  public Channel(JID serverJID, User creator) throws Exception{
+
+	this.name = serverJID.getId().split("@")[0];
+System.out.println("itistherightchannelcreator");
+	if (ClientHubAPI.hasClient(this.name)){
+		System.out.println("its a client!");
+		if (ClientHubAPI.getContactLevel(this.name, creator.getEmail()) == 0){
+			throw new Exception("You are not listed on that clienthub page");
+		}
+	}
+	 
     this.addMember(creator).setPermissions(Permissions.ADMIN);
-    
+    this.logSectionStart = new Date();
+    this.logSectionEnd = new Date();
+	if (ClientHubAPI.hasClient(this.name)) 
+		hubLinked = true;
   }
    
   public Channel(Channel other) {
@@ -103,6 +123,10 @@ public class Channel implements Serializable{
   
   public String webUrl() {
     return "http://" + Configuration.webDomain + "/room/" + name;
+  } 
+  
+  public boolean isHubLinked() {
+	return hubLinked;
   }
 
   public void invite(String email) {
@@ -115,6 +139,11 @@ public class Channel implements Serializable{
   }
 
   public boolean canJoin(String email) {
+	if (ClientHubAPI.hasClient(getName()) ){
+	    if (ClientHubAPI.getContactLevel(getName(), email) > 0) {
+	    	return true;
+	    }
+	}	
     return !isInviteOnly() ||
         (invitedIds.contains(email.toLowerCase().trim()));
   }
@@ -161,11 +190,8 @@ public void setLogSectionEnd(Date logSectionEnd) {
   public Member addMember(User userToAdd) {
     String jidNoResource = userToAdd.getJID().split("/")[0];
     String email = jidNoResource;
-    if (invitedIds == null || !invitedIds.remove(email.toLowerCase())) {
-      if (isInviteOnly()) {
-        throw new IllegalArgumentException("Not invited to this room");
-      }
-    }
+    if (!canJoin(email))
+    	throw new IllegalArgumentException("Not invited to this room");
     Member addedMember = new Member(this, jidNoResource);
     String dedupedAlias = addedMember.getAlias();
     while (null != getMemberByAlias(dedupedAlias)) {
@@ -174,6 +200,14 @@ public void setLogSectionEnd(Date logSectionEnd) {
     addedMember.setHidden(false);
     addedMember.setAlerted(true);
     addedMember.setAlias(dedupedAlias);
+    if (ClientHubAPI.hasClient(getName()) ){
+    	int perm = ClientHubAPI.getContactLevel(getName(), email);
+    	if (perm == 3){
+    		addedMember.setPermissions(Permissions.ADMIN);
+    	} else if (perm == 2){
+    		addedMember.setPermissions(Permissions.MOD);
+    	}
+    }
     mutableMembers().add(addedMember);
     userToAdd.addChannel(getName());
     userToAdd.put();

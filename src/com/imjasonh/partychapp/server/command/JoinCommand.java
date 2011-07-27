@@ -21,6 +21,7 @@ public class JoinCommand implements CommandHandler {
     assert msg.member == null;
 
     String email = msg.userJID.getId().split("/")[0];
+    
     if (!msg.channel.canJoin(email)) {
       String reply = "You must be invited to this room.";
       SendUtil.sendDirect(reply, msg.userJID, msg.serverJID);

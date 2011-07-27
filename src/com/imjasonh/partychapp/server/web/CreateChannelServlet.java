@@ -61,9 +61,11 @@ public class CreateChannelServlet extends HttpServlet {
 
       com.imjasonh.partychapp.User pchapUser =
           datastore.getOrCreateUser(user.getEmail());
-      
-      channel = new Channel(serverJID, pchapUser);
-      
+      try{
+          channel = new Channel(serverJID, pchapUser);
+	  }catch (Exception e) {
+		  resp.getWriter().write("Sorry, room name is the same as a client on client hub. You must be a member of that clienthub page to register this room.");
+	  } 
       // works for "true" ignoring case
       if (Boolean.parseBoolean(req.getParameter("inviteonly"))) {
         channel.setInviteOnly(true);

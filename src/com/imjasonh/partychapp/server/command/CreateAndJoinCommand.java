@@ -15,15 +15,17 @@ public class CreateAndJoinCommand implements CommandHandler {
   public void doCommand(Message msg) {
     assert msg.channel == null;
     assert msg.member == null;
-
-    msg.channel = new Channel(msg.serverJID, msg.user);
-    msg.channel.put();
-    msg.member = msg.channel.getMemberByJID(msg.userJID);
-    
-    String reply = "The channel '" + msg.channel.getName() + "' has been created, " +
-        "you have joined with the alias '" + msg.member.getAlias() + "', and you are an administrator.";
-    msg.channel.sendDirect(reply, msg.member);
-    
+    try {
+	    msg.channel = new Channel(msg.serverJID, msg.user);
+	    msg.channel.put();
+	    msg.member = msg.channel.getMemberByJID(msg.userJID);
+	    
+	    String reply = "The channel '" + msg.channel.getName() + "' has been created, " +
+	        "you have joined with the alias '" + msg.member.getAlias() + "', and you are an administrator.";
+	    msg.channel.sendDirect(reply, msg.member);
+  }catch (Exception e) {
+		 e.printStackTrace();
+  }     
   }
 
   public String documentation() {

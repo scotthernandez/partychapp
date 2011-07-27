@@ -249,7 +249,7 @@
 	  </tr>
 	</table>
 	</form>
-<% if (user.isAdmin()) {%>
+<% if (user.isAdmin() || member.hasPermissions(Member.Permissions.ADMIN)) {%>
 	  <button id="removechannel">Delete Channel</button>
 	<script>
 	    		var button = document.getElementById('removechannel');
