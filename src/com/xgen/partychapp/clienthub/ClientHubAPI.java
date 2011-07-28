@@ -36,7 +36,7 @@ public class ClientHubAPI
         Logger.getLogger(ClientHubAPI.class.getName());
 
     static final String SCHEME = "https";
-    static final String HOST = "dev.10gen.com";
+    static final String HOST = "www.10gen.com";
     static final int PORT = 443;
     static final String REALM = "clienthub";
 
@@ -151,17 +151,19 @@ public class ClientHubAPI
         URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/echo", null, null);
         HttpPost post = new HttpPost(uri);
         
-        post.setEntity(new StringEntity("{error:false, message:'stump'}"));
-        logger.info(array.toString());
-        //FIXME: post.setEntity(new StringEntity(array.toString()));
+        logger.severe("Information I'll be sending: " + array.toString());
+        post.setEntity(new StringEntity(array.toString()));
         
-        HttpEntity entity = secureRequest(post).getEntity();
+        //FIXME: HttpEntity entity = secureRequest(post).getEntity();
+        HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
         
     	InputStream stream = entity.getContent();
         InputStreamReader reader = new InputStreamReader(stream);
         String jsonString = CharStreams.toString(reader); 	
         
-        if (jsonString.charAt(0) == '{'){
+        //logger.severe("String received from echo: " + jsonString);
+        
+        if (((Character)jsonString.charAt(0)).compareTo('{') == 0){
 
         	JSONObject object = new JSONObject(jsonString);
         	if (object.has("error")){

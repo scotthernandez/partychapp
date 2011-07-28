@@ -72,10 +72,6 @@ public class Channel implements Serializable{
   
   @Embedded
   private ChannelLog channelLog = new ChannelLog();
-
-private Date logSectionStart;
-
-private Date logSectionEnd;
   
   public Channel(){}
     
@@ -91,8 +87,6 @@ System.out.println("itistherightchannelcreator");
 	}
 	 
     this.addMember(creator).setPermissions(Permissions.ADMIN);
-    this.logSectionStart = new Date();
-    this.logSectionEnd = new Date();
 	if (ClientHubAPI.hasClient(this.name)) 
 		hubLinked = true;
   }
@@ -645,6 +639,28 @@ public void setLogSectionEnd(Date logSectionEnd) {
   	  logger.warning("Channel " + name + "was removed. It had no members.");
     }
   }
+
+public void removeAllUsers(){
+	Datastore.instance().startRequest();
+    List<String> membersToRemove = Lists.newArrayList();
+    
+    for (Member m : mutableMembers()) {
+        membersToRemove.add(m.getJID());
+    }
+	for (String jid : membersToRemove){
+		User user = Datastore.instance().getUserByJID(jid);
+        if (user != null) {
+          removeMember(user);
+        } else {
+          // If we can't find a matching User, we should still remove the
+          // member from the channel
+          logger.warning("Could not find a User object for " + jid);
+          Member memberToRemove = getMemberByJID(jid);
+          mutableMembers().remove(memberToRemove);
+        }
+   }
+	Datastore.instance().endRequest();
+}
 
 public int logMaxLength() {
 	return channelLog.maxLength();

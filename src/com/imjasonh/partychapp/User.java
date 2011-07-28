@@ -262,6 +262,7 @@ public class User implements Serializable{
   
   @VisibleForTesting public void removeChannel(String c) {
     if (channelNames.contains(c)) {
+      System.out.println("REMOVED USER FROM: " +  c);
       channelNames.remove(c);
     }
   }

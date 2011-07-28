@@ -1,6 +1,7 @@
 package com.imjasonh.partychapp.logging;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,6 +9,10 @@ import org.json.JSONObject;
 
 public class LogJSONUtil {
 
+	  @SuppressWarnings("unused")
+	private static final Logger logger = 
+	      Logger.getLogger(LogJSONUtil.class.getName());
+	  
 	public static JSONObject entryNoDate(LogEntry entry){
     	JSONObject entryJson = new JSONObject();
 		

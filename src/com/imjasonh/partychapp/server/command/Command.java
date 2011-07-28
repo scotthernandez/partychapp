@@ -18,7 +18,7 @@ public enum Command {
   // these implicit handlers have to be first
   CREATE_AND_JOIN(new CreateAndJoinCommand(), Type.PASS),
   JOIN(new JoinCommand(), Type.PASS),
-  LOG(new LogHandler(), Type.PASS),
+  //LOG(new LogHandler(), Type.PASS),
   
   // these can be in any order
   LEAVE(new LeaveHandler(), Type.GRAB),
@@ -46,6 +46,7 @@ public enum Command {
   SET_CARRIER(new SetCarrierHandler(), Type.GRAB, Category.HIDDEN),
   BROADCAST_SMS(new SendBroadcastSMSHandler(), Type.GRAB, Category.HIDDEN),
   DELETELOG(new DeleteLogHandler(), Type.GRAB),
+  TESTING(new TestPlaceholderHandler(), Type.PASS),
   
   
   //Must go here to filter out bad SlashCommands

@@ -1,6 +1,5 @@
 package com.imjasonh.partychapp.server.command;
 
-
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -15,22 +14,25 @@ import com.imjasonh.partychapp.logging.LogEntry;
 import com.imjasonh.partychapp.logging.LogJSONUtil;
 import com.xgen.partychapp.clienthub.ClientHubAPI;
 
-public class LogHandler implements CommandHandler {
+
+public class TestPlaceholderHandler extends SlashCommand {
 
 	  private static final Logger logger = 
-	      Logger.getLogger(LogHandler.class.getName());
+	      Logger.getLogger(TestPlaceholderHandler.class.getName());
 
-	private static final long MAX_DELAY = 1000*60*10; //10m
-	@Override
-	public void doCommand(Message msg) {
-		LogEntry newEntry = new LogEntry(msg);
-		LogDAO.put(newEntry);
-		
+  public TestPlaceholderHandler() {
+    super("testlog");
+  }
+
+  @Override
+  public void doCommand(Message msg, String action) {
+	  
 	    Channel channel = msg.channel;
-		Long now = newEntry.millisecondDate();
+		Date now = new Date();
 		
 		try{
-			if (now - msg.channel.getLogSectionEnd().getTime() > MAX_DELAY){
+			if (action.matches("\\bbreak\\s.*")){
+					System.out.println("BREAK");
 					List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
 					JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
 					
@@ -39,7 +41,7 @@ public class LogHandler implements CommandHandler {
 									    + " to " + msg.channel.getLogSectionEnd() 
 									    + " to ClientHub client " + msg.channel.getName() + " successfully.");
 	
-							channel.setLogSectionStart(new Date(now));
+							channel.setLogSectionStart(now);
 						}
 				}
 			
@@ -48,24 +50,20 @@ public class LogHandler implements CommandHandler {
 			e.printStackTrace();
 			
 		}finally{
-			channel.setLogSectionEnd(new Date(now));
+			channel.setLogSectionEnd(now);
 			channel.put();
+				    
+			//Always log.
+			LogDAO.put(new LogEntry(msg));
 		}
-	}
- 
-	@Override
-	public boolean matches(Message msg) {
-		return !msg.channel.isLoggingDisabled();
-	}
+  }
 
-	@Override
-	public String documentation() {
-		// Return null so it doesn't come up in documentation.
-		return null;
-	}
-
-	@Override
-	public boolean allows(Message msg) {
-		return msg.member.hasPermissions(Permissions.MEMBER);
-	}
+  public String documentation() {
+    return null;
+  }
+  
+  @Override
+  public boolean allows(Message msg) {
+  	return msg.member.hasPermissions(Permissions.MEMBER);
+  }
 }

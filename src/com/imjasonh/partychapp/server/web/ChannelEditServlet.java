@@ -58,7 +58,7 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
     	msg = builder.setContent(member.getAlias() + " has disabled logging.").build();
     }
     
-    Command.LOG.commandHandler.doCommand(msg);
+    //Command.LOG.commandHandler.doCommand(msg);
     Command.BROADCAST.commandHandler.doCommand(msg);
     
     channel.put();

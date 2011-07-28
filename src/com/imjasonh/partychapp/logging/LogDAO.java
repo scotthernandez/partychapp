@@ -42,6 +42,7 @@ public class LogDAO {
     }
     
     public static List<LogEntry> getLogByDates(String channel, Date start, Date finish){
+    	logger.warning("getLogByDates: " + channel + ", " + start + ", " + finish);
     	List<LogEntry> log = ofy.query(LogEntry.class)
 		  .filter("channelName", channel)
 		  .filter("timestamp >=", start)
