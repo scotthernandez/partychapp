@@ -651,5 +651,25 @@ public void setLogSectionEnd(Date logSectionEnd) {
 public int logMaxLength() {
 	return channelLog.maxLength();
 }
-  
+public void removeAllUsers(){
+    Datastore.instance().startRequest();
+    List<String> membersToRemove = Lists.newArrayList();
+    
+    for (Member m : mutableMembers()) {
+        membersToRemove.add(m.getJID());
+    }
+    for (String jid : membersToRemove){
+        User user = Datastore.instance().getUserByJID(jid);
+        if (user != null) {
+          removeMember(user);
+        } else {
+          // If we can't find a matching User, we should still remove the
+          // member from the channel
+          logger.warning("Could not find a User object for " + jid);
+          Member memberToRemove = getMemberByJID(jid);
+          mutableMembers().remove(memberToRemove);
+        }
+   }
+    Datastore.instance().endRequest();
+}
 }

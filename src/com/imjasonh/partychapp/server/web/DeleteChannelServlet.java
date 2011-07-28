@@ -30,6 +30,7 @@ public class DeleteChannelServlet extends AbstractChannelUserServlet {
     datastore.startRequest();
     try {
         if (datastore.getOrCreateUser(user.getEmail()).isAdmin()){
+        	channel.removeAllUsers();
         	datastore.deleteChannelByName(channel.getName());
             resp.getWriter().write("success");
         }else{

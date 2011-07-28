@@ -57,8 +57,6 @@ public class CreateChannelServlet extends HttpServlet {
       // datastore and end up in an inconsistent state.
       JID serverJID = new JID(name + "@" + Configuration.chatDomain);
       // The creator only gets an XMPP invite, not an email one.
-      SendUtil.invite(user.getEmail(), serverJID);
-
       com.imjasonh.partychapp.User pchapUser =
           datastore.getOrCreateUser(user.getEmail());
       try{
@@ -67,6 +65,8 @@ public class CreateChannelServlet extends HttpServlet {
 		  resp.getWriter().write("Sorry, the room name you chose is the name of a client on clienthub.<br>You must be a member of that clienthub page to register this room.");
 		  return;
 	  } 
+      SendUtil.invite(user.getEmail(), serverJID);
+
       // works for "true" ignoring case
       if (Boolean.parseBoolean(req.getParameter("inviteonly"))) {
         channel.setInviteOnly(true);

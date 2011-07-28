@@ -36,7 +36,7 @@ public class ClientHubAPI
         Logger.getLogger(ClientHubAPI.class.getName());
 
     static final String SCHEME = "https";
-    static final String HOST = "dev.10gen.com";
+    static final String HOST = "www.10gen.com";
     static final int PORT = 443;
     static final String REALM = "clienthub";
 
