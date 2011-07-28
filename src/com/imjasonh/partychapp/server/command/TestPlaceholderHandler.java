@@ -27,37 +27,6 @@ public class TestPlaceholderHandler extends SlashCommand {
   @Override
   public void doCommand(Message msg, String action) {
 	  
-	    Channel channel = msg.channel;
-		Date now = new Date();
-		
-		try{
-			if (action.matches("\\bbreak\\s.*")){
-					System.out.println("BREAK");
-					List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
-					JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
-					
-						if(log.size() > 0 && ClientHubAPI.postLogJSON(channel.getName(), json)){
-							logger.info("Sent logs from " + channel.getLogSectionStart() 
-									    + " to " + msg.channel.getLogSectionEnd() 
-									    + " to ClientHub client " + msg.channel.getName() + " successfully.");
-	
-							channel.setLogSectionStart(now);
-						}
-				}
-			
-		}catch(Exception e){
-			logger.severe(e.toString());
-			e.printStackTrace();
-			
-		}finally{
-			channel.setLogSectionEnd(now);
-			channel.put();
-			
-			channel.broadcast(msg);
-				    
-			//Always log.
-			LogDAO.put(new LogEntry(msg));
-		}
   }
 
   public String documentation() {

@@ -220,7 +220,7 @@
 	    <td>
 	      <table class="radio-option-table">
 	        <tr>
-	          <td><input type="radio" name="logging" value="true" <% if (!channel.isLoggingDisabled()) {out.print("checked");} %> id="logging-true"></td>
+	          <td><input type="radio" name="logging" value="true" <% if (channel.isLogging()) {out.print("checked");} %> id="logging-true"></td>
 	          <td><label for="logging-true">Enabled</label></td>
 	        </tr>
 	        <tr class="description">
@@ -231,7 +231,7 @@
 	
 	      <table class="radio-option-table">
 	        <tr>
-	          <td><input type="radio" name="logging" value="false" <% if (channel.isLoggingDisabled()) {out.print("checked");} %> id="logging-false"></td>
+	          <td><input type="radio" name="logging" value="false" <% if (!channel.isLogging()) {out.print("checked");} %> id="logging-false"></td>
 	          <td><label for="logging-false">Disabled</label></td>
 	        </tr>
 	        <tr class="description">

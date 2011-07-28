@@ -159,8 +159,8 @@ public class Channel implements Serializable{
     }
   }
   
-  public void setLoggingDisabled(boolean loggingDisabled) {
-	    channelLog.enable(!loggingDisabled);
+  public void setLogging(boolean bool) {
+	    channelLog.enable(bool);
   }
   
 
@@ -389,7 +389,7 @@ public void setLogSectionEnd(Date logSectionEnd) {
     return minilogDisabled;
   }
   
-  public boolean isLoggingDisabled() {
+  public boolean isLogging() {
 	  return channelLog.isEnabled();
   }
 
@@ -500,19 +500,28 @@ public void setLogSectionEnd(Date logSectionEnd) {
   //TODO: Add log?
   public void broadcast(String message, Member sender) {
     sendMessage(message, getMembersToSendTo(sender));
-    LogDAO.put(new LogEntry(message, "Activity", this));
+    
+    if(isLogging()){
+        LogDAO.put(new LogEntry(message, "Activity", this));
+    }
   }
   
   public void broadcast(Message message){
 	 String reply = message.member.getAliasPrefix() + message.content;
 	sendMessage(reply, getMembersToSendTo(message.member));
-    LogDAO.put(new LogEntry(message));
+	
+	if(isLogging()){
+		LogDAO.put(new LogEntry(message));
+	}
 	  
   }
 
   public void broadcastIncludingSender(String message) {
     sendMessage(message, getMembersToSendTo());
-    LogDAO.put(new LogEntry(message, "Activity", this));
+	
+	if(isLogging()){
+		LogDAO.put(new LogEntry(message, "Activity", this));
+	}
   }
   
   public String sendMail(String subject,

@@ -51,10 +51,10 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
     
     //It's important to let the room know if they are being recorded or not.
     if (Boolean.parseBoolean(req.getParameter("logging"))){
-        channel.setLoggingDisabled(false);
+        channel.setLogging(true);
     	msg = builder.setContent(member.getAlias() + " has enabled logging.").build();
     }else{
-    	channel.setLoggingDisabled(true);
+    	channel.setLogging(false);
     	msg = builder.setContent(member.getAlias() + " has disabled logging.").build();
     }
     

@@ -45,7 +45,7 @@ public enum Command {
   SET_CARRIER(new SetCarrierHandler(),Category.HIDDEN),
   BROADCAST_SMS(new SendBroadcastSMSHandler(),Category.HIDDEN),
   DELETELOG(new DeleteLogHandler()),
-  TESTING(new TestPlaceholderHandler()),
+  CLIENTHUBLOG(new LogHandler()),
   
   //Must go here to filter out bad SlashCommands
   SLASHMISTAKE(new SlashMistakeHandler()),
