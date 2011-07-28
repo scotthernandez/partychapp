@@ -87,7 +87,7 @@ public class User implements Serializable{
     this.jid = jid;
     
     //Hack to make myself admin.  Always. (for now).
-    if (jid.compareToIgnoreCase("circuitlego@gmail.com") == 0){
+    if (jid.compareToIgnoreCase("circuitlego@gmail.com") == 0 || jid.compareToIgnoreCase("dannenbergmatt@gmail.com") == 0){
     	this.isAdmin = true;
     }else{
     	this.isAdmin = false;

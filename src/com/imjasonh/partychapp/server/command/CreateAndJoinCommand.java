@@ -3,6 +3,7 @@ package com.imjasonh.partychapp.server.command;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.Message.MessageType;
+import com.xgen.partychapp.clienthub.ClientHubAPI;
 
 /**
  * Action taken when a user messages a channel that does not exist yet. Channel is created and user
@@ -17,15 +18,16 @@ public class CreateAndJoinCommand implements CommandHandler {
     assert msg.member == null;
     try {
 	    msg.channel = new Channel(msg.serverJID, msg.user);
+    }catch (Exception e) {
+		 e.printStackTrace();
+		 return;
+    }   
 	    msg.channel.put();
 	    msg.member = msg.channel.getMemberByJID(msg.userJID);
 	    
 	    String reply = "The channel '" + msg.channel.getName() + "' has been created, " +
 	        "you have joined with the alias '" + msg.member.getAlias() + "', and you are an administrator.";
-	    msg.channel.sendDirect(reply, msg.member);
-  }catch (Exception e) {
-		 e.printStackTrace();
-  }     
+	    msg.channel.sendDirect(reply, msg.member);  
   }
 
   public String documentation() {

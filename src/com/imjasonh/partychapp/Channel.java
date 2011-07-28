@@ -78,15 +78,18 @@ public class Channel implements Serializable{
   public Channel(JID serverJID, User creator) throws Exception{
 
 	this.name = serverJID.getId().split("@")[0];
-System.out.println("itistherightchannelcreator");
 	if (ClientHubAPI.hasClient(this.name)){
-		System.out.println("its a client!");
-		if (ClientHubAPI.getContactLevel(this.name, creator.getEmail()) == 0){
+		int clientLevel = ClientHubAPI.getContactLevel(this.name, creator.getEmail());
+		if (clientLevel > 0) {
+			this.addMember(creator);
+			this.setInviteOnly(true);
+		} else {
 			throw new Exception("You are not listed on that clienthub page");
 		}
+	} else {
+		this.addMember(creator).setPermissions(Permissions.ADMIN);
 	}
-	 
-    this.addMember(creator).setPermissions(Permissions.ADMIN);
+
 	if (ClientHubAPI.hasClient(this.name)) 
 		hubLinked = true;
   }
