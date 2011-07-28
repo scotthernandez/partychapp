@@ -129,36 +129,6 @@ function printEmail(opt_anchorText) {
 }
 goog.exportSymbol('printEmail', printEmail);
 
-var tieCollapseButton = function(headerId, targetId){
-	var collapsed;
-	var header = document.getElementById(headerId);
-	var button = document.createElement('div');
-	var target = document.getElementById(targetId);
-	
-	var change = function(){
-		if(collapsed){
-			collapsed = false;
-			button.innerHTML = '[-]';
-			target.style.display = 'inherit';
-		}else{
-			collapsed = true;
-			button.innerHTML = '[+]';
-			target.style.display = 'none';
-		}
-	}
-
-	//Init button div
-	button.onclick = change;
-	button.style.display = 'inline';
-	header.insertBefore(button);
-	
-	//Init state
-	button.innerHTML = '[+]';
-	collapsed = true;
-	target.style.display = 'none';
-}
-goog.exportSymbol('tieCollapseButton', tieCollapseButton);
-
 
 var kickOnClick = function(c, j, b, r){
 	var channel = c;

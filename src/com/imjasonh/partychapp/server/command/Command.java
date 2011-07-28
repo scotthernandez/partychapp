@@ -47,7 +47,6 @@ public enum Command {
   DELETELOG(new DeleteLogHandler()),
   TESTING(new TestPlaceholderHandler()),
   
-  
   //Must go here to filter out bad SlashCommands
   SLASHMISTAKE(new SlashMistakeHandler()),
   

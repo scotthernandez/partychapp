@@ -13,14 +13,18 @@ public class AlertedHandler extends SlashCommand {
   public void doCommand(Message msg, String argument) {
 		String youMsg;
 		
-		if (argument.toUpperCase().compareTo("FALSE") == 0) {
-			youMsg = "You will no longer receive messages from the channel '" + msg.channel.getName() + "'";
-			msg.member.setAlerted(false);
-		} else if (argument.toUpperCase().compareTo("TRUE") == 0) {
-			msg.member.setAlerted(true);
-			youMsg = "You will now receive messages from the channel '" + msg.channel.getName() + "'";
+		if (argument != null) {
+			if (argument.toUpperCase().compareTo("FALSE") == 0) {
+				youMsg = "You will no longer receive messages from the channel '" + msg.channel.getName() + "'";
+				msg.member.setAlerted(false);
+			} else if (argument.toUpperCase().compareTo("TRUE") == 0) {
+				msg.member.setAlerted(true);
+				youMsg = "You will now receive messages from the channel '" + msg.channel.getName() + "'";
+			} else {
+				youMsg = "Only valid options for /alert are true and false";
+			}
 		} else {
-			youMsg = "Only valid options for /alert are true and false";
+			youMsg = "/alert must be followed by true or false";
 		}
 
 	    msg.channel.sendDirect(youMsg, msg.member);
@@ -35,6 +39,6 @@ public class AlertedHandler extends SlashCommand {
 	  
 	  @Override
 	  public boolean allows(Message msg) {
-	  	return msg.member.hasPermissions(Permissions.MEMBER);
+	  	return msg.user.isAdmin();
 	  }
 	}
