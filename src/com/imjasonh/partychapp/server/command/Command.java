@@ -22,8 +22,8 @@ public enum Command {
   
   // these can be in any order
   LEAVE(new LeaveHandler(), Type.GRAB),
-  ALERTME(new AlertedHandler(), Type.GRAB),
-  HIDDEN(new HiddenHandler(), Type.GRAB),
+  ALERTME(new AlertedHandler(), Type.GRAB, Category.HIDDEN),
+  HIDDEN(new HiddenHandler(), Type.GRAB, Category.HIDDEN),
   LIST(new ListHandler(), Type.GRAB),
   HELP(new HelpHandler(), Type.GRAB),
   ALIAS(new AliasHandler(), Type.GRAB),
@@ -47,7 +47,6 @@ public enum Command {
   BROADCAST_SMS(new SendBroadcastSMSHandler(), Type.GRAB, Category.HIDDEN),
   DELETELOG(new DeleteLogHandler(), Type.GRAB),
   TESTING(new TestPlaceholderHandler(), Type.PASS),
-  
   
   //Must go here to filter out bad SlashCommands
   SLASHMISTAKE(new SlashMistakeHandler(), Type.GRAB),

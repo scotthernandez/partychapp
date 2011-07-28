@@ -13,15 +13,18 @@ public class HiddenHandler extends SlashCommand {
   public void doCommand(Message msg, String argument) {
 
 	String youMsg;
-	
-	if (argument.toUpperCase().compareTo("FALSE") == 0) {
-		youMsg = "You are no longer hidden from the channel '" + msg.channel + "'";
-		msg.member.setHidden(false);
-	} else if (argument.toUpperCase().compareTo("TRUE") ==0) {
-		msg.member.setHidden(true);
-		youMsg = "You are now hidden from the channel '" + msg.channel + "'";
+	if (argument != null) {
+		if (argument.toUpperCase().compareTo("FALSE") == 0) {
+			youMsg = "You are no longer hidden from the channel '" + msg.channel + "'";
+			msg.member.setHidden(false);
+		} else if (argument.toUpperCase().compareTo("TRUE") ==0) {
+			msg.member.setHidden(true);
+			youMsg = "You are now hidden from the channel '" + msg.channel + "'";
+		} else {
+			youMsg = "Only valid options for /hidden are true and false";
+		}
 	} else {
-		youMsg = "Only valid options for /hidden are true and false";
+		youMsg = "/hidden must be followed by true or false";
 	}
 
     msg.channel.sendDirect(youMsg, msg.member);
@@ -36,6 +39,6 @@ public class HiddenHandler extends SlashCommand {
   
   @Override
   public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.ADMIN);
+  	return msg.user.isAdmin();
   }
 }
