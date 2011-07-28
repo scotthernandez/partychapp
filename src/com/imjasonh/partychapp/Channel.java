@@ -11,6 +11,8 @@ import com.imjasonh.partychapp.DebuggingOptions.Option;
 import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.logging.ChannelLog;
+import com.imjasonh.partychapp.logging.LogDAO;
+import com.imjasonh.partychapp.logging.LogEntry;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
@@ -418,6 +420,7 @@ public void setLogSectionEnd(Date logSectionEnd) {
     }
   }    
   
+  //TODO: Add log?
   private void sendMessage(String message, List<Member> recipients) {
     List<JID> withSequenceId = Lists.newArrayList();
     List<JID> noSequenceId = Lists.newArrayList();
@@ -468,6 +471,7 @@ public void setLogSectionEnd(Date logSectionEnd) {
     }
   }
   
+  //TODO: Add log?
   private Set<JID> sendMessage(
         String message, List<JID> withSequenceId, List<JID> noSequenceId) {
     incrementSequenceId();
@@ -485,6 +489,7 @@ public void setLogSectionEnd(Date logSectionEnd) {
     return errorJIDs;
   }
   
+  //TODO: Add log?
   public void sendDirect(String message, Member recipient) {
     SendUtil.sendMessage(message,
                          serverJID(),
@@ -492,12 +497,22 @@ public void setLogSectionEnd(Date logSectionEnd) {
     ChannelUtil.sendMessage(this, recipient, message);
   }
   
+  //TODO: Add log?
   public void broadcast(String message, Member sender) {
     sendMessage(message, getMembersToSendTo(sender));
+    LogDAO.put(new LogEntry(message, "Activity", this));
+  }
+  
+  public void broadcast(Message message){
+	 String reply = message.member.getAliasPrefix() + message.content;
+	sendMessage(reply, getMembersToSendTo(message.member));
+    LogDAO.put(new LogEntry(message));
+	  
   }
 
   public void broadcastIncludingSender(String message) {
     sendMessage(message, getMembersToSendTo());
+    LogDAO.put(new LogEntry(message, "Activity", this));
   }
   
   public String sendMail(String subject,

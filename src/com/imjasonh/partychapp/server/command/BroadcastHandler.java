@@ -6,8 +6,7 @@ import com.imjasonh.partychapp.Message.MessageType;
 
 public class BroadcastHandler implements CommandHandler {
   public void doCommand(Message msg) {
-    String reply = msg.member.getAliasPrefix() + msg.content;
-    msg.channel.broadcast(reply, msg.member);
+    msg.channel.broadcast(msg);
     msg.member.addToLastMessages(msg.content);
     msg.channel.put();
   }

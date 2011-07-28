@@ -13,7 +13,6 @@ import com.imjasonh.partychapp.Ofy;
 public class LogDAO {
 	private static Objectify ofy = Ofy.instance();
 	  
-    @SuppressWarnings("unused")
     private static final Logger logger = 
         Logger.getLogger(LogDAO.class.getName());
   

@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import javax.persistence.Id;
 
 import com.googlecode.objectify.annotation.Unindexed;
+import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Message;
 
 public class LogEntry {
@@ -27,7 +28,7 @@ public class LogEntry {
 	@Unindexed 
 	private String content;
 	
-	private String userID;
+	private String sender;
 	
 	private String channelName;
 	
@@ -36,8 +37,16 @@ public class LogEntry {
 	public LogEntry(Message msg){
 		this.content = msg.content.substring(0, Math.min(msg.channel.logMaxLength(), msg.content.length()));
 		this.timestamp = new Date();
-		this.userID = msg.user.getEmail();
+		this.sender = msg.user.getEmail();
 		this.channelName = msg.channel.getName();
+	}
+	
+	public LogEntry(String content, String sender, Channel channel){
+		this.content = content.substring(0, Math.min(channel.logMaxLength(), content.length()));
+		this.timestamp = new Date();
+		this.sender = sender;
+		this.channelName = channel.getName();
+		
 	}
 	
 	//For the FakeDatastore. Might remove.
@@ -59,7 +68,7 @@ public class LogEntry {
 	}
 	
 	public String userID(){
-		return userID;
+		return sender;
 	}
 	
 	public String channelName(){
@@ -72,6 +81,6 @@ public class LogEntry {
 	
 	@Override
 	public String toString() {
-		return logFormatter.format(timestamp)+"("+userID+")" + ": " + content;
+		return logFormatter.format(timestamp)+"("+sender+")" + ": " + content;
 	}
 }

@@ -52,6 +52,8 @@ public class TestPlaceholderHandler extends SlashCommand {
 		}finally{
 			channel.setLogSectionEnd(now);
 			channel.put();
+			
+			channel.broadcast(msg);
 				    
 			//Always log.
 			LogDAO.put(new LogEntry(msg));

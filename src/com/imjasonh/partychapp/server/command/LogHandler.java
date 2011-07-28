@@ -15,22 +15,23 @@ import com.imjasonh.partychapp.logging.LogEntry;
 import com.imjasonh.partychapp.logging.LogJSONUtil;
 import com.xgen.partychapp.clienthub.ClientHubAPI;
 
-public class LogHandler implements CommandHandler {
+public class LogHandler extends SlashCommand {
 
 	  private static final Logger logger = 
 	      Logger.getLogger(LogHandler.class.getName());
+	  
+	public LogHandler(){
+		super("break", "commit");
+	}
 
-	private static final long MAX_DELAY = 1000*60*10; //10m
 	@Override
-	public void doCommand(Message msg) {
-		LogEntry newEntry = new LogEntry(msg);
-		LogDAO.put(newEntry);
+	public void doCommand(Message msg, String argument) {
 		
 	    Channel channel = msg.channel;
-		Long now = newEntry.millisecondDate();
+		Date now = new Date();
 		
 		try{
-			if (now - msg.channel.getLogSectionEnd().getTime() > MAX_DELAY){
+			if (channel.isHubLinked()){
 					List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
 					JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
 					
@@ -39,24 +40,22 @@ public class LogHandler implements CommandHandler {
 									    + " to " + msg.channel.getLogSectionEnd() 
 									    + " to ClientHub client " + msg.channel.getName() + " successfully.");
 	
-							channel.setLogSectionStart(new Date(now));
+							channel.setLogSectionStart(now);
 						}
-				}
+			}else{
+				channel.sendDirect("Channel isn't linked to CH.  If it should, report.", msg.member);
+			}
 			
 		}catch(Exception e){
 			logger.severe(e.toString());
 			e.printStackTrace();
 			
 		}finally{
-			channel.setLogSectionEnd(new Date(now));
+			channel.setLogSectionEnd(now);
 			channel.put();
 		}
 	}
- 
-	@Override
-	public boolean matches(Message msg) {
-		return !msg.channel.isLoggingDisabled();
-	}
+
 
 	@Override
 	public String documentation() {
