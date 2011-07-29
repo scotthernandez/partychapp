@@ -20,6 +20,7 @@ import org.json.JSONArray;
 
 public class CronClientHubLogServlet  extends HttpServlet {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = 
 			Logger.getLogger(CronClientHubLogServlet.class.getName());
   

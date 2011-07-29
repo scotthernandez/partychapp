@@ -13,7 +13,6 @@ import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.logging.ChannelLog;
 import com.imjasonh.partychapp.logging.LogDAO;
 import com.imjasonh.partychapp.logging.LogEntry;
-import com.imjasonh.partychapp.logging.LogJSONUtil;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
@@ -32,7 +31,6 @@ import java.util.logging.Logger;
 import javax.persistence.Embedded;
 import javax.persistence.Id;
 
-import org.json.JSONArray;
 
 @Unindexed
 @Cached
@@ -488,6 +486,7 @@ public class Channel implements Serializable{
     sendMessage(message, getMembersToSendTo(sender));
     
     if(isLogging()){
+    	channelLog.sectionEnd = new Date();
         LogDAO.put(new LogEntry(message, "Activity", this));
     }
   }
@@ -497,6 +496,7 @@ public class Channel implements Serializable{
 	sendMessage(reply, getMembersToSendTo(message.member));
 	
 	if(isLogging()){
+    	channelLog.sectionEnd = new Date();
 		LogDAO.put(new LogEntry(message));
 	}
 	  
@@ -506,6 +506,7 @@ public class Channel implements Serializable{
     sendMessage(message, getMembersToSendTo());
 	
 	if(isLogging()){
+    	channelLog.sectionEnd = new Date();
 		LogDAO.put(new LogEntry(message, "Activity", this));
 	}
   }
@@ -679,30 +680,20 @@ public class Channel implements Serializable{
 		return channelLog.maxLength();
 	}
 
-	public void logToClientHub(){
-		
-		Date now = new Date();
-		
-		try{
-			List<LogEntry> log = LogDAO.getLogByDates(getName(), channelLog.sectionStart, channelLog.sectionEnd);
-			JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
-			
-				if(log.size() > 0 && ClientHubAPI.postLogJSON(name, json)){
-					logger.info("Sent logs from " + channelLog.sectionStart
-							    + " to " + channelLog.sectionEnd
-							    + " to ClientHub client " + name + " successfully.");
+	public Date getLogSectionEnd(){
+		return channelLog.sectionEnd;
+	}
 	
-					channelLog.sectionStart = now;
-				}
-			
-		}catch(Exception e){
-			logger.severe(e.toString());
-			e.printStackTrace();
-			
-		}finally{
-			channelLog.sectionEnd = now;
-			put();
-		}
+	public Date getLogSectionStart(){
+		return channelLog.sectionStart;
+	}
+	
+	public Date setLogSectionEnd(Date date){
+		return channelLog.sectionEnd = date;
+	}
+	
+	public Date setLogSectionStart(Date date){
+		return channelLog.sectionStart = date;
 	}
   
 }

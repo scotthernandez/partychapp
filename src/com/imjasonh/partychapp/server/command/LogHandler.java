@@ -28,7 +28,19 @@ public class LogHandler extends SlashCommand {
 	public void doCommand(Message msg, String argument) {
 		Channel channel = msg.channel;
 		if (channel.isHubLinked()){
-			channel.logToClientHub();
+			try{
+				List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
+				  JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
+				  if(log.size() > 0){
+					  if (ClientHubAPI.postLogJSON(channel.getName(), json)){
+						  channel.setLogSectionStart(new Date());
+						  channel.setLogSectionEnd(new Date());
+						  channel.put();
+					  }
+				  }
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 		}else{
 			channel.sendDirect("Channel isn't linked to CH.  If it should, report.", msg.member);
 		}
