@@ -453,9 +453,19 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     <servlet-class>com.imjasonh.partychapp.server.web.CronAndTasksServlet</servlet-class>
   </servlet>
 
+ <servlet>
+    <servlet-name>cronclienthubloghandler</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.CronClientHubLogServlet</servlet-class>
+  </servlet>
+
   <servlet-mapping>
     <servlet-name>cronandtaskshandler</servlet-name>
-    <url-pattern>/cron/*</url-pattern>
+    <url-pattern>/cron/STATS_CRON_JOB</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>cronclienthubloghandler</servlet-name>
+    <url-pattern>/cron/CLIENTHUB_LOG_CRON_JOB</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -465,13 +475,22 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 
   <security-constraint>
     <web-resource-collection>
-      <url-pattern>/cron/*</url-pattern>
+      <url-pattern>/cron/CLIENTHUB_LOG_CRON_JOB</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
 
+  <security-constraint>
+    <web-resource-collection>
+      <url-pattern>/cron/STATS_CRON_JOB</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  
   <security-constraint>
     <web-resource-collection>
       <url-pattern>/tasks/*</url-pattern>

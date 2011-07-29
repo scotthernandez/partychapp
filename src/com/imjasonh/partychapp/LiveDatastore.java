@@ -146,6 +146,11 @@ public class LiveDatastore extends Datastore {
 	  return reasons;
   }
 
+  public List<Channel> getAllChannels() {
+	  List<Channel> channels = ofy().query(Channel.class).list();
+	  return channels;
+  }
+  
   @Override
   public void put(Object o) {
 	try{

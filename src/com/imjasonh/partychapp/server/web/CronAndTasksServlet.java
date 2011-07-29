@@ -21,7 +21,7 @@ public class CronAndTasksServlet  extends HttpServlet {
       throws IOException {
     try {
       Datastore.instance().startRequest();
-      
+      System.out.println("foo");
       String[] paths = req.getRequestURI().split("/");
       String taskName = paths[paths.length - 1];
       

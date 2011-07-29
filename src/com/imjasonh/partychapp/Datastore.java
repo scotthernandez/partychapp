@@ -142,4 +142,9 @@ public abstract class Datastore{
 
   public abstract void deleteChannelByName(String names);
 
+
+public List<Channel> getAllChannels() {
+	return null;
+}
+
 }
