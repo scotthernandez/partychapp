@@ -48,15 +48,15 @@ public class CronClientHubLogServlet  extends HttpServlet {
 				  List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
 				  JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
 				  if(log.size() > 0){
-			  			logger.warning("cron logger has old stuff");
-
-					  if (ClientHubAPI.postLogJSON(channel.getName(), json)){
-							logger.warning("cron logger sent old stuff");
-
-						  channel.setLogSectionStart(new Date(now));
-						  channel.setLogSectionEnd(new Date(now));
-						  channel.put();
-					  }
+					logger.warning("cron logger has old stuff");
+					
+					ClientHubAPI.postLogJSON(channel.getName(), json);
+					logger.warning("cron logger sent old stuff");
+					
+					channel.setLogSectionStart(new Date(now));
+					channel.setLogSectionEnd(new Date(now));
+					channel.put();
+					  
 				  }
 			  }
     	  }

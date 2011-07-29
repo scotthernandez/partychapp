@@ -55,13 +55,12 @@ public class ClientHubAPI
 		}
     }
 
-    private static HttpResponse secureRequest(HttpUriRequest request) throws Exception
+
+
+    private static HttpResponse secureRequest(HttpUriRequest request) throws Exception, ClientHubAPIException
     {
     	if (PASSWORD == null){
-    		//TODO:
-    		//throws ClientHubAPIException("No Password. Cannot make secure request.")
-    		//maybe use assert() instead.
-    		System.out.println("No pass.");
+    		throw new ClientHubAPIException("No Password. Cannot make secure request.");
     	}
     	
         List<String> authpref = new ArrayList<String>();
@@ -157,7 +156,7 @@ public class ClientHubAPI
     }
     
     //FIXME: Change uri from test to actual API call /clienthub/api/upload/chatlog/[client_name]
-    public static boolean postLogJSON(String client, JSONArray array) throws Exception{
+    public static void postLogJSON(String client, JSONArray array) throws Exception, ClientHubAPIException {
         URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/echo/", null, null);
         HttpPost post = new HttpPost(uri);
         
@@ -180,15 +179,14 @@ public class ClientHubAPI
         		if (object.getBoolean("error")){
         			logger.warning("ClientHub returned error: " + object.optString("message", "Internal message: no error message found from ClientHub."));
         		}else{
-        			return true;
+        			return;
         		}
         	}
         	
         }else{
         	logger.severe("Unrecognized response from clienthub.");
         }
-        
-    	return false;
+        throw new ClientHubAPIException();
     }
     
     public static int getContactLevel(String client, String email) {
@@ -216,4 +214,5 @@ public class ClientHubAPI
     	
     	postLogJSON("monster.com", new JSONArray(jsonArray));
     }
+    
 }

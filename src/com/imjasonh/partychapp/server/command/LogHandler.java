@@ -30,26 +30,21 @@ public class LogHandler extends SlashCommand {
 		if (/*channel.isHubLinked()*/true){
 			try{
 				List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
-				  JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
-				  if(log.size() > 0){
-					  if (ClientHubAPI.postLogJSON(channel.getName(), json)){
-						  channel.setLogSectionStart(new Date());
-						  channel.setLogSectionEnd(new Date());
-						  channel.put();
-					      channel.sendDirect("Post to ClientHub was successful.", msg.member);
-					  }else{
-					      channel.sendDirect("Posting to ClientHub failed.  Check the GAE log, and notify to dcrosta.", msg.member);
-					  }
-				  }
+				JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
+				ClientHubAPI.postLogJSON(channel.getName(), json);
+				channel.setLogSectionStart(new Date());
+				channel.setLogSectionEnd(new Date());
+				channel.put();
+				channel.sendDirect("Post to ClientHub was successful.", msg.member);
 			}catch (Exception e) {
+			      channel.sendDirect("Posting to ClientHub failed.  Check the GAE log, and notify to dcrosta.", msg.member);
+					
 				logger.warning("Weird exception trying to /break.");
 			}
 		}else{
 			channel.sendDirect("Channel isn't linked to CH.  If it should, report.", msg.member);
 		}
 	}
-	
-	
 
 	@Override
 	public String documentation() {
