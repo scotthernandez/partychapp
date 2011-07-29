@@ -30,7 +30,7 @@ public class ClientHubAPI
         Logger.getLogger(ClientHubAPI.class.getName());
 
     static final String SCHEME = "https";
-    static final String HOST = "dev.10gen.com";
+    static final String HOST = "www.10gen.com";
     static final int PORT = 443;
     static final String REALM = "clienthub";
 
@@ -133,14 +133,14 @@ public class ClientHubAPI
     
     //FIXME: Change uri from test to actual API call /clienthub/api/upload/chatlog/[client_name]
     public static boolean postLogJSON(String client, JSONArray array) throws Exception{
-        URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/upload/chatlog/" + client, null, null);
+        URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/echo/", null, null);
         HttpPost post = new HttpPost(uri);
         
         logger.severe("Information I'll be sending: " + array.toString());
         post.setEntity(new StringEntity(array.toString()));
         
-        HttpEntity entity = secureRequest(post).getEntity();
-        //HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
+        //HttpEntity entity = secureRequest(post).getEntity();
+        HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
         
     	InputStream stream = entity.getContent();
         InputStreamReader reader = new InputStreamReader(stream);

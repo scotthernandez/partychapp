@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -54,4 +55,8 @@ public class InMemoryCachingDatastore extends CachingDatastore {
   @Override protected void invalidateCache(String key) {
     cache.remove(key);
   }    
+
+  public Collection<Channel> getAllChannels() {
+      return wrapped.getAllChannels();
+  }
 }
