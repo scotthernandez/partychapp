@@ -4,3 +4,4 @@ war/WEB-INF/appengine-generated/local_db.bin
 war/partychapp_compiled.js
 */.DS_Store
 .DS_Store
+war/config.properties

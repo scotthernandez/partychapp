@@ -1,4 +1,7 @@
 package com.xgen.partychapp.clienthub;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -30,15 +33,37 @@ public class ClientHubAPI
         Logger.getLogger(ClientHubAPI.class.getName());
 
     static final String SCHEME = "https";
-    static final String HOST = "www.10gen.com";
+    static final String HOST = "dev.10gen.com";
     static final int PORT = 443;
     static final String REALM = "clienthub";
 
     static final String USERNAME = "partychapp";
-    static final String PASSWORD = "VG7VoQDFV64YJIhUUMlIwnjrUScBF9GG";
+    static final String PASSWORD = initPass();
+    
+    static String initPass(){
+    	Properties prop = new Properties();
+    	try {
+			prop.load(new FileInputStream("config.properties"));
+			logger.severe("Pass set to: "+ prop.getProperty("apiPassword"));
+			return prop.getProperty("apiPassword");
+		} catch (FileNotFoundException e) {
+			logger.severe("ClientHubAPI config properties file was not found.  Won't be authenticated.");
+			return null;
+		} catch (IOException e) {
+			logger.severe(e.toString());
+			return null;
+		}
+    }
 
     private static HttpResponse secureRequest(HttpUriRequest request) throws Exception
     {
+    	if (PASSWORD == null){
+    		//TODO:
+    		//throws ClientHubAPIException("No Password. Cannot make secure request.")
+    		//maybe use assert() instead.
+    		System.out.println("No pass.");
+    	}
+    	
         List<String> authpref = new ArrayList<String>();
         authpref.add(AuthPolicy.DIGEST);
 
@@ -139,8 +164,8 @@ public class ClientHubAPI
         logger.severe("Information I'll be sending: " + array.toString());
         post.setEntity(new StringEntity(array.toString()));
         
-        //HttpEntity entity = secureRequest(post).getEntity();
-        HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
+        HttpEntity entity = secureRequest(post).getEntity();
+        //HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
         
     	InputStream stream = entity.getContent();
         InputStreamReader reader = new InputStreamReader(stream);

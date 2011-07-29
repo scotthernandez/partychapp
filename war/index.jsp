@@ -22,7 +22,7 @@
 Talk or XMPP.</p>
 
 <%
-	//ClientHubAPI.testPostToCH();
+	ClientHubAPI.testPostToCH();
 	if (Configuration.isConfidential) {
 %>
 <h3>Are messages confidential?</h3>
