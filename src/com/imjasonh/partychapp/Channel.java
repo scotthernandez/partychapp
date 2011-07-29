@@ -13,6 +13,7 @@ import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.logging.ChannelLog;
 import com.imjasonh.partychapp.logging.LogDAO;
 import com.imjasonh.partychapp.logging.LogEntry;
+import com.imjasonh.partychapp.logging.LogJSONUtil;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
@@ -30,6 +31,8 @@ import java.util.logging.Logger;
 
 import javax.persistence.Embedded;
 import javax.persistence.Id;
+
+import org.json.JSONArray;
 
 @Unindexed
 @Cached
@@ -163,23 +166,6 @@ public class Channel implements Serializable{
 	    channelLog.enable(bool);
   }
   
-
-//TODO: Date is mutable, so this is unsafe.
-public Date getLogSectionStart() {
-	return channelLog.sectionStart;
-}
-
-public void setLogSectionStart(Date logSectionStart) {
-	channelLog.sectionStart = logSectionStart;
-}
-
-public Date getLogSectionEnd() {
-	return channelLog.sectionEnd;
-}
-
-public void setLogSectionEnd(Date logSectionEnd) {
-	channelLog.sectionEnd = logSectionEnd;
-}
 
 /**
    * Adds a member to the channel. This may alter the member's alias by
@@ -667,30 +653,56 @@ public void setLogSectionEnd(Date logSectionEnd) {
     }
   }
 
-public void removeAllUsers(){
-	Datastore.instance().startRequest();
-    List<String> membersToRemove = Lists.newArrayList();
-    
-    for (Member m : mutableMembers()) {
-        membersToRemove.add(m.getJID());
-    }
-	for (String jid : membersToRemove){
-		User user = Datastore.instance().getUserByJID(jid);
-        if (user != null) {
-          removeMember(user);
-        } else {
-          // If we can't find a matching User, we should still remove the
-          // member from the channel
-          logger.warning("Could not find a User object for " + jid);
-          Member memberToRemove = getMemberByJID(jid);
-          mutableMembers().remove(memberToRemove);
-        }
-   }
-	Datastore.instance().endRequest();
-}
+	public void removeAllUsers(){
+		Datastore.instance().startRequest();
+	    List<String> membersToRemove = Lists.newArrayList();
+	    
+	    for (Member m : mutableMembers()) {
+	        membersToRemove.add(m.getJID());
+	    }
+		for (String jid : membersToRemove){
+			User user = Datastore.instance().getUserByJID(jid);
+	        if (user != null) {
+	          removeMember(user);
+	        } else {
+	          // If we can't find a matching User, we should still remove the
+	          // member from the channel
+	          logger.warning("Could not find a User object for " + jid);
+	          Member memberToRemove = getMemberByJID(jid);
+	          mutableMembers().remove(memberToRemove);
+	        }
+	   }
+		Datastore.instance().endRequest();
+	}
 
-public int logMaxLength() {
-	return channelLog.maxLength();
-}
+	public int logMaxLength() {
+		return channelLog.maxLength();
+	}
+
+	public void logToClientHub(){
+		
+		Date now = new Date();
+		
+		try{
+			List<LogEntry> log = LogDAO.getLogByDates(getName(), channelLog.sectionStart, channelLog.sectionEnd);
+			JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
+			
+				if(log.size() > 0 && ClientHubAPI.postLogJSON(name, json)){
+					logger.info("Sent logs from " + channelLog.sectionStart
+							    + " to " + channelLog.sectionEnd
+							    + " to ClientHub client " + name + " successfully.");
+	
+					channelLog.sectionStart = now;
+				}
+			
+		}catch(Exception e){
+			logger.severe(e.toString());
+			e.printStackTrace();
+			
+		}finally{
+			channelLog.sectionEnd = now;
+			put();
+		}
+	}
   
 }

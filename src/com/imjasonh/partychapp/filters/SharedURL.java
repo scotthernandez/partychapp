@@ -11,8 +11,8 @@ import com.googlecode.objectify.annotation.Unindexed;
 public class SharedURL {
 	  
 
-	  //private list sharedURL
 	  public static final int SHARED_URL_LIMIT = 5;
+	  public static final int MAX_TITLE_SIZE = 25;
 	  
 	  @Id
 	  private String urlString;
@@ -35,7 +35,7 @@ public class SharedURL {
 		  this.urlString = url;
 		  this.jid = jid;
 		  this.annotation = annotation;
-		  this.title = title;
+		  this.title = title.substring(0, Math.min(MAX_TITLE_SIZE, title.length()));
 		  this.description = description;
 		  this.time = new Date();
 	  }

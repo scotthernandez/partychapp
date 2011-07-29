@@ -54,7 +54,7 @@ public class SharedHandler extends SlashCommand{
 			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i < shared.size(); i++){
 				Member m = msg.channel.getMemberByJID(shared.get(i).getJID());
-				String line = "("+i+") ["+m.getAlias()+"] - ";
+				String line = "("+i+") ["+(m != null ? m.getAlias() : shared.get(i).getJID())+"] - ";
 				if (!Strings.isNullOrEmpty(shared.get(i).getTitle()) && !verbose){
 					line += shared.get(i).getTitle();
 				}else{

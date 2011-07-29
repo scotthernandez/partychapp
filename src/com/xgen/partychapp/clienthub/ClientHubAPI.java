@@ -24,19 +24,13 @@ import org.json.JSONObject;
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.io.CharStreams;
 
-import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.Datastore;
-import com.imjasonh.partychapp.logging.LogDAO;
-import com.imjasonh.partychapp.logging.LogEntry;
-import com.imjasonh.partychapp.logging.LogJSONUtil;
-
 public class ClientHubAPI
 {
     private static final Logger logger = 
         Logger.getLogger(ClientHubAPI.class.getName());
 
     static final String SCHEME = "https";
-    static final String HOST = "www.10gen.com";
+    static final String HOST = "dev.10gen.com";
     static final int PORT = 443;
     static final String REALM = "clienthub";
 
@@ -58,15 +52,6 @@ public class ClientHubAPI
         HttpResponse response = client.execute(request);
         
         return response;
-    }
-    
-    public static void runTest() throws Exception{
-        
-        System.out.println(getClientContactList("monster.com"));
-        System.out.println(getClientContact("monster.com", "scott@10gen.com"));
-       // System.out.println(getClientContact("monster.co", "scott@10gen.com"));
-    	
-        System.out.println("postTest: " + postTest());
     }
     
     public static List<ClientHubContact> listFromEntity(HttpEntity entity) throws Exception{
@@ -148,20 +133,20 @@ public class ClientHubAPI
     
     //FIXME: Change uri from test to actual API call /clienthub/api/upload/chatlog/[client_name]
     public static boolean postLogJSON(String client, JSONArray array) throws Exception{
-        URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/echo", null, null);
+        URI uri = URIUtils.createURI(SCHEME, HOST, -1, "/clienthub/api/upload/chatlog/" + client, null, null);
         HttpPost post = new HttpPost(uri);
         
         logger.severe("Information I'll be sending: " + array.toString());
         post.setEntity(new StringEntity(array.toString()));
         
-        //FIXME: HttpEntity entity = secureRequest(post).getEntity();
-        HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
+        HttpEntity entity = secureRequest(post).getEntity();
+        //HttpEntity entity = new StringEntity("{error:false, message:'stump'}");
         
     	InputStream stream = entity.getContent();
         InputStreamReader reader = new InputStreamReader(stream);
         String jsonString = CharStreams.toString(reader); 	
         
-        //logger.severe("String received from echo: " + jsonString);
+        logger.severe("String received from echo: " + jsonString +", w/ length: " + jsonString.length());
         
         if (((Character)jsonString.charAt(0)).compareTo('{') == 0){
 
@@ -181,33 +166,6 @@ public class ClientHubAPI
     	return false;
     }
     
-    public static boolean postTest(){
-		
-		//TODO if(msg.channel.isHubLinked()){
-		Channel channel = Datastore.instance().getChannelByName("asdf");
-		
-		Calendar start = new GregorianCalendar();
-		start.set(1990, 1, 1);
-		
-			List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), start.getTime(), new Date());
-			JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
-			try{
-				if(ClientHubAPI.postLogJSON(channel.getName(), json)){
-					logger.info("Sent logs from " + channel.getLogSectionStart() 
-							    + " to " + channel.getLogSectionStart() 
-							    + " to ClientHub client " + channel.getName() + "successfully.");
-					return true;
-				}else{
-					logger.warning("Failed to send logs to ClientHub client " + channel.getName());
-				}
-			}catch(Exception e){
-				logger.severe(e.toString());
-				e.printStackTrace();
-			}
-			return false;
-		
-    }
-    
     public static int getContactLevel(String client, String email) {
     	ClientHubContact chc = null;
 		try {
@@ -224,5 +182,13 @@ public class ClientHubAPI
     	else
     		return 1;
     	
+    }
+    
+    public static void testPostToCH() throws Exception{
+    	String jsonArray = "[{\"user\":\"test@example.com\"," +
+    						 "\"content\":\"This is text.\"," +
+    						 "\"time\": { \"$date\": "+(new Date()).getTime()+" }}]";
+    	
+    	postLogJSON("monster.com", new JSONArray(jsonArray));
     }
 }
