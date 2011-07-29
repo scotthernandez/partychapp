@@ -4,6 +4,8 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page import="com.imjasonh.partychapp.Configuration" %>
 <%@ page import="com.imjasonh.partychapp.Datastore"%>
+<%@ page import="com.imjasonh.partychapp.Ofy"%>
+<%@ page import="com.imjasonh.partychapp.Channel"%>
 <%@ page import="com.imjasonh.partychapp.server.HttpUtil"%>
 <%@ page import="com.xgen.partychapp.clienthub.ClientHubAPI"%>
 
@@ -20,7 +22,7 @@
 Talk or XMPP.</p>
 
 <%
-	ClientHubAPI.testPostToCH();
+	//ClientHubAPI.testPostToCH();
 	if (Configuration.isConfidential) {
 %>
 <h3>Are messages confidential?</h3>

@@ -244,6 +244,7 @@ public class LiveDatastore extends Datastore {
     
     public boolean hasNext() {
       return wrapped.hasNext();
+
     }
     
     public String next() {
