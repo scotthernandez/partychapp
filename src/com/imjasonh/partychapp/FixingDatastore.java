@@ -103,4 +103,8 @@ public class FixingDatastore extends WrappingDatastore {
 		wrapped.deleteChannelByName(name);
 		
 	}
+	
+    public Collection<Channel> getAllChannels() {
+        return wrapped.getAllChannels();
+    }
 }

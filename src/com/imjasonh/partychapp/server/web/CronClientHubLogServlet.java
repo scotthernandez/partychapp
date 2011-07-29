@@ -9,6 +9,7 @@ import com.xgen.partychapp.clienthub.ClientHubAPI;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -33,16 +34,25 @@ public class CronClientHubLogServlet  extends HttpServlet {
       Datastore.instance().startRequest();
       Long now = System.currentTimeMillis();
 
-      List <Channel> channels = Datastore.instance().getAllChannels();
-      
+      Collection<Channel> channels = Datastore.instance().getAllChannels();
+		logger.warning("cron bit is actually doing something");
+
       for (Channel channel : channels){
+			logger.warning("cron stuff has a channel");
+
 	    try {
-    	  if (channel.isHubLinked()) {
+    	  if (true) {
 	    	  if (now - channel.getLogSectionEnd().getTime() > 1*60*1000){ //more than 1 mins
+
+		  			logger.warning("cron logger sees old stuff");
 				  List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
 				  JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
 				  if(log.size() > 0){
+			  			logger.warning("cron logger has old stuff");
+
 					  if (ClientHubAPI.postLogJSON(channel.getName(), json)){
+							logger.warning("cron logger sent old stuff");
+
 						  channel.setLogSectionStart(new Date(now));
 						  channel.setLogSectionEnd(new Date(now));
 						  channel.put();
@@ -51,7 +61,7 @@ public class CronClientHubLogServlet  extends HttpServlet {
 			  }
     	  }
 	    } catch (Exception e) {
-			e.printStackTrace();
+			logger.warning("something got screwed up in the cron logger");
 		} finally {
 	      Datastore.instance().endRequest();
 	    }

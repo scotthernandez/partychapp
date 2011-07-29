@@ -210,5 +210,11 @@ public class FakeDatastore extends Datastore {
 		
 	}
 
+	@Override
+	public Collection<Channel> getAllChannels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

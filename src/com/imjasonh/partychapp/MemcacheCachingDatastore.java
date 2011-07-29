@@ -10,6 +10,7 @@ import net.sf.jsr107cache.CacheManager;
 import net.sf.jsr107cache.CacheStatistics;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,6 +99,10 @@ public class MemcacheCachingDatastore extends CachingDatastore {
     } catch (RuntimeException err) {
       logger.log(Level.SEVERE, "Could invalidate cache for " + key, err);
     }
+  }
+  
+  public Collection<Channel> getAllChannels() {
+      return wrapped.getAllChannels();
   }
 
 }
