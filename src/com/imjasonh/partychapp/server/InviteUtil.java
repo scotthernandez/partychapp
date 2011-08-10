@@ -28,7 +28,7 @@ public class InviteUtil {
       inviterName = String.format("%s (%s)", inviterAlias, inviterEmail);
     }
     String body = String.format(
-        "%s invited you to a chatroom named '%s'.\n\n" +
+        "%s invited you to a 10gen chatroom named '%s'.\n\n" +
         "To join, please accept the chat request from %s, and send it an IM. " +
         "That will automatically enter you into the chatroom. Once you're in " +
         "the room, try sending '/help' to it over IM for a handy list of " +
@@ -37,11 +37,13 @@ public class InviteUtil {
         "room) at: %s\n\n" +
         "For information about how to invite someone to chat in Gmail, read " +
         "http://mail.google.com/support/bin/answer.py?answer=33508.\n\n" +
-        "For more information about Partychat, try http://%s\n",
+        "You can change the address you wish to chat with at http://%s\n" +
+        "For more information about 10gen chat, try http://%s\n",
         inviterName, 
         channel.getName(),
         channel.serverJID().getId(),
         channel.webUrl(),
+        Configuration.webDomain + "/user",
         Configuration.webDomain);
     return channel.sendMail(subject, body, inviteeEmail);    
   }

@@ -12,6 +12,7 @@ import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.server.InviteUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.command.InviteHandler;
+import com.xgen.partychapp.clienthub.ClientHubAPIException;
 
 import java.io.IOException;
 import java.util.List;
@@ -61,10 +62,14 @@ public class CreateChannelServlet extends HttpServlet {
           datastore.getOrCreateUser(user.getEmail());
       try{
           channel = new Channel(serverJID, pchapUser);
-	  }catch (Exception e) {
+	  }catch (ClientHubAPIException e) {
 		  resp.getWriter().write("Sorry, the room name you chose is the name of a client on clienthub.<br>You must be a member of that clienthub page to register this room.");
 		  return;
-	  } 
+	  }catch (Exception e){
+		  logger.warning("Exception in channel creation: " + e);
+		  e.printStackTrace();
+		  return;
+	  }
       SendUtil.invite(user.getEmail(), serverJID);
 
       // works for "true" ignoring case

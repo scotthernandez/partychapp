@@ -16,8 +16,8 @@
       User user = userService.getCurrentUser();
 
       if (user != null) {
-    %> <a href="<%=userService.createLogoutURL(HttpUtil.getRequestUri(request))%>">sign
-    out of <%=user.getEmail()%></a> <%
+    %> <a href="<%=userService.createLogoutURL(HttpUtil.getRequestUri(request), Configuration.webDomain)%>">sign
+    out of <%=user.getEmail()%></a> | <a href="/user"> User </a><%
       } else {
      %> <a href="<%=userService.createLoginURL(HttpUtil.getRequestUri(request))%>">sign
     in</a> <%

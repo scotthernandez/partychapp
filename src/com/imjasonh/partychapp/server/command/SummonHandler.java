@@ -12,7 +12,6 @@ public class SummonHandler extends SlashCommand {
   @SuppressWarnings("unused")
   private static final Logger LOG = Logger.getLogger(SummonHandler.class.getName());
   
-  private BroadcastHandler bcast = new BroadcastHandler();
   
   public SummonHandler() {
     super("summon");
@@ -20,7 +19,6 @@ public class SummonHandler extends SlashCommand {
   
   @Override
   public void doCommand(Message msg, String argument) {
-    bcast.doCommand(msg);
     
     if (argument == null) {
       return;

@@ -71,6 +71,26 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   </servlet-mapping>
   
   <servlet>
+    <servlet-name>changeJidServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.UserChangeJIDServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>changeJidServlet</servlet-name>
+    <url-pattern>/user/edit/jid</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>changeAliasServlet</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.ChangeDefaultAliasServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>changeAliasServlet</servlet-name>
+    <url-pattern>/user/edit/alias</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>acceptChannelInvitationServlet</servlet-name>
     <servlet-class>com.imjasonh.partychapp.server.web.AcceptChannelInvitationServlet</servlet-class>
   </servlet>
@@ -405,6 +425,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   <security-constraint>
     <web-resource-collection>
       <url-pattern>/user</url-pattern>
+      <url-pattern>/user/*</url-pattern>
       <url-pattern>/user.jsp</url-pattern>
       <url-pattern>/channel/*</url-pattern>
       <url-pattern>/room/*</url-pattern>
@@ -446,7 +467,47 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
       <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
+  
+  <!-- Email Confirmation -->
+  <servlet>
+    <servlet-name>merge-choose-account</servlet-name>
+    <jsp-file>/merge-choose-account.jsp</jsp-file>
+  </servlet>
 
+  <servlet-mapping>
+    <servlet-name>merge-choose-account</servlet-name>
+    <url-pattern>/user/merge</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>merge-choose-addresses</servlet-name>
+    <jsp-file>/merge-choose-addresses.jsp</jsp-file>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>merge-choose-addresses</servlet-name>
+    <url-pattern>/user/merge/choose-addresses</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>merge-request</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.UserMergeRequest</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>merge-request</servlet-name>
+    <url-pattern>/user/merge/request</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>merge-verification</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.web.UserMergeVerify</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>merge-verification</servlet-name>
+    <url-pattern>/user/merge/verify</url-pattern>
+  </servlet-mapping>
   <!-- Cron and tasks -->
   <servlet>
     <servlet-name>cronandtaskshandler</servlet-name>

@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.live;
 
-import com.google.appengine.api.users.User;
-
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.server.web.AbstractChannelUserServlet;

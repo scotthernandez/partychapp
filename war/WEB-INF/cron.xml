@@ -20,6 +20,6 @@
   <cron>
     <url>/cron/CLIENTHUB_LOG_CRON_JOB</url>
     <description>Send stale chat to client hub logs</description>
-    <schedule>every 1 minutes</schedule>
+    <schedule>every 5 minutes</schedule>
   </cron>
 </cronentries>

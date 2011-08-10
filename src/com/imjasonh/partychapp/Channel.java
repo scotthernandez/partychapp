@@ -3,7 +3,6 @@ package com.imjasonh.partychapp;
 import com.google.appengine.api.xmpp.JID;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.googlecode.objectify.annotation.Cached;
 import com.googlecode.objectify.annotation.Serialized;
 import com.googlecode.objectify.annotation.Unindexed;
 
@@ -33,10 +32,10 @@ import javax.persistence.Id;
 
 
 @Unindexed
-@Cached
-@SuppressWarnings("serial")
 public class Channel implements Serializable{
 	/** start with 1 for all classes */
+	private static final long serialVersionUID = 1L;
+
 
     
   private static final Logger logger = 
@@ -55,7 +54,7 @@ public class Channel implements Serializable{
 
   private Boolean hubLinked = false;
   
-  private Boolean inviteOnly = false;
+  private Boolean inviteOnly = true;
 
   private List<String> invitedIds = Lists.newArrayList();
   
@@ -81,20 +80,26 @@ public class Channel implements Serializable{
   public Channel(JID serverJID, User creator) throws Exception{
 
 	this.name = serverJID.getId().split("@")[0];
-	if (ClientHubAPI.hasClient(this.name)){
-		int clientLevel = ClientHubAPI.getContactLevel(this.name, creator.getEmail());
-		if (clientLevel > 0) {
-			this.addMember(creator);
-			this.setInviteOnly(true);
+	List<ClientHubContact> contacts = ClientHubAPI.getClientContactList(this.name);
+	if (ClientHubAPI.hasClient(contacts)){
+		ClientHubContact creatorContact = ClientHubAPI.getClientContact(this.name, creator.getEmail());
+		hubLinked = true;
+		if (creatorContact != null) {
+			for (ClientHubContact contact : contacts){
+				Member newMember = this.addMember(contact);
+			    SendUtil.invite(newMember.getJID(), serverJID());
+			}
 		} else {
-			throw new Exception("You are not listed on that clienthub page");
+			throw new Exception("User not listed on clienthub page tried to create channel.");
 		}
 	} else {
-		this.addMember(creator).setPermissions(Permissions.ADMIN);
+		if(creator.is10Gen() || creator.getEmail().compareTo("circuitlego@gmail.com")==0){
+			this.addMember(creator).setPermissions(Permissions.ADMIN);
+		}else{
+			throw new Exception("Non 10gen user tried to create a channel.");
+		}
 	}
 
-	if (ClientHubAPI.hasClient(this.name)) 
-		hubLinked = true;
   }
    
   public Channel(Channel other) {
@@ -139,13 +144,18 @@ public class Channel implements Serializable{
   }
 
   public boolean canJoin(String email) {
-	if (ClientHubAPI.hasClient(getName()) ){
-	    if (ClientHubAPI.getContactLevel(getName(), email) > 0) {
-	    	return true;
-	    }
+	if (this.isHubLinked()){
+		try{
+			ClientHubContact contact = ClientHubAPI.getClientContact(getName(), email);
+		    if (contact != null) {
+		    	return true;
+		    }
+		}catch(ClientHubAPIException e){
+			return false;
+		}
 	}	
     return !isInviteOnly() ||
-        (invitedIds.contains(email.toLowerCase().trim()));
+        (invitedIds.contains(email.toLowerCase().trim())) || email.contains("@10gen.com");
   }
 
   public void setInviteOnly(boolean inviteOnly) {
@@ -171,31 +181,59 @@ public class Channel implements Serializable{
    * from invite list if invite-only room.
    */
   public Member addMember(User userToAdd) {
-    String jidNoResource = userToAdd.getJID().split("/")[0];
-    String email = jidNoResource;
-    if (!canJoin(email))
-    	throw new IllegalArgumentException("Not invited to this room");
-    Member addedMember = new Member(this, jidNoResource);
-    String dedupedAlias = addedMember.getAlias();
-    while (null != getMemberByAlias(dedupedAlias)) {
-      dedupedAlias = "_" + dedupedAlias;
+    Member addedMember = startMember(userToAdd);
+    
+    if (isHubLinked()){
+    	try{
+	    	ClientHubContact contact = ClientHubAPI.getClientContact(this.name, userToAdd.getEmail());
+	    	if (contact != null){
+		    	int perm = contact.getContactLevel();
+		    	if (perm == 3){
+		    		addedMember.setPermissions(Permissions.ADMIN);
+		    	} else if (perm == 2){
+		    		addedMember.setPermissions(Permissions.MOD);
+		    	}
+	    	}
+    	}catch(ClientHubAPIException e){
+    		//act as if it's a normal member.
+    		//not sure if this is the preferred behavior.
+    	}
     }
-    addedMember.setHidden(false);
-    addedMember.setAlerted(true);
-    addedMember.setAlias(dedupedAlias);
-    if (ClientHubAPI.hasClient(getName()) ){
-    	int perm = ClientHubAPI.getContactLevel(getName(), email);
+    
+    this.put();
+    return addedMember;    
+  }
+  
+  private Member addMember(ClientHubContact contact) {
+	    User userToAdd = Datastore.instance().getOrCreateUser(contact.getEmail());
+	    Member addedMember = startMember(userToAdd);
+	    
+    	int perm = contact.getContactLevel();
     	if (perm == 3){
     		addedMember.setPermissions(Permissions.ADMIN);
     	} else if (perm == 2){
     		addedMember.setPermissions(Permissions.MOD);
     	}
-    }
-    mutableMembers().add(addedMember);
-    userToAdd.addChannel(getName());
-    userToAdd.put();
-    this.put();
-    return addedMember;    
+	    
+	    this.put();
+	    return addedMember;    
+	  }
+  
+  private Member startMember(User userToAdd){
+	    
+		    Member addedMember = new Member(this, userToAdd);
+		    String dedupedAlias = addedMember.getAlias();
+		    while (null != getMemberByAlias(dedupedAlias)) {
+		      dedupedAlias = "_" + dedupedAlias;
+		    }
+		    addedMember.setHidden(false);
+		    addedMember.setAlerted(true);
+		    addedMember.setAlias(dedupedAlias);
+		    
+		    mutableMembers().add(addedMember);
+		    userToAdd.addChannel(getName());
+		    userToAdd.put();
+		    return addedMember;    
   }
   
   private Set<Member> mutableMembers() {
@@ -215,8 +253,8 @@ public class Channel implements Serializable{
     userToRemove.put();
   }
 
-  private List<Member> getMembersToSendTo() {
-    return getMembersToSendTo(null);
+  private List<Member> getMembersToSendTo(String msg) {
+    return getMembersToSendTo(null, msg);
   }
 
   /**
@@ -224,11 +262,11 @@ public class Channel implements Serializable{
    *          a JID to exclude (for example the person sending the broadcast message)
    * @return an array of JIDs to send a message to, excluding snoozing members.
    */
-  private List<Member> getMembersToSendTo(Member exclude) {
+  private List<Member> getMembersToSendTo(Member exclude, String msg) {
     List<Member> recipients = Lists.newArrayList();
     for (Member member : getMembers()) {
       if (!member.equals(exclude)
-          && member.getSnoozeStatus() != SnoozeStatus.SNOOZING) {
+          && member.getSnoozeStatus(msg) != SnoozeStatus.SNOOZING) {
         recipients.add(member);
       }
     }
@@ -326,6 +364,40 @@ public class Channel implements Serializable{
     }
   }
 
+  public void changeMember(User o, User n){
+	  Member m = getMemberByJID(o.getJID());
+	  assert(m != null);
+	  m.setJID(n.getJID());
+  }
+  
+  public void changeMember(User u1, User u2, User n){
+	  Member m1 = getMemberByJID(u1.getJID());
+	  Member m2 = getMemberByJID(u2.getJID());
+	  
+	  if (m1 == m2){
+		  logger.severe("Tried to merge same member.");
+		  return;
+	  }
+	  
+	  if (m1 == null){
+		  changeMember(u2, n);
+		  return;
+	  }
+	  
+	  if (m2 == null){
+		  changeMember(u1, n);
+		  return;
+	  }
+	  
+	  if (m1.hasPermissions(m2.getPermissions())){
+		  removeMember(u2);
+		  m1.setJID(n.getJID());
+	  }else{
+		  removeMember(u1);
+		  m2.setJID(n.getJID());
+	  }
+  }
+  
   /**
    * Remove a user or invitee by alias ID.
    * @return True if someone was removed
@@ -336,8 +408,12 @@ public class Channel implements Serializable{
       member = getMemberByJID(new JID(id));
     }
     if (member != null) {
-      invite(member.getJID());
-      removeMember(Datastore.instance().getUserByJID(member.getJID()));
+      if (Datastore.instance().getUserByJID(member.getJID()) == null){
+    	  members.remove(member);
+      }else{
+	      invite(member.getJID());
+	      removeMember(Datastore.instance().getUserByJID(member.getJID()));
+      }
       this.put();
       return true;
     }
@@ -353,15 +429,6 @@ public class Channel implements Serializable{
   }
 
   public void put() {
-	try{
-		throw new Exception("");
-	}catch (Exception e){
-	logger.log(Level.INFO, "Channel put by " + 
-                             e.getStackTrace()[1].getClassName() + 
-                             "." +
-                             e.getStackTrace()[1].getMethodName() + 
-                             "()!" );
-	}
     Datastore.instance().put(this);
   }
 
@@ -459,7 +526,7 @@ public class Channel implements Serializable{
   private Set<JID> sendMessage(
         String message, List<JID> withSequenceId, List<JID> noSequenceId) {
     incrementSequenceId();
-    awakenSnoozers();
+    awakenSnoozers(message);
 
     String messageWithSequenceId = message + " (" + sequenceId + ")";
 
@@ -483,7 +550,7 @@ public class Channel implements Serializable{
   
   //TODO: Add log?
   public void broadcast(String message, Member sender) {
-    sendMessage(message, getMembersToSendTo(sender));
+    sendMessage(message, getMembersToSendTo(sender, message));
     
     if(isLogging()){
     	channelLog.sectionEnd = new Date();
@@ -493,7 +560,7 @@ public class Channel implements Serializable{
   
   public void broadcast(Message message){
 	 String reply = message.member.getAliasPrefix() + message.content;
-	sendMessage(reply, getMembersToSendTo(message.member));
+	sendMessage(reply, getMembersToSendTo(message.member, message.content));
 	
 	if(isLogging()){
     	channelLog.sectionEnd = new Date();
@@ -503,7 +570,7 @@ public class Channel implements Serializable{
   }
 
   public void broadcastIncludingSender(String message) {
-    sendMessage(message, getMembersToSendTo());
+    sendMessage(message, getMembersToSendTo(message));
 	
 	if(isLogging()){
     	channelLog.sectionEnd = new Date();
@@ -542,26 +609,27 @@ public class Channel implements Serializable{
     return sendSMS(body, getMembers());
   }
   
-  private void awakenSnoozers() {
+  private void awakenSnoozers(String msg) {
     // awaken snoozers and broadcast them awaking.
     Set<Member> awoken = Sets.newHashSet();
     for (Member member : getMembers()) {
-      if (member.unsnoozeIfNecessary()) {
+      if (member.unsnoozeIfNecessary(msg)) {
         awoken.add(member);
       }
     }
     
     if (!awoken.isEmpty()) {
-      put();
-      StringBuilder sb = new StringBuilder();
-      for (Member m : awoken) {
-        if (sb.length() > 0) {
-          sb.append("\n");
+        put();
+        for (Member m : awoken) {
+          sendDirect("_You are no longer snoozing._", m);
         }
-        sb.append("_" + m.getAlias() + " is no longer snoozing_");
       }
-      broadcastIncludingSender(sb.toString());
-    }
+  }
+  
+  public void awakenAllSnoozers(){
+	    for (Member member : getMembers()) {
+	      member.setSnoozeUntil(null);
+	    }
   }
 
   private void incrementSequenceId() {

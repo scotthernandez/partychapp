@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
-
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Datastore;
@@ -31,11 +30,11 @@ public class AutoJoinChannelServlet extends AbstractChannelUserServlet {
     
     datastore.startRequest();
     try {
-        if (channel == null || !datastore.getOrCreateUser(user.getEmail()).isAdmin()){
+        if (channel == null || !user.isAdmin()){
           resp.getWriter().write("you are not an admin user and should not have this button in the first place sorry");
           return;
         } else {
-        	Member member = channel.getMemberByJID(user.getEmail());
+        	Member member = channel.getMemberByJID(user.getJID());
         	member.setHidden(false);
         	member.setAlerted(true);
         	channel.put();

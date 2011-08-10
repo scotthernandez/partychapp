@@ -118,11 +118,18 @@ public class PartychappServlet extends HttpServlet {
       }
   
       Channel channel = datastore.getChannelByName(channelName);
-      Member member = null; 
-      if (channel != null) {
-        member = channel.getMemberByJID(userJID);
+      if (channel == null){
+    	  return;
       }
+
+
       User user = datastore.getOrCreateUser(userJID.getId().split("/")[0]);
+      
+      if (userJID.getId().split("/")[0].compareTo(user.getJID()) != 0){
+    	  return;
+      }
+      
+      Member member =  channel.getMemberByJID(user.getJID());
       
       com.imjasonh.partychapp.Message message =
         new com.imjasonh.partychapp.Message.Builder()
@@ -134,26 +141,28 @@ public class PartychappServlet extends HttpServlet {
           .setUser(user)
           .setMessageType(MessageType.XMPP)
           .build();
+      
   
       Command.getCommandHandler(message)/*.doCommand(message)*/;
+      if (message.channel == null || message.member == null){
+    	  return; //message never amounted to anything.
+      }
       
       // {@link User#fixUp} can't be called by {@link FixingDatastore}, since
       // it can't know what channel the user is currently messaging, so we have
       // to do it ourselves.
       user.fixUp(message.channel);
-      user.maybeMarkAsSeen();
+      user.maybeMarkAsSeen();   
+      
       
       long requestTime = System.currentTimeMillis() - startTime;
       if (requestTime > 300) {
-        if (channel != null) {
           logger.warning("Request for channel " + channel.getName() + 
               " (" + channel.getMembers().size() + " members) took " +
               requestTime + "ms");
-        } else {
-          logger.warning("Request took " + requestTime + "ms");
-        }
+        
       }
-    } finally {    
+    } finally { 
       datastore.endRequest();
     }
   }

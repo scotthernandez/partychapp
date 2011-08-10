@@ -37,7 +37,7 @@ public class AcceptChannelInvitationServlet extends HttpServlet {
         return;
       }
       
-      if (!channel.getInvitees().contains(user.getEmail())) {
+      if (!channel.canJoin(user.getEmail())) {
         resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;        
       }
@@ -45,7 +45,7 @@ public class AcceptChannelInvitationServlet extends HttpServlet {
       channel.addMember(datastore.getOrCreateUser(user.getEmail()));
       channel.put();
       
-      resp.sendRedirect(channel.webUrl());
+      resp.sendRedirect("/channel/"+channel.getName());
     } finally {
       datastore.endRequest();
     }

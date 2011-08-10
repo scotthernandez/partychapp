@@ -1,9 +1,11 @@
 package com.imjasonh.partychapp;
 
 public class Configuration {
-  public static final String chatDomain = "chat-10gen.appspotchat.com";
-  public static final String webDomain = "chat-10gen.appspot.com";
-  public static final String mailDomain = "chat-10gen.appspotmail.com";
+  public static final String domain = "10genchat";
+  public static final String chatDomain = domain + ".appspotchat.com";
+  public static final String webDomain = "chat.10gen.com";
+  //public static final String webDomain = domain + ".appspot.com";
+  public static final String mailDomain = domain + ".appspotmail.com";
 
   public static final boolean isConfidential = false;
   

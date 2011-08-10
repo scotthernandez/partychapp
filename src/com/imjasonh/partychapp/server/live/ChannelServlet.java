@@ -2,7 +2,7 @@ package com.imjasonh.partychapp.server.live;
 
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
-import com.google.appengine.api.users.User;
+import com.imjasonh.partychapp.User;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Member;
@@ -33,7 +33,7 @@ public class ChannelServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException, ServletException {
-    Member member = channel.getMemberByJID(user.getEmail());
+    Member member = channel.getMemberByJID(user.getJID());
     member.onLivePing();
     channel.put();
     

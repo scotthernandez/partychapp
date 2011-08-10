@@ -27,7 +27,7 @@ public class LogHandler extends SlashCommand {
 	@Override
 	public void doCommand(Message msg, String argument) {
 		Channel channel = msg.channel;
-		if (/*channel.isHubLinked()*/true){
+		if (channel.isHubLinked()){
 			try{
 				List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
 				JSONArray json = LogJSONUtil.entriesMillisecondDate(log);

@@ -8,13 +8,14 @@
 <%@ page import="com.google.common.collect.Lists"%>
 <%@ page import="com.imjasonh.partychapp.Channel"%>
 <%@ page import="com.imjasonh.partychapp.Member"%>
+<%@ page import="com.imjasonh.partychapp.Datastore"%>
 
 <%
 	Channel channel = (Channel) request.getAttribute("channel");
 	UserService userService = UserServiceFactory.getUserService();
 	User user = userService.getCurrentUser();
-	Member member = channel.getMemberByJID(user.getEmail());
-	System.out.println("MEMBER: " + member);
+	com.imjasonh.partychapp.User u = Datastore.instance().getOrCreateUser(user.getEmail());
+	Member member = channel.getMemberByJID(u.getJID());
 	
 %>
 
@@ -22,7 +23,7 @@
 <table class="channel-table">
   <tr>
     <th>Alias</th>
-    <th>Email address</th>
+    <th>Jabber ID </th>
 <%  if (member != null && member.hasPermissions(Member.Permissions.MOD)){
 %>
     <th>Kick</th>

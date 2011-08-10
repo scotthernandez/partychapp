@@ -2,12 +2,6 @@ package com.imjasonh.partychapp.logging;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-
-import org.json.JSONArray;
-
-import com.imjasonh.partychapp.Channel;
-import com.xgen.partychapp.clienthub.ClientHubAPI;
 
 public class ChannelLog implements Serializable{
 	private static final long serialVersionUID = 1L;

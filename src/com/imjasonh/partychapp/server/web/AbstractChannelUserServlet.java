@@ -31,7 +31,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
     void invokeMethod(
         HttpServletRequest req,
         HttpServletResponse resp,
-        User user,
+        com.imjasonh.partychapp.User user,
         Channel channel)
         throws IOException, ServletException;
   }
@@ -43,7 +43,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       @Override public void invokeMethod(
           HttpServletRequest req,
           HttpServletResponse resp,
-          User user,
+          com.imjasonh.partychapp.User user,
           Channel channel) throws IOException, ServletException {
         doChannelGet(req, resp, user, channel);
       }
@@ -57,7 +57,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       @Override public void invokeMethod(
           HttpServletRequest req,
           HttpServletResponse resp,
-          User user,
+          com.imjasonh.partychapp.User user,
           Channel channel) throws IOException, ServletException {
         doChannelPost(req, resp, user, channel);
       }
@@ -72,19 +72,24 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       throws IOException, ServletException {
     UserService userService = UserServiceFactory.getUserService();
     User user = userService.getCurrentUser();
+
+    com.imjasonh.partychapp.User pUser = Datastore.instance().getUserByJID(user.getEmail());
     
     String channelName = getChannelName(req);
     Datastore datastore = Datastore.instance();
     datastore.startRequest();
     try {
-      Channel channel =
-          datastore.getChannelIfUserPresent(channelName, user.getEmail());
-      if (channel == null) {
-        resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-        return;
+      if (pUser != null){
+          Channel channel =
+              datastore.getChannelIfUserPresent(channelName, pUser.getJID());
+          if (channel == null) {
+              resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+              return;
+            }
+
+          methodAdapter.invokeMethod(req, resp, pUser, channel);
       }
       
-      methodAdapter.invokeMethod(req, resp, user, channel);
     } finally {
     	datastore.endRequest();
     }        
@@ -93,7 +98,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
   protected void doChannelGet(
       HttpServletRequest req,
       HttpServletResponse resp,
-      User user,
+      com.imjasonh.partychapp.User user,
       Channel channel)
       throws IOException, ServletException {
     resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -102,7 +107,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
   protected void doChannelPost(
       HttpServletRequest req,
       HttpServletResponse resp,
-      User user,
+      com.imjasonh.partychapp.User user,
       Channel channel)
       throws IOException, ServletException {
     resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);

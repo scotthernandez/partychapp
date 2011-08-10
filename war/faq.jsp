@@ -26,7 +26,6 @@
     <li><a href="#logging">What gets logged when I use Partychat?</a></li>
     <li><a href="#web-ui">Can I access Partychat from my browser?</a></li>
     <li><a href="#feedback">How can I give feedback?</a></li>
-    <li><a href="#name">Partychat or Partychapp?</a></li>
   </ul>
   
   <h3 id="commands">What are the commands I can use?</h3>
@@ -47,17 +46,17 @@
   <p>If you make a typo, you can easily do a search-and-replace to indicate that you really mean. You can do this by saying <code>s/<i>to replace</i>/<i>replacement</i></code>/, for example:</p>
   
   <blockquote>
-  <b>me:</b> man, Kushal sure is horny today.<br>
+  <b>me:</b> man, Kushal sure is quit today.<br>
   &nbsp;&nbsp;&nbsp;&nbsp;whoops<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;s/ho/co/<br>
-  <b class="alt">partychat:</b> dolapo meant <i>man, Kushal sure is corny today</i>
+  &nbsp;&nbsp;&nbsp;&nbsp;s/qui/quie/<br>
+  <b class="alt">partychat:</b> dolapo meant <i>man, Kushal sure is quiet today</i>
   </blockquote>
   
   <p>Even better, you can use this to to <a href="http://www.qwantz.com/index.php?comic=658">correct what others have said</a>, by prefixing it with their name:</p>
   
   <blockquote><b>dolapo:</b> that's corny, kushal<br>
-  <b class="alt">kushal:</b> dolapo: s/that's c/I'm h/<br>
-  <b class="alt2">partychat:</b> kushal thinks dolapo meant <i>I'm horny, kushal</i><br>
+  <b class="alt">kushal:</b> dolapo: s/that's /I'm /<br>
+  <b class="alt2">partychat:</b> kushal thinks dolapo meant <i>I'm corny, kushal</i><br>
   <b>dolapo:</b> seeya<br>
   <b class="alt">kushal:</b> dolapo: s/see/boo/<br>
   <b class="alt2">partychat:</b> kushal thinks dolapo meant <i>booya</i></blockquote>
@@ -66,9 +65,9 @@
   
 	<p>You can give points to things you like by typing ++ at the end of them
 	in your message, and the PlusPlusBot will keep track of them for you. For
-	example, you might say <code>partychat++ for being so handy</code>. This adds
-	one to the score for partychat, which you cab see by typing <code>/score
-	partychat</code>. Or you can take points away from things you dislike, such as
+	example, you might say <code>chat++ for being so handy</code>. This adds
+	one to the score for chat, which you cab see by typing <code>/score
+	chat</code>. Or you can take points away from things you dislike, such as
 	<code>kushal-- for another bad pun</code>.</p>
 	
 	<p>You can also see all the recent reasons why someone/something got points
@@ -76,15 +75,14 @@
 	room (see below), you can see all the things have points in that room,
 	along with handy graphs.</p>
   
-  <h3 id="logging">What gets logged when I use Partychat?</h3>
+  <h3 id="logging">What gets logged when I use 10gen Chat?</h3>
   
-  <p>What you say in a room in Partychat may be logged in various places, here's
+  <p>What you say in a room in chat may be logged in various places, here's
   the list of them as best as we can tell:</p>
   
-  <p><b>By Partychat:</b> If you enable logging for a room (controlled by the
-  <a href="#web-ui">web interface</a>), then recent messages (currently 10 for
-  each member) will be logged. This enables the <a href="#search-and-replace">search
-  and replace</a> feature and <code>/undo</code> commands to work.</p>
+  <p><b>By Us:</b> We log everything that is broadcast to all users.  That means that when 
+  you type <code>/list</code> it won't be recorded, but a normal message or a 
+  command like <code>/kick</code> will.</p>
 
   <p><b>By Gmail/Google Talk:</b> If you use a Gmail/Google Talk account, chats
   may be archived by default (this is what enables messages that were sent
@@ -97,31 +95,24 @@
   that client as well. Check your client's settings or documentation for more
   details.</p>
   
-  <h3 id="web-ui">Can I access Partychat from my browser?</h3>
+  <h3 id="web-ui">Can I access 10gen chat from my browser?</h3>
 
   <p>Sort of. Each room has a web page. If you
   <a href="<%=UserServiceFactory.getUserService().createLoginURL("/")%>">sign
   in</a>, you'll see a list of the rooms you're in on the
   <a href="/">homepage</a>, with each room being a link. Alternatively, you
-  can visit <code>http://partychapp.appspot.com/room/<i>&lt;room name&gt;</i></code>
+  can visit <code>http://chat.10gen.com/room/<i>&lt;room name&gt;</i></code>
   to go to a room's web page directly.</p>
   
   <p>On the web page, you can change a room's <a href="#logging">logging</a>
   settings, see <a href="#plusplusbot">PlusPlusBot</a> scores, and invite
-  other users.</p>
+  other users depending on your level of permissions.</p>
   
   <h3 id="feedback">How can I give feedback?</h3>
   
   <p>You can give feedback to the developers at
 	<script type="text/javascript">printEmail()</script>.</p>
   
-  <h3 id="name">Partychat or Partychapp?</h3>
-  
-  <p>We're called Partychat, but due to various reasons we could not get
-  <code>partychat.appspot.com</code> when we switched to
-  <a href="http://code.google.com/appengine/">Google's App Engine</a>, so
-  getting a name that sounds like Partychat but also alludes to the fact that
-  we run on App Engine was the next best thing.</p>
 
   <jsp:include page="/include/footer.jsp"/>
 </body>

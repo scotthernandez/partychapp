@@ -16,8 +16,8 @@
 <%
   Channel channel = (Channel) request.getAttribute("channel");
   Datastore datastore = Datastore.instance();
-  User user = datastore.getUserByJID((String) request.getAttribute("email"));
-  Member member = channel.getMemberByJID(user.getEmail());
+  User user = datastore.getOrCreateUser((String) request.getAttribute("email"));
+  Member member = channel.getMemberByJID(user.getJID());
 %>
 
 <jsp:include page="include/head.jsp">
@@ -199,7 +199,7 @@
 	        </tr>
 	        <tr class="description">
 	          <td></td>
-	          <td>Recent messages are recorded for <a href="/about/faq#search-and-replace">search-and-replace</a> and <a href="/about/faq#commands">/undo</a></td>
+	          <td>Recent messages are recorded for <a href="/about/faq#search-and-replace">search-and-replace</a></td>
 	        </tr>
 	      </table>
 	
@@ -210,7 +210,7 @@
 	        </tr>
 	        <tr class="description">
 	          <td></td>
-	          <td><a href="/about/faq#search-and-replace">Search-and-replace</a> and <a href="/about/faq#commands">/undo are disabled.</td>
+	          <td><a href="/about/faq#search-and-replace">Search-and-replace</a> is disabled.</td>
 	        </tr>
 	      </table>
 	    </td>

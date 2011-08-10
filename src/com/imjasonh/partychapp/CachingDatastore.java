@@ -52,20 +52,26 @@ public abstract class CachingDatastore extends WrappingDatastore {
   }
   
   private boolean addToRequestCacheIfNecessary(Object o) {
-    String key = null;
     if (o instanceof Channel) {
-      key = getKey((Channel) o);
+      String key = getKey((Channel) o);
+      return addKeyToRequestCache(key, o);
     } else if (o instanceof User) {
-      key = getKey((User) o);
-    }
-    
-    if (key != null) {
-      Map<String, Object> cache = requestCache.get();
-      cache.put(key, o);
-      return true;
+      String jidKey = getJIDKey((User) o);
+      String emailKey = getEmailKey((User) o);
+      return (addKeyToRequestCache(emailKey, o) && addKeyToRequestCache(jidKey, o));
+      
     }
     
     return false;
+  }
+  
+  private boolean addKeyToRequestCache(String key, Object o){
+	  if (key != null){
+	      Map<String, Object> cache = requestCache.get();
+	      cache.put(key, o);
+	      return true;
+	  }
+	  return false;
   }
   
   private Object getFromRequestCacheOrCache(String key) {
@@ -89,8 +95,12 @@ public abstract class CachingDatastore extends WrappingDatastore {
   /**
    * Should be private, but is also used by {@link UserServlet}.
    */  
-  public String getKey(User user) {
+  public String getJIDKey(User user) {
     return getKey(User.class, user.getJID());
+  }
+   
+  public String getEmailKey(User user) {
+    return getKey(User.class, user.getEmail());
   }
   
   /**
@@ -99,8 +109,12 @@ public abstract class CachingDatastore extends WrappingDatastore {
   public void invalidateCacheIfNecessary(Object o) {
     if (o instanceof Channel) {
       invalidateCache(getKey((Channel) o));
+      requestCache.get().remove(getKey((Channel) o));
     } else if (o instanceof User) {
-      invalidateCache(getKey((User) o));
+      invalidateCache(getJIDKey((User) o));
+      invalidateCache(getEmailKey((User) o));
+      requestCache.get().remove(getJIDKey((User) o));
+      requestCache.get().remove(getEmailKey((User) o));
     }
   }
   
@@ -152,11 +166,13 @@ public abstract class CachingDatastore extends WrappingDatastore {
     if (user == null) {
       user = wrapped.getUserByJID(jid);
       if (user != null) {
-        addToCache(key, user);
+    	addToCache(getEmailKey(user), user);
+    	addToCache(getJIDKey(user), user);
       }
     }
     return user;    
   }
+
 
   @Override public User getUserByPhoneNumber(String phoneNumber) {
     return wrapped.getUserByPhoneNumber(phoneNumber);

@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
-
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 
@@ -29,7 +28,7 @@ public class DeleteChannelServlet extends AbstractChannelUserServlet {
     Datastore datastore = Datastore.instance();
     datastore.startRequest();
     try {
-        if (datastore.getOrCreateUser(user.getEmail()).isAdmin()){
+        if (user.isAdmin()){
         	channel.removeAllUsers();
         	datastore.deleteChannelByName(channel.getName());
             resp.getWriter().write("success");

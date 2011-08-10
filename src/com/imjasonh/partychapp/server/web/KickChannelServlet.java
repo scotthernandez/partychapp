@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
-
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
@@ -33,7 +32,8 @@ public class KickChannelServlet extends AbstractChannelUserServlet {
   		String alias = email;
   		
 		Member toKick = channel.getMemberByJID((String) req.getParameter("member"));
-	    Member member = channel.getMemberByJID(user.getEmail());
+		
+	    Member member = channel.getMemberByJID(user.getJID());
 	    
 	    if (toKick != null){
 	    	email = toKick.getJID();

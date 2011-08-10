@@ -1,32 +1,25 @@
 package com.imjasonh.partychapp.server.command;
 
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.json.JSONArray;
-
-import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.Member.Permissions;
-import com.imjasonh.partychapp.logging.LogDAO;
-import com.imjasonh.partychapp.logging.LogEntry;
-import com.imjasonh.partychapp.logging.LogJSONUtil;
-import com.xgen.partychapp.clienthub.ClientHubAPI;
+import com.imjasonh.partychapp.User;
 
 
 public class TestPlaceholderHandler extends SlashCommand {
 
-	  private static final Logger logger = 
+	  @SuppressWarnings("unused")
+	private static final Logger logger = 
 	      Logger.getLogger(TestPlaceholderHandler.class.getName());
 
   public TestPlaceholderHandler() {
-    super("testlog");
+    super("");
   }
 
   @Override
   public void doCommand(Message msg, String action) {
-	  
   }
 
   public String documentation() {

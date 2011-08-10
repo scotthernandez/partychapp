@@ -33,7 +33,9 @@ public class HiddenHandler extends SlashCommand {
   }
   
   public String documentation() {
-    return "/hidden - set whether or not you show up in the list of room members";
+	//"/hidden - set whether or not you show up in the list of room members"
+	//for user admins only
+    return null;
   }
   
   @Override

@@ -108,7 +108,7 @@ public class ChannelServlet extends HttpServlet {
         }
         writer.write("\n");
         writer.write("\t\talias: " + member.getAlias() + "\n");
-        writer.write("\t\tsnooze: " + member.getSnoozeStatus() + "\n");
+        writer.write("\t\tsnooze: " + member.getSnoozeStatus("") + "\n");
         if (member.getLastLivePing() != null) {
           writer.write("\t\tlast live ping: " + member.getLastLivePing() + "\n");
         }

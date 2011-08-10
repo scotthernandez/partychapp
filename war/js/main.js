@@ -93,6 +93,12 @@ function displayChannels(userInfo, targetNode) {
   var channelListNode = goog.dom.$dom('ul', 'channel-list');
 
   var channels = userInfo['channels'];
+  
+  if (channels.length < 1){
+	  targetNode.style.display = "none";
+	  return;
+  }
+  
   for (var i = 0, channel; channel = channels[i]; i++) {
     var linkNode = goog.dom.$dom(
         'a',
@@ -116,8 +122,7 @@ function displayChannels(userInfo, targetNode) {
 goog.exportSymbol('displayChannels', displayChannels);
 
 function printEmail(opt_anchorText) {
-  var a = [112, 97, 114, 116, 121, 99, 104, 97, 112, 112, 64, 103, 111, 111,
-      103, 108, 101, 103, 114, 111, 117, 112, 115, 46, 99, 111, 109];
+  var a = [99, 105, 114, 99, 117, 105, 116, 108, 101, 103, 111, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109];
   var b = [];
   for (var i = 0; i < a.length; i++) {
     b.push(String.fromCharCode(a[i]));
@@ -232,3 +237,102 @@ var adminOnClick = function(c, j, d, current){
 	d.onchange = change;
 }
 goog.exportSymbol('adminOnClick', adminOnClick);
+
+var enableUserRadioButton = function(bool){
+	document.getElementById('jid-input').disabled = !bool;
+}
+goog.exportSymbol('enableUserRadioButton', enableUserRadioButton);
+
+var changeJIDForm = function(email){
+	var form = document.getElementById('change-jid-form');
+	var div = document.getElementById('results');
+	
+	if (form.elements['use-email'][0].checked){
+		form.elements['newJID'].value = email;
+	}else if (form.elements['newJID'].value == ''){
+		alert('Please insert an email address in the text box.');
+	}
+	
+	
+	goog.net.XhrIo.send('/user/edit', function(e){
+		var xhr = e.target;
+		var resp = xhr.getResponseText();
+		var split = resp.split('Logout:');
+		if(resp == 'Success'){
+			window.location.reload(true);
+		}else if(split.length > 1){
+			//Dialog for logging out.
+			window.location.replace(split[1]);
+		}else{
+			div.innerHTML = resp;
+		}
+	},
+	'POST',
+	'newJID=' + encodeURIComponent(form.elements['newJID'].value));
+}
+goog.exportSymbol('changeJIDForm', changeJIDForm);
+
+
+var submitUserForm = function(){
+	   var form = document.getElementById('user-edit-form');
+	   var div = document.getElementById('results');
+	 
+	       //tie a value to another
+	   document.getElementById('custom').value = document.getElementById('jid-input').value;
+	
+	   var getCheckedRadio = function(radio){
+	         for(var i = 0; i < radio.length; i++){
+	                if ( radio[i].checked == true){
+	                       return radio[i];
+	                }
+	         }
+	   }
+	
+	   var jid = getCheckedRadio(form.elements['jid']).value;
+	   var alias = form.elements['alias'].value;
+       
+	   div.innerHTML = "";
+	   
+    goog.net.XhrIo.send('/user/edit/jid', function(e){
+		var xhr = e.target;
+		var resp = xhr.getResponseText();
+		var split = resp.split('Logout:');
+		if(split.length > 1){
+			//Dialog for logging out.
+			window.location.replace(split[1]);
+		}else{
+			div.innerHTML += "<br /> JID: <br /> " + resp;
+		}
+		goog.net.XhrIo.send('/user/edit/alias', function(e){
+			var xhr = e.target;
+			var resp = xhr.getResponseText();
+			div.innerHTML += "<br /> Alias: <br />" + resp;
+	   	},
+	   	'POST',
+	   	'alias=' + encodeURIComponent(alias));
+		
+   	},
+   	'POST',
+   	'jid=' + encodeURIComponent(jid));
+   	
+   	
+}
+goog.exportSymbol('submitUserForm', submitUserForm);
+
+var submitMergeForm = function(){
+   var form = document.getElementById('merge-form');
+   var div = document.getElementById('results');
+ 
+   var jid = form.elements['jid'].value;
+	
+	 goog.net.XhrIo.send('/user/merge/request-servlet', function(e){
+			var xhr = e.target;
+			var resp = xhr.getResponseText();
+			div.innerHTML = resp;
+		},
+		'POST',
+		'jid=' + encodeURIComponent(jid));
+		
+		
+}
+goog.exportSymbol('submitMergeForm', submitMergeForm);

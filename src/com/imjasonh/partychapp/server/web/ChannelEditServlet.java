@@ -1,6 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
+import com.imjasonh.partychapp.User;
 import com.google.appengine.api.xmpp.JID;
 
 import com.imjasonh.partychapp.Channel;
@@ -37,8 +37,8 @@ public class ChannelEditServlet extends AbstractChannelUserServlet {
     channel.setMiniLogDisabled(
         !Boolean.parseBoolean(req.getParameter("minilog")));
     
-    com.imjasonh.partychapp.User partychapp_user = Datastore.instance().getUserByJID(user.getEmail());
-    Member member = channel.getMemberByJID(user.getEmail());
+    com.imjasonh.partychapp.User partychapp_user = Datastore.instance().getUserByJID(user.getJID());
+    Member member = channel.getMemberByJID(user.getJID());
     Builder builder = new Builder()
     							.setChannel(channel)
     							.setUser(partychapp_user)

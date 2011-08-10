@@ -305,6 +305,26 @@ h2 {
   text-decoration: none;
 }
 
+/*Merge users info table*/
+.merge-users-info{
+  overflow: hidden; 
+  table-layout:fixed;
+  width: 100%;
+  
+}
+.merge-users-info th, .header-col{
+  background: #eee;
+  padding: 5px;
+  font-weight: bold;
+  
+}
+.merge-users-info .reg-col {
+	background: #ddd;
+ 	overflow: hidden; 
+ 	padding: 3px;
+ 	font-size: .8em;
+}
+
 /* $Id: example.css,v 1.5 2006/03/27 02:44:36 pat Exp $ */
 
 /*--------------------------------------------------

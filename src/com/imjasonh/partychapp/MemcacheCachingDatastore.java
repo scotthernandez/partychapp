@@ -36,10 +36,10 @@ public class MemcacheCachingDatastore extends CachingDatastore {
     applicationVersion = SystemProperty.applicationVersion.get();
     // Strip off timestamp from version, so that only major versions cause
     // cache invalidations.
-    int periodPosition = applicationVersion.indexOf(".");
-    if (periodPosition != -1) {
-      applicationVersion = applicationVersion.substring(0, periodPosition);
-    }
+//    int periodPosition = applicationVersion.indexOf(".");
+//    if (periodPosition != -1) {
+//      applicationVersion = applicationVersion.substring(0, periodPosition);
+//    }
     try {
       cache = CacheManager.getInstance().getCacheFactory().createCache(
           ImmutableMap.of(GCacheFactory.EXPIRATION_DELTA, EXPIRATION_SEC));

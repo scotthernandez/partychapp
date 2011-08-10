@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
-
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
@@ -33,7 +32,9 @@ public class PermissionsChannelServlet extends AbstractChannelUserServlet {
   		
   		
 		Member toModify = channel.getMemberByJID((String) req.getParameter("toModify"));
-	    Member member = channel.getMemberByJID(user.getEmail());
+
+		
+	    Member member = channel.getMemberByJID(user.getJID());
 	    
 	    if (toModify == null){
 	    	resp.getWriter().write("Error: Member to change permissions does not exist.");

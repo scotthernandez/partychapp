@@ -1,9 +1,7 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
-
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 
 import java.io.IOException;
@@ -26,12 +24,12 @@ public class LeaveChannelServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException {
-    Member member = channel.getMemberByJID(user.getEmail());
+    Member member = channel.getMemberByJID(user.getJID());
     String broadcast =
         member.getAlias() + " has left the room (" + member.getJID() + ")";
     channel.broadcast(broadcast, member);
 
-    channel.removeMember(Datastore.instance().getUserByJID(user.getEmail()));
+    channel.removeMember(user);
     channel.put();
     
     resp.sendRedirect("/");

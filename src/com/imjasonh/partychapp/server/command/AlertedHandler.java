@@ -33,7 +33,9 @@ public class AlertedHandler extends SlashCommand {
 	  }
 	  
 	  public String documentation() {
-	    return "/alertme - set whether or not you receive messages and alerts for this room";
+		//"/alertme - set whether or not you receive messages and alerts for this room"
+		//for user admins only
+	    return null;
 	  }
 	  
 	  @Override

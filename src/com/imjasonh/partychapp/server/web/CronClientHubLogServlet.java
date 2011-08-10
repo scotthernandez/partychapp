@@ -21,7 +21,6 @@ import org.json.JSONArray;
 
 public class CronClientHubLogServlet  extends HttpServlet {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = 
 			Logger.getLogger(CronClientHubLogServlet.class.getName());
   
@@ -35,23 +34,18 @@ public class CronClientHubLogServlet  extends HttpServlet {
       Long now = System.currentTimeMillis();
 
       Collection<Channel> channels = Datastore.instance().getAllChannels();
-		logger.warning("cron bit is actually doing something");
 
       for (Channel channel : channels){
-			logger.warning("cron stuff has a channel");
 
 	    try {
-    	  if (true) {
-	    	  if (now - channel.getLogSectionEnd().getTime() > 1*60*1000){ //more than 1 mins
+    	  if (channel.isHubLinked()) {
+	    	  if (now - channel.getLogSectionEnd().getTime() > 15*60*1000){ //more than 15 mins
 
-		  			logger.warning("cron logger sees old stuff");
 				  List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());
 				  JSONArray json = LogJSONUtil.entriesMillisecondDate(log);
 				  if(log.size() > 0){
-					logger.warning("cron logger has old stuff");
 					
 					ClientHubAPI.postLogJSON(channel.getName(), json);
-					logger.warning("cron logger sent old stuff");
 					
 					channel.setLogSectionStart(new Date(now));
 					channel.setLogSectionEnd(new Date(now));

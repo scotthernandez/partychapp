@@ -29,6 +29,10 @@ public class AliasHandler extends SlashCommand {
     }
 
     String oldAlias = msg.member.getAlias();
+    if (msg.user.defaultAlias == null){
+    	msg.user.defaultAlias = alias;
+    	msg.user.put();
+    }
     msg.member.setAlias(alias);
     msg.channel.put();
     

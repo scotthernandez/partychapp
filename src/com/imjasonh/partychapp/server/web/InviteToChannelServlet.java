@@ -1,9 +1,9 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.server.InviteUtil;
 import com.imjasonh.partychapp.server.command.InviteHandler;

@@ -24,7 +24,6 @@ import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.Target;
 
-import com.xgen.partychapp.clienthub.*;
 
 public class ChannelServlet extends HttpServlet {
   public static final long serialVersionUID = 985749740983755L;
@@ -60,11 +59,11 @@ public class ChannelServlet extends HttpServlet {
 
       com.imjasonh.partychapp.User pcUser = datastore.getOrCreateUser(user.getEmail());
 		
-      if (channel.getMemberByJID(user.getEmail()) != null) {
-        handleChannelWithMember(req, resp, channel, user.getEmail());
+      if (channel.getMemberByJID(pcUser.getJID()) != null) {
+        handleChannelWithMember(req, resp, channel, pcUser.getJID());
       } else if (pcUser.isAdmin()) {
-    	if (!channel.canJoin(pcUser.getEmail())) {
-    		channel.invite(pcUser.getEmail());
+    	if (!channel.canJoin(pcUser.getJID())) {
+    		channel.invite(pcUser.getJID());
     	}
     	Member member = channel.addMember(pcUser);
     	member.setPermissions(Permissions.ADMIN);
@@ -72,12 +71,12 @@ public class ChannelServlet extends HttpServlet {
     	member.setHidden(true);
     	channel.put();
     	pcUser.put();
-    	handleChannelWithMember(req, resp, channel, user.getEmail());
-      } else if (ClientHubAPI.getContactLevel(channel.getName(), user.getEmail()) != 0	) {
-    	  System.out.println("is client hub memeber");
+    	handleChannelWithMember(req, resp, channel, pcUser.getJID());
+      } /*else if (ClientHubAPI.getContactLevel(channel.getName(), user.getEmail()) != 0	) {
+    	  //Is clienthub member
     	  channel.addMember(pcUser);
-    	  handleChannelWithMember(req, resp, channel, user.getEmail());
-      } else if (channel.getInvitees().contains(user.getEmail())) {
+    	  handleChannelWithMember(req, resp, channel, pcUser.getJID());
+      } */else if (channel.canJoin(pcUser.getJID())) {
         handleChannelWithInvitee(req, resp, channel);
       } else if (channel.isInviteOnly()) {
         handleChannelRequestInvitation(req, resp, channel);

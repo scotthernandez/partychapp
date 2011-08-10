@@ -34,7 +34,11 @@ public class FixingDatastore extends WrappingDatastore {
   
   @Override
   public User getUserByJID(String jid) {
-    return wrapped.getUserByJID(jid);
+    User u = wrapped.getUserByJID(jid);
+    if (u != null) {
+        u.fixUp();
+    }
+    return u;
   }
 
   @Override

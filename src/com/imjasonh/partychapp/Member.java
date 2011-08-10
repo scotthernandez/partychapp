@@ -1,12 +1,15 @@
 package com.imjasonh.partychapp;
 
+import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import com.google.common.collect.Lists;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class Member implements Serializable{
@@ -37,7 +40,11 @@ public class Member implements Serializable{
   
   private boolean hidden = false;
   
+  private Set<String> wakeWords = Sets.newHashSet();
+  
   transient private Channel channel;
+  
+  transient private User user;
   
   String phoneNumber;
   
@@ -62,7 +69,6 @@ public class Member implements Serializable{
 	  }
 	  
 	  public static Permissions fromString(String s){
-		  System.out.println("in: "+s); 
 		  for (Permissions permissions : Permissions.values()) {
 		      if (s.equals(permissions.s)){
 		    	  return permissions;
@@ -74,9 +80,9 @@ public class Member implements Serializable{
   
   public Member(){} //Objectify
   
-  public Member(Channel c, String jid) {
-    this.jid = jid;
-    this.alias = this.jid.split("@")[0]; // remove anything after "@" for default alias
+  public Member(Channel c, User u) {
+    this.jid = u.getJID();
+    this.alias =  u.defaultAlias != null ? u.defaultAlias : this.jid.split("@")[0]; // remove anything after "@" for default alias
     this.debugOptions = new DebuggingOptions();
     this.channel = c;
     this.permissions = Permissions.MEMBER;
@@ -97,7 +103,7 @@ public class Member implements Serializable{
     this.channel = null;
     
   }
-
+ 
   public boolean hasPermissions(Permissions p){
 	  return permissions.compareTo(p) >= 0 ? true : false;
   }
@@ -142,12 +148,16 @@ public class Member implements Serializable{
     return jid;
   }
   
-  public SnoozeStatus getSnoozeStatus() {
+  void setJID(String jid) {
+	  this.jid = jid;
+  }
+  
+  public SnoozeStatus getSnoozeStatus(String msg) {
     Date now = new Date();
     if (snoozeUntil == null) {
       return SnoozeStatus.NOT_SNOOZING;
     } else {
-      if (snoozeUntil.before(now)) {
+      if (snoozeUntil.before(now) || hasWakeWords(msg)) {
         return SnoozeStatus.SHOULD_WAKE;
       } else {
         return SnoozeStatus.SNOOZING;
@@ -155,7 +165,40 @@ public class Member implements Serializable{
     }
   }
 
-  public void setSnoozeUntil(Date snoozeUntil) {
+  private boolean hasWakeWords(String msg) {	  
+	if (wakeWords == null){
+	  wakeWords = Sets.newHashSet();
+    }
+	for (String word : wakeWords){
+		if (msg.toLowerCase().contains(word)){
+			return true;
+		}
+	}
+	return false;
+  }
+  
+  public boolean addWakeWord(String word){
+	  if (wakeWords == null){
+		  wakeWords = Sets.newHashSet();
+	  }
+	  return wakeWords.add(word.toLowerCase());
+  }
+  
+  public boolean removeWakeWord(String word){
+	  if (wakeWords == null){
+		  wakeWords = Sets.newHashSet();
+	  }
+	  return wakeWords.remove(word);
+  }
+  
+  public Collection<String> wakeWords(){
+	  if (wakeWords == null){
+		  wakeWords = Sets.newHashSet();
+	  }
+	  return Collections.unmodifiableSet(wakeWords);
+  }
+
+public void setSnoozeUntil(Date snoozeUntil) {
     this.snoozeUntil = snoozeUntil;
   }
 
@@ -163,8 +206,8 @@ public class Member implements Serializable{
     return snoozeUntil;
   }
   
-  public boolean unsnoozeIfNecessary() {
-    if (getSnoozeStatus() == SnoozeStatus.SHOULD_WAKE) {
+  public boolean unsnoozeIfNecessary(String msg) {
+    if (getSnoozeStatus(msg) == SnoozeStatus.SHOULD_WAKE) {
       setSnoozeUntil(null);
       return true;
     }
@@ -240,5 +283,9 @@ public class Member implements Serializable{
   
   public Date getLastLivePing() {
    return lastLivePing; 
+  }
+  
+  public void changeJID(String jid) {
+	  this.jid = jid;
   }
 }

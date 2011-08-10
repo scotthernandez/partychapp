@@ -41,6 +41,17 @@ public class ClientHubContact {
 		return isPrimary;
 	}
 	
+    public int getContactLevel() {
+
+    	if (this.isPrimary())
+    		return 3;
+    	else if (this.isXgen())
+    		return 2;
+    	else
+    		return 1;
+    	
+    }
+	
 	@Override
 	public String toString(){
 		return "CHContact: { email: " + this.email + "\n"

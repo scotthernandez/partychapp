@@ -1,8 +1,8 @@
 package com.imjasonh.partychapp.server.web;
 
-import com.google.appengine.api.users.User;
 import com.google.common.base.Strings;
 
+import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.filters.SharedURLDAO;
@@ -38,7 +38,7 @@ public class ChannelShareServlet extends AbstractChannelUserServlet {
       throws IOException, ServletException {
 	  
 
-      Member member = channel.getMemberByJID(user.getEmail());   
+      Member member = channel.getMemberByJID(user.getJID());   
       
     SharedURL shareUrl = fromRequest(req, member, channel);
     if (shareUrl == null) {
@@ -61,7 +61,7 @@ public class ChannelShareServlet extends AbstractChannelUserServlet {
       Channel channel)
       throws IOException {
 
-      Member member = channel.getMemberByJID(user.getEmail());   
+      Member member = channel.getMemberByJID(user.getJID());   
       
     SharedURL shareUrl = fromRequest(req, member, channel);
     if (shareUrl == null) {

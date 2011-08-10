@@ -16,7 +16,7 @@ public enum Command {
   INCOMING_SMS(new IncomingSMSHandler()),
   
   // these implicit handlers have to be first
-  CREATE_AND_JOIN(new CreateAndJoinCommand()),
+  //CREATE_AND_JOIN(new CreateAndJoinCommand()),
   JOIN(new JoinCommand()),
   
   // these can be in any order
@@ -31,8 +31,8 @@ public enum Command {
   ME(new MeHandler()),
   SHARE(new ShareHandler(ChainedUrlInfoService.DEFAULT_SERVICE)),
   SHARED(new SharedHandler()),
-  INVITE_ONLY(new InviteOnlyHandler()),
-  TOGGLE_LOGGING(new ToggleShortTermLoggingHandler()),
+  //INVITE_ONLY(new InviteOnlyHandler()),
+  //TOGGLE_LOGGING(new ToggleShortTermLoggingHandler()),
   INVITE(new InviteHandler()),
   KICK(new KickHandler()),
   STATUS(new StatusHandler()),
@@ -41,11 +41,17 @@ public enum Command {
   STATS(new StatsHandler(),Category.HIDDEN),
   GRAPH_SCORES(new GraphScoreHandler()),
   SNOOZE(new SnoozeHandler()),
-  SET_PHONE_NUMBER(new SetPhoneNumberHandler(),Category.HIDDEN),
-  SET_CARRIER(new SetCarrierHandler(),Category.HIDDEN),
-  BROADCAST_SMS(new SendBroadcastSMSHandler(),Category.HIDDEN),
+  //SET_PHONE_NUMBER(new SetPhoneNumberHandler(),Category.HIDDEN),
+  //SET_CARRIER(new SetCarrierHandler(),Category.HIDDEN),
+  //BROADCAST_SMS(new SendBroadcastSMSHandler(),Category.HIDDEN),
   DELETELOG(new DeleteLogHandler()),
   CLIENTHUBLOG(new LogHandler()),
+  ADDWAKE(new AddWakeWordHandler()),
+  VIEWWAKE(new ViewWakeWordHandler()),
+  REMOVEWAKE(new RemoveWakeWordHandler()),
+  IMPORTANT(new ImportantHandler()),
+  //TEST(new TestPlaceholderHandler()),
+  
   
   //Must go here to filter out bad SlashCommands
   SLASHMISTAKE(new SlashMistakeHandler()),
