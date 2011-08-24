@@ -1,8 +1,9 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.server.command.share;
 
 import com.google.common.collect.ImmutableMap;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.server.command.CommandHandlerTestCase;
 import com.imjasonh.partychapp.urlinfo.MockUrlInfoService;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
 

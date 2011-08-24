@@ -4,10 +4,10 @@ import com.google.common.base.Strings;
 
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.filters.SharedURL;
-import com.imjasonh.partychapp.filters.SharedURLDAO;
 import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.server.command.ShareHandler;
+import com.imjasonh.partychapp.server.command.share.ShareHandler;
+import com.imjasonh.partychapp.server.command.share.SharedURL;
+import com.imjasonh.partychapp.server.command.share.SharedURLDAO;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
 

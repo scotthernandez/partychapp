@@ -1,10 +1,11 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.ppb;
 
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.appengine.api.xmpp.JID;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.server.command.CommandHandlerTestCase;
 
 public class PPBHandlerTest extends CommandHandlerTestCase {
   PPBHandler ppb = new PPBHandler();

@@ -5,9 +5,11 @@ import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.logging.LogDAO;
 import com.imjasonh.partychapp.logging.LogEntry;
 import com.imjasonh.partychapp.logging.LogJSONUtil;
-import com.xgen.partychapp.clienthub.ClientHubAPI;
+import com.xgen.chat.clienthub.ClientHubAPI;
+import com.xgen.chat.clienthub.ClientHubHelper;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Collection;
 import java.util.Date;
@@ -38,7 +40,7 @@ public class CronClientHubLogServlet  extends HttpServlet {
       for (Channel channel : channels){
 
 	    try {
-    	  if (channel.isHubLinked()) {
+    	  if (ClientHubHelper.instance().isClient(channel)) {
 	    	  if (now - channel.getLogSectionEnd().getTime() > 15*60*1000){ //more than 15 mins
 
 				  List<LogEntry> log = LogDAO.getLogByDates(channel.getName(), channel.getLogSectionStart(), channel.getLogSectionEnd());

@@ -2,7 +2,6 @@ package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 
 public class StatsHandler extends SlashCommand {
   public StatsHandler() {
@@ -18,9 +17,5 @@ public class StatsHandler extends SlashCommand {
   public String documentation() {
     return "/stats - return system stats";
   }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MOD);
-  }
+
 }

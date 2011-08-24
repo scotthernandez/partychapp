@@ -38,8 +38,4 @@ public class AlertedHandler extends SlashCommand {
 	    return null;
 	  }
 	  
-	  @Override
-	  public boolean allows(Message msg) {
-	  	return msg.user.isAdmin();
-	  }
 	}

@@ -8,7 +8,6 @@
 <%@ page import="com.imjasonh.partychapp.Channel"%>
 <%@ page import="com.imjasonh.partychapp.server.HttpUtil"%>
 <%@ page import="com.imjasonh.partychapp.server.web.UserMergeVerify"%>
-<%@ page import="com.xgen.partychapp.clienthub.ClientHubAPI"%>
 
 
 <!DOCTYPE html>
@@ -33,7 +32,7 @@
     
 <%  }else{
 		boolean is10gen = user.getEmail().split("@")[1].compareTo("10gen.com") == 0;
-	  	if(is10gen || user.getEmail().compareTo("circuitlego@gmail.com") == 0){ %>
+	  	if(is10gen || userService.isUserAdmin()){ %>
 
 <p>Easily communicate with your co-workers and clients using Google Talk or XMPP.</p>
 

@@ -14,7 +14,7 @@ public abstract class SlashCommand implements CommandHandler {
 
   private final Pattern pattern;
 
-  SlashCommand(String name, String... otherNames) {
+  protected SlashCommand(String name, String... otherNames) {
     StringBuilder sb = new StringBuilder("^/(?:");
     sb.append(name);
     for (String otherName : otherNames) {
@@ -29,7 +29,7 @@ public abstract class SlashCommand implements CommandHandler {
    * Subclass do the actual work here, including validating argument
    * as needed.
    */
-  abstract void doCommand(Message msg, String argument);
+  protected abstract void doCommand(Message msg, String argument);
 
   public void doCommand(Message msg) {
     Matcher matcher = getMatcher(msg);

@@ -12,7 +12,7 @@ public class SendBroadcastSMSHandler extends SlashCommand {
   }
   
   @Override
-  void doCommand(Message msg, String argument) {
+  protected void doCommand(Message msg, String argument) {
     List<Member> recipients = msg.channel.broadcastSMS(msg.member.getAliasPrefix() + argument);
     String memberNames = "";
     for (Member m : recipients) {
@@ -29,10 +29,5 @@ public class SendBroadcastSMSHandler extends SlashCommand {
 
   public String documentation() {
     return null;
-  }
-
-  @Override
-  public boolean allows(Message msg) {
-  	return true;
   }
 }

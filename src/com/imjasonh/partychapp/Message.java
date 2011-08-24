@@ -107,7 +107,7 @@ public class Message {
       String content, MessageType messageType) {
     return createForTests(content, messageType, "neil@gmail.com");
   }
-  
+  //TODO:cleanup
   public static Message createForTests(
 	      String content, String channelName) {
 

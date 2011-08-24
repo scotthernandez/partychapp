@@ -1,12 +1,30 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.filters.SlashMistakeHandler;
-import com.imjasonh.partychapp.filters.TicketFilter;
-import com.imjasonh.partychapp.filters.LinkFilter;
+import com.imjasonh.partychapp.ppb.GraphScoreHandler;
+import com.imjasonh.partychapp.ppb.PPBHandler;
+import com.imjasonh.partychapp.ppb.ReasonsHandler;
+import com.imjasonh.partychapp.ppb.ScoreHandler;
+import com.imjasonh.partychapp.server.command.share.LinkFilter;
+import com.imjasonh.partychapp.server.command.share.ShareHandler;
+import com.imjasonh.partychapp.server.command.share.SharedHandler;
 import com.imjasonh.partychapp.urlinfo.ChainedUrlInfoService;
+import com.xgen.chat.clienthub.ClientHubSlashCommand;
+import com.xgen.chat.commands.TicketFilter;
+import com.xgen.chat.permissions.MemberPermissions;
+import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
 import java.util.logging.Logger;
+
+
+/*
+ * List of ways I have modified this class that I should not need to:
+ *  - Manual adding of handlers
+ *  - Checking permissions.  I couldn't extend either this class (an enum) 
+ *    or some of the commands themselves (package protected).
+ *    
+ *  --gabriel--
+ */
 
 public enum Command {
   // just to avoid craziness, let's assume we only let people broadcast from
@@ -16,7 +34,7 @@ public enum Command {
   INCOMING_SMS(new IncomingSMSHandler()),
   
   // these implicit handlers have to be first
-  //CREATE_AND_JOIN(new CreateAndJoinCommand()),
+  CREATE_AND_JOIN(new CreateAndJoinCommand()),
   JOIN(new JoinCommand()),
   
   // these can be in any order
@@ -33,24 +51,25 @@ public enum Command {
   SHARED(new SharedHandler()),
   //INVITE_ONLY(new InviteOnlyHandler()),
   //TOGGLE_LOGGING(new ToggleShortTermLoggingHandler()),
-  INVITE(new InviteHandler()),
-  KICK(new KickHandler()),
+  INVITE(new InviteHandler(), PermissionLevel.MOD),
+  KICK(new KickHandler(), PermissionLevel.MOD),
   STATUS(new StatusHandler()),
   SUMMON(new SummonHandler()),
-  DEBUG(new DebugHandler(),Category.HIDDEN),
-  STATS(new StatsHandler(),Category.HIDDEN),
+  DEBUG(new DebugHandler(), PermissionLevel.MOD,Category.HIDDEN),
+  STATS(new StatsHandler(), PermissionLevel.MOD,Category.HIDDEN),
   GRAPH_SCORES(new GraphScoreHandler()),
   SNOOZE(new SnoozeHandler()),
   //SET_PHONE_NUMBER(new SetPhoneNumberHandler(),Category.HIDDEN),
   //SET_CARRIER(new SetCarrierHandler(),Category.HIDDEN),
   //BROADCAST_SMS(new SendBroadcastSMSHandler(),Category.HIDDEN),
-  DELETELOG(new DeleteLogHandler()),
-  CLIENTHUBLOG(new LogHandler()),
+  DELETELOG(new DeleteLogHandler(), PermissionLevel.ADMIN),
+  CLIENTHUBLOG(new BreakLogHandler(), PermissionLevel.MOD),
   ADDWAKE(new AddWakeWordHandler()),
   VIEWWAKE(new ViewWakeWordHandler()),
   REMOVEWAKE(new RemoveWakeWordHandler()),
   IMPORTANT(new ImportantHandler()),
-  //TEST(new TestPlaceholderHandler()),
+  TEST(new TestPlaceholderHandler()),
+  CLIENTHUB(new ClientHubSlashCommand()),
   
   
   //Must go here to filter out bad SlashCommands
@@ -59,10 +78,10 @@ public enum Command {
   // these have to be after the slash-commands
   SEARCHREPLACE(new SearchReplaceHandler()),
   PLUSPLUSBOT(new PPBHandler()),
-
-  // this has to be last
   TICKETFILTER(new TicketFilter()),
   LINKFILTER(new LinkFilter(ChainedUrlInfoService.DEFAULT_SERVICE)),
+
+  // this has to be last
   BROADCAST(new BroadcastHandler()),
   ;
   
@@ -77,20 +96,30 @@ public enum Command {
   
   public final CommandHandler commandHandler;
   public final Category category;
+  public final PermissionLevel level;
 
   private Command(CommandHandler commandHandler) {
-    this(commandHandler, Category.DEFAULT);
+    this(commandHandler, PermissionLevel.MEMBER, Category.DEFAULT);
   }
   
-  private Command(CommandHandler commandHandler, Category category){
+  private Command(CommandHandler commandHandler, PermissionLevel level) {
+	    this(commandHandler, level, Category.DEFAULT);
+  }
+  
+  private Command(CommandHandler commandHandler, PermissionLevel level, Category category){
 	  this.commandHandler = commandHandler;
+	  this.level = level;
 	  this.category = category;
   }
 
   public static void getCommandHandler(Message msg) {
     for (Command command : Command.values()) {
-      if (command.commandHandler.matches(msg) && command.commandHandler.allows(msg)) {
-    	  command.commandHandler.doCommand(msg);
+      if (command.commandHandler.matches(msg)){
+    	  if(MemberPermissions.instance().hasLevel(msg.channel, msg.member, command.level)) {
+        	  command.commandHandler.doCommand(msg);
+    	  }else{
+    		  msg.channel.sendDirect("Not enough permissions to do command.", msg.member);
+    	  }
     	  return;
       }
     }

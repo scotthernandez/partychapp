@@ -46,10 +46,12 @@ public class User implements Serializable{
   
   String carrier;
   
+	//TODO:cleanup will have to deal w/ deserialization
   private boolean isAdmin = false;
   
+	//TODO:cleanup
   public String defaultAlias = null;
-  
+  //TODO:cleanup
   private String key = null;
   
   Date lastSeen;
@@ -102,11 +104,6 @@ public class User implements Serializable{
   public User(String address) {
     this.jid = address;
     this.email = address;
-    
-    //Hack to make myself admin.  Always. (for now).
-    if (address.compareToIgnoreCase("circuitlego@gmail.com") == 0){
-    	this.isAdmin = true;
-    }
   }
 
   public User(User other) { 
@@ -116,16 +113,6 @@ public class User implements Serializable{
     this.phoneNumber = other.phoneNumber;
     this.carrier = other.carrier;
     this.lastSeen = other.lastSeen;
-    this.isAdmin = other.isAdmin;
-    this.defaultAlias = other.defaultAlias;
-  }
-  
-  public boolean isAdmin(){
-	  return isAdmin;
-  }
-  
-  public void setAdmin(boolean b){
-	  isAdmin = b;
   }
 
   public String getJID() {
@@ -228,7 +215,7 @@ public class User implements Serializable{
       ", carrier: " + carrier + ", channelNames: " + channelNames +
       "]";
   }  
-  
+  //TODO:cleanup ?
   @Override public boolean equals(Object o){
 	  if (o instanceof User){
 		  User other = (User) o;
@@ -267,7 +254,7 @@ public class User implements Serializable{
       put();
     }
   }  
-  
+  //TODO:cleanup
   public void fixUp(){
 	  if (this.email == null){
 		  this.email = this.jid;
@@ -332,7 +319,7 @@ public class User implements Serializable{
     
     Datastore.instance().delete(src);
   }
-  
+  //TODO:cleanup everything down from here
   public void setEmail(String email){
 	  this.email = email;
   }

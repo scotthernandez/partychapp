@@ -57,14 +57,14 @@ public abstract class CachingDatastore extends WrappingDatastore {
       return addKeyToRequestCache(key, o);
     } else if (o instanceof User) {
       String jidKey = getJIDKey((User) o);
-      String emailKey = getEmailKey((User) o);
+      String emailKey = getEmailKey((User) o);//TODO:cleanup
       return (addKeyToRequestCache(emailKey, o) && addKeyToRequestCache(jidKey, o));
       
     }
     
     return false;
   }
-  
+  //TODO:cleanup
   private boolean addKeyToRequestCache(String key, Object o){
 	  if (key != null){
 	      Map<String, Object> cache = requestCache.get();
@@ -98,7 +98,7 @@ public abstract class CachingDatastore extends WrappingDatastore {
   public String getJIDKey(User user) {
     return getKey(User.class, user.getJID());
   }
-   
+   //TODO:cleanup
   public String getEmailKey(User user) {
     return getKey(User.class, user.getEmail());
   }
@@ -109,12 +109,9 @@ public abstract class CachingDatastore extends WrappingDatastore {
   public void invalidateCacheIfNecessary(Object o) {
     if (o instanceof Channel) {
       invalidateCache(getKey((Channel) o));
-      requestCache.get().remove(getKey((Channel) o));
     } else if (o instanceof User) {
       invalidateCache(getJIDKey((User) o));
-      invalidateCache(getEmailKey((User) o));
-      requestCache.get().remove(getJIDKey((User) o));
-      requestCache.get().remove(getEmailKey((User) o));
+      invalidateCache(getEmailKey((User) o));//TODO:cleanup
     }
   }
   
@@ -167,7 +164,7 @@ public abstract class CachingDatastore extends WrappingDatastore {
       user = wrapped.getUserByJID(jid);
       if (user != null) {
     	addToCache(getEmailKey(user), user);
-    	addToCache(getJIDKey(user), user);
+    	addToCache(getJIDKey(user), user);//TODO:cleanup
       }
     }
     return user;    
@@ -213,7 +210,7 @@ public abstract class CachingDatastore extends WrappingDatastore {
     requestCache.get().clear();
     wrapped.endRequest();
   }
-  
+  //TODO:cleanup
   @Override public void deleteChannelByName(String name) {
 	    String key = getKey(Channel.class, name);
 	    Channel channel = (Channel) getFromRequestCacheOrCache(key);

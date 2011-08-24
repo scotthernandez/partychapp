@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 
 
 public class ViewWakeWordHandler extends SlashCommand {
@@ -35,10 +34,5 @@ public class ViewWakeWordHandler extends SlashCommand {
 
   public String documentation() {
     return "/wakewords - list the words that will wake you from snoozing";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

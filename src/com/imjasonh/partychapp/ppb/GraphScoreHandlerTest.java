@@ -1,6 +1,7 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.ppb;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.server.command.CommandHandlerTestCase;
 
 public class GraphScoreHandlerTest extends CommandHandlerTestCase {
   PPBHandler ppb = new PPBHandler();

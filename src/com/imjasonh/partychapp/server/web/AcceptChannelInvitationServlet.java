@@ -6,6 +6,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
+import com.xgen.chat.clienthub.ClientHubAPIException;
+import com.xgen.chat.clienthub.ClientHubHelper;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -37,7 +39,7 @@ public class AcceptChannelInvitationServlet extends HttpServlet {
         return;
       }
       
-      if (!channel.canJoin(user.getEmail())) {
+      if (!channel.canJoin(user.getEmail()) && !ClientHubHelper.instance().isContact(channel, user.getEmail())) {
         resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;        
       }
@@ -46,7 +48,9 @@ public class AcceptChannelInvitationServlet extends HttpServlet {
       channel.put();
       
       resp.sendRedirect("/channel/"+channel.getName());
-    } finally {
+    } catch (ClientHubAPIException e) {
+    	resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	} finally {
       datastore.endRequest();
     }
   }

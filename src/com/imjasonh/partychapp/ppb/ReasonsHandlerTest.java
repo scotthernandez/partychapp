@@ -1,7 +1,9 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.ppb;
 
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.Message.MessageType;
+import com.imjasonh.partychapp.server.command.CommandHandlerTestCase;
+import com.imjasonh.partychapp.server.command.LeaveHandler;
 
 public class ReasonsHandlerTest extends CommandHandlerTestCase {
   ReasonsHandler handler = new ReasonsHandler();

@@ -35,7 +35,7 @@ public class FixingDatastore extends WrappingDatastore {
   @Override
   public User getUserByJID(String jid) {
     User u = wrapped.getUserByJID(jid);
-    if (u != null) {
+    if (u != null) {//TODO:cleanup
         u.fixUp();
     }
     return u;
@@ -102,7 +102,7 @@ public class FixingDatastore extends WrappingDatastore {
     return wrapped.getPersistentConfig();
   }
 
-	@Override
+	@Override//TODO:cleanup
 	public void deleteChannelByName(String name) {
 		wrapped.deleteChannelByName(name);
 		

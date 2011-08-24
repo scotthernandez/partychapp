@@ -1,10 +1,13 @@
-package com.imjasonh.partychapp.server.web;
+package com.xgen.chat.permissions;
 
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.Member.Permissions;
+import com.imjasonh.partychapp.server.web.AbstractChannelUserServlet;
+import com.imjasonh.partychapp.server.web.LeaveChannelServlet;
+
+import com.xgen.chat.permissions.MemberPermissions.*;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -28,7 +31,7 @@ public class PermissionsChannelServlet extends AbstractChannelUserServlet {
       Channel channel)
       throws IOException {
 	
-	  	Permissions permissions = Permissions.fromString((String)req.getParameter("permissions")); 
+	  	PermissionLevel level = PermissionLevel.fromString((String)req.getParameter("permissions")); 
   		
   		
 		Member toModify = channel.getMemberByJID((String) req.getParameter("toModify"));
@@ -47,10 +50,11 @@ public class PermissionsChannelServlet extends AbstractChannelUserServlet {
 	    
 
 		Datastore.instance().startRequest();
-	    if(member.hasPermissions(permissions)){
-	    	toModify.setPermissions(permissions);
+	    if(MemberPermissions.instance().hasLevel(channel, member, level)){
+	    	MemberPermissions.instance().setLevel(channel, toModify, level);
     		resp.getWriter().write("success");
     		channel.put();
+    		MemberPermissions.instance().put();
 	    }else{
 			resp.getWriter().write("Error: You don't have enough permissions to change permissions of  " + toModify.getAlias() + ".");
 	    }

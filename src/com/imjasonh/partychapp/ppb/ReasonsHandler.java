@@ -1,16 +1,14 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.ppb;
 
 import java.util.List;
 
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
-import com.imjasonh.partychapp.ppb.Reason;
-import com.imjasonh.partychapp.ppb.Target;
+import com.imjasonh.partychapp.server.command.SlashCommand;
 
 public class ReasonsHandler extends SlashCommand {
 
-  ReasonsHandler() {
+  public ReasonsHandler() {
     super("reasons");
   }
 
@@ -40,10 +38,5 @@ public class ReasonsHandler extends SlashCommand {
 
   public String documentation() {
     return "/reasons target - see why target's score was changed";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

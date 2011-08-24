@@ -1,4 +1,4 @@
-package com.imjasonh.partychapp.filters;
+package com.xgen.chat.commands;
 
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.server.command.CommandHandlerTestCase;

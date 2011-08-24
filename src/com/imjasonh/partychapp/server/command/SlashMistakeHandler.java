@@ -1,11 +1,9 @@
-package com.imjasonh.partychapp.filters;
+package com.imjasonh.partychapp.server.command;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
-import com.imjasonh.partychapp.server.command.CommandHandler;
 
 /**
  * This handler, to be put after all other SlashCommands, makes
@@ -35,11 +33,6 @@ public class SlashMistakeHandler implements CommandHandler{
 	public boolean matches(Message msg) {
 		Matcher m = pattern.matcher(msg.content);
 		return m.matches();
-	}
-	
-	@Override
-	public boolean allows(Message msg) {
-		return msg.member.hasPermissions(Permissions.MEMBER);
 	}
 
 }

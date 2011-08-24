@@ -3,6 +3,10 @@ package com.imjasonh.partychapp.server;
 import com.google.appengine.api.quota.QuotaService;
 import com.google.appengine.api.quota.QuotaServiceFactory;
 import com.google.appengine.api.quota.QuotaService.DataType;
+import com.google.appengine.api.taskqueue.DeferredTask;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.xmpp.JID;
 import com.google.appengine.api.xmpp.Message;
 import com.google.appengine.api.xmpp.XMPPService;
@@ -17,7 +21,9 @@ import com.imjasonh.partychapp.server.command.Command;
 import com.imjasonh.partychapp.stats.ChannelStats;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collections;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -41,55 +47,120 @@ public class PartychappServlet extends HttpServlet {
 	  //Pattern.compile(".*[/]conference$", Pattern.CASE_INSENSITIVE),
   };
     
-    
+  private class MessageTask implements DeferredTask, Serializable{
+	  String body;
+	  String userAddress;
+	  String serverAddress;
+	  String channelName;
+	  
+	  public MessageTask(String channelName, String userAddress, String serverAddress, String body){
+		  this.body = body;
+		  this.userAddress = userAddress;
+		  this.serverAddress = serverAddress;
+		  this.channelName = channelName;
+	  }
+		@Override
+		public void run() {
+			logger.log(Level.INFO, "Running task");
+		    Datastore datastore = Datastore.instance();
+		    datastore.startRequest();
+			try{
+				JID userJID = new JID(userAddress);
+			 	JID serverJID = new JID(serverAddress);
+			  
+		        Channel channel = datastore.getChannelByName(channelName);
+		        if (channel == null){
+		          logger.warning("non-existant channel " + channelName + " requested by " + userAddress);
+		      	  return;
+		        }
+	
+	
+		        User user = datastore.getOrCreateUser(userJID.getId().split("/")[0]);
+		        
+		        if (userJID.getId().split("/")[0].compareTo(user.getJID()) != 0){
+		      	  return;
+		        }
+		        
+		        Member member =  channel.getMemberByJID(user.getJID());
+		        
+		        com.imjasonh.partychapp.Message message =
+		          new com.imjasonh.partychapp.Message.Builder()
+		            .setContent(body)
+		            .setUserJID(userJID)
+		            .setServerJID(serverJID)
+		            .setChannel(channel)
+		            .setMember(member)
+		            .setUser(user)
+		            .setMessageType(MessageType.XMPP)
+		            .build();
+		        
+			 logger.log(Level.INFO, "About to get Command Handler");
+			 Command.getCommandHandler(message)/*.doCommand(message)*/;
+		      if (message.channel == null || message.member == null){
+		    	  return; //message never amounted to anything.
+		      }
+		      
+		      // {@link User#fixUp} can't be called by {@link FixingDatastore}, since
+		      // it can't know what channel the user is currently messaging, so we have
+		      // to do it ourselves.
+		      message.user.fixUp(message.channel);
+		      message.user.maybeMarkAsSeen();
+		    } finally { 
+		        datastore.endRequest();
+		    }
+		}
+	}
+  
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws IOException {
-    long startCpu = -1;
-    if (QS.supports(DataType.CPU_TIME_IN_MEGACYCLES)) {
-      startCpu = QS.getCpuTimeInMegaCycles();
-    }
+	  long startCpu = -1;
+	    if (QS.supports(DataType.CPU_TIME_IN_MEGACYCLES)) {
+	      startCpu = QS.getCpuTimeInMegaCycles();
+	    }
+		 
+	    Message xmppMessage;
+	    try {
+	      xmppMessage = XMPP.parseMessage(req);
+	    } catch (IllegalArgumentException e) {
+	      // These exceptions are apparently caused by a bug in the gtalk flash
+	      // gadget, so let's just ignore them.
+	      // http://code.google.com/p/googleappengine/issues/detail?id=2082
+	      resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	      return;
+	    }
 
-    Message xmppMessage;
-    try {
-      xmppMessage = XMPP.parseMessage(req);
-    } catch (IllegalArgumentException e) {
-      // These exceptions are apparently caused by a bug in the gtalk flash
-      // gadget, so let's just ignore them.
-      // http://code.google.com/p/googleappengine/issues/detail?id=2082
-      resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return;
-    }
-
-    try { // FIXME: huge hack
-    	final String fromAddr = xmppMessage.getFromJid().getId();
-    	for (Pattern p : jidBlacklist) {
-    		if (p.matcher(fromAddr).matches()) {
-    			logger.info("blocked message from " + fromAddr + " to channel " 
-    					+ ((xmppMessage.getRecipientJids().length > 0) ? 
-    							jidToLowerCase(xmppMessage.getRecipientJids()[0])
-    							: "NONE")
-    					+ " due to ACL " + p.toString());
-    			resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-    			return;
-    		}
-    	}
-    } catch (Exception e) {
-    	logger.warning("unknown exception on ACL " + e);
-    }
+	    try { // FIXME: huge hack
+	    	final String fromAddr = xmppMessage.getFromJid().getId();
+	    	for (Pattern p : jidBlacklist) {
+	    		if (p.matcher(fromAddr).matches()) {
+	    			logger.info("blocked message from " + fromAddr + " to channel " 
+	    					+ ((xmppMessage.getRecipientJids().length > 0) ? 
+	    							jidToLowerCase(xmppMessage.getRecipientJids()[0])
+	    							: "NONE")
+	    					+ " due to ACL " + p.toString());
+	    			resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+	    			return;
+	    		}
+	    	}
+	    } catch (Exception e) {
+	    	logger.warning("unknown exception on ACL " + e);
+	    }
+	    
+	    
+	    try {
+	      doXmpp(xmppMessage);
+	      resp.setStatus(HttpServletResponse.SC_OK);
+	    } finally {
+	      if (QS.supports(DataType.CPU_TIME_IN_MEGACYCLES) && xmppMessage != null) {
+	        long endCpu = QS.getCpuTimeInMegaCycles();
+	        JID serverJID = jidToLowerCase(xmppMessage.getRecipientJids()[0]);
+	        String channelName = serverJID.getId().split("@")[0];
+	        ChannelStats.recordChannelCpu(channelName, endCpu - startCpu);
+	      }
+	    }	
     
-    
-    try {
-      doXmpp(xmppMessage);
-      resp.setStatus(HttpServletResponse.SC_OK);
-    } finally {
-      if (QS.supports(DataType.CPU_TIME_IN_MEGACYCLES) && xmppMessage != null) {
-        long endCpu = QS.getCpuTimeInMegaCycles();
-        JID serverJID = jidToLowerCase(xmppMessage.getRecipientJids()[0]);
-        String channelName = serverJID.getId().split("@")[0];
-        ChannelStats.recordChannelCpu(channelName, endCpu - startCpu);
-      }
-    }
+   
   }
 
   private static JID jidToLowerCase(JID in) {
@@ -98,73 +169,38 @@ public class PartychappServlet extends HttpServlet {
   
   public void doXmpp(Message xmppMessage) {
     long startTime = System.currentTimeMillis();
-    Datastore datastore = Datastore.instance();
-    datastore.startRequest();
     
-    try {
       JID userJID = jidToLowerCase(xmppMessage.getFromJid());
   
       // should only be "to" one JID, right?
       JID serverJID = jidToLowerCase(xmppMessage.getRecipientJids()[0]);
       String channelName = serverJID.getId().split("@")[0];
       
+      if (channelName.equalsIgnoreCase("echo")) {
+          handleEcho(xmppMessage);
+          return;
+        }
+      
       logger.info("Request by " + userJID.getId() + " for channel " + channelName);
   
       String body = xmppMessage.getBody().trim();
   
-      if (channelName.equalsIgnoreCase("echo")) {
-        handleEcho(xmppMessage);
-        return;
+      MessageTask task = new MessageTask(channelName, userJID.getId(), serverJID.getId(), body);
+      
+      try{
+          QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withPayload(task));     
+      }catch(NoSuchMethodError e){
+    	  task.run();
       }
-  
-      Channel channel = datastore.getChannelByName(channelName);
-      if (channel == null){
-    	  return;
-      }
-
-
-      User user = datastore.getOrCreateUser(userJID.getId().split("/")[0]);
-      
-      if (userJID.getId().split("/")[0].compareTo(user.getJID()) != 0){
-    	  return;
-      }
-      
-      Member member =  channel.getMemberByJID(user.getJID());
-      
-      com.imjasonh.partychapp.Message message =
-        new com.imjasonh.partychapp.Message.Builder()
-          .setContent(body)
-          .setUserJID(userJID)
-          .setServerJID(serverJID)
-          .setChannel(channel)
-          .setMember(member)
-          .setUser(user)
-          .setMessageType(MessageType.XMPP)
-          .build();
-      
-  
-      Command.getCommandHandler(message)/*.doCommand(message)*/;
-      if (message.channel == null || message.member == null){
-    	  return; //message never amounted to anything.
-      }
-      
-      // {@link User#fixUp} can't be called by {@link FixingDatastore}, since
-      // it can't know what channel the user is currently messaging, so we have
-      // to do it ourselves.
-      user.fixUp(message.channel);
-      user.maybeMarkAsSeen();   
       
       
       long requestTime = System.currentTimeMillis() - startTime;
       if (requestTime > 300) {
-          logger.warning("Request for channel " + channel.getName() + 
-              " (" + channel.getMembers().size() + " members) took " +
+          logger.warning("Request for channel " + channelName + 
+              "  took " +
               requestTime + "ms");
         
       }
-    } finally { 
-      datastore.endRequest();
-    }
   }
 
   private static void handleEcho(Message xmppMessage) {
@@ -174,4 +210,5 @@ public class PartychappServlet extends HttpServlet {
         xmppMessage.getRecipientJids()[0],
         Collections.singletonList(xmppMessage.getFromJid()));
   }
+
 }

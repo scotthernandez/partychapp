@@ -18,8 +18,4 @@ public class IncomingEmailHandler implements CommandHandler {
     return msg.messageType.equals(MessageType.EMAIL);
   }
   
-  @Override
-  public boolean allows(Message msg) {
-  	return true;
-  }
 }

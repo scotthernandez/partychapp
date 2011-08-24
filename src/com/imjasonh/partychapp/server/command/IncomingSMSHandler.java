@@ -24,9 +24,5 @@ public class IncomingSMSHandler implements CommandHandler {
   public boolean matches(Message msg) {
     return msg.messageType.equals(MessageType.SMS);
   }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return true;
-  }
+
 }

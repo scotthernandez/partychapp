@@ -2,6 +2,7 @@ package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.ppb.PPBHandler;
 import com.imjasonh.partychapp.ppb.Target;
 import com.imjasonh.partychapp.testing.FakeDatastore;
 

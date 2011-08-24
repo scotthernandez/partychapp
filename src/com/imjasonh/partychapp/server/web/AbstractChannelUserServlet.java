@@ -82,7 +82,7 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
       if (pUser != null){
           Channel channel =
               datastore.getChannelIfUserPresent(channelName, pUser.getJID());
-          if (channel == null) {
+          if (channel == null && !userService.isUserAdmin()) {
               resp.sendError(HttpServletResponse.SC_FORBIDDEN);
               return;
             }

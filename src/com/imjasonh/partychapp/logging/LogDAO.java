@@ -13,7 +13,8 @@ import com.imjasonh.partychapp.Ofy;
 public class LogDAO {
 	private static Objectify ofy = Ofy.instance();
 	  
-    private static final Logger logger = 
+    @SuppressWarnings("unused")
+	private static final Logger logger = 
         Logger.getLogger(LogDAO.class.getName());
   
     static{
@@ -41,7 +42,6 @@ public class LogDAO {
     }
     
     public static List<LogEntry> getLogByDates(String channel, Date start, Date finish){
-    	logger.warning("getLogByDates: " + channel + ", " + start + ", " + finish);
     	List<LogEntry> log = ofy.query(LogEntry.class)
 		  .filter("channelName", channel)
 		  .filter("timestamp >=", start)

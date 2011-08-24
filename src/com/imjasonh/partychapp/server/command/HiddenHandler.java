@@ -37,9 +37,4 @@ public class HiddenHandler extends SlashCommand {
 	//for user admins only
     return null;
   }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.user.isAdmin();
-  }
 }

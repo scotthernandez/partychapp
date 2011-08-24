@@ -1,13 +1,11 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.ppb;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import java.util.List;
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
-import com.imjasonh.partychapp.ppb.PlusPlusBot;
-import com.imjasonh.partychapp.ppb.Reason;
+import com.imjasonh.partychapp.server.command.CommandHandler;
 
 public class PPBHandler implements CommandHandler {
   PlusPlusBot ppb = new PlusPlusBot();
@@ -96,11 +94,6 @@ public class PPBHandler implements CommandHandler {
 
   public String documentation() {
     return "plusplusbot: handles ++'s and --'s";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }
 

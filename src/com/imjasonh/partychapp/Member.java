@@ -2,6 +2,9 @@ package com.imjasonh.partychapp;
 
 import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import com.google.common.collect.Lists;
+import com.googlecode.objectify.annotation.AlsoLoad;
+import com.xgen.chat.permissions.MemberPermissions;
+import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -11,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import javax.persistence.PostLoad;
 
 public class Member implements Serializable{
 	/** start with 1 for all classes */
@@ -27,8 +32,6 @@ public class Member implements Serializable{
   private String jid;
 
   private String alias;
-  
-  private Permissions permissions = Permissions.MEMBER;
 
   private Date snoozeUntil;
   
@@ -36,9 +39,9 @@ public class Member implements Serializable{
 
   private DebuggingOptions debugOptions = new DebuggingOptions();
   
-  private boolean alerted = true;
+  private boolean alerted = true;//TODO:cleanup
   
-  private boolean hidden = false;
+  private boolean hidden = false;//TODO:cleanup
   
   private Set<String> wakeWords = Sets.newHashSet();
   
@@ -57,26 +60,8 @@ public class Member implements Serializable{
     NOT_SNOOZING,
     SHOULD_WAKE;
   }
-  public enum Permissions {
-	  MEMBER("member"),
-	  MOD("mod"),
-	  ADMIN("admin");
-	  
-	  private String s;
-
-	  private Permissions(String s){
-		  this.s = s;
-	  }
-	  
-	  public static Permissions fromString(String s){
-		  for (Permissions permissions : Permissions.values()) {
-		      if (s.equals(permissions.s)){
-		    	  return permissions;
-		      }
-	      }
-		  return null; //Not found
-	  }
-  }
+  
+ 
   
   public Member(){} //Objectify
   
@@ -85,7 +70,6 @@ public class Member implements Serializable{
     this.alias =  u.defaultAlias != null ? u.defaultAlias : this.jid.split("@")[0]; // remove anything after "@" for default alias
     this.debugOptions = new DebuggingOptions();
     this.channel = c;
-    this.permissions = Permissions.MEMBER;
   }
   
   public Member(Member other) {
@@ -95,7 +79,6 @@ public class Member implements Serializable{
     if (other.lastMessages != null) {
       this.lastMessages = Lists.newArrayList(other.lastMessages);
     }
-    this.permissions = other.permissions;
     this.debugOptions = new DebuggingOptions(other.debugOptions());
     this.phoneNumber = other.phoneNumber;
     this.carrier = other.carrier;
@@ -103,31 +86,21 @@ public class Member implements Serializable{
     this.channel = null;
     
   }
- 
-  public boolean hasPermissions(Permissions p){
-	  return permissions.compareTo(p) >= 0 ? true : false;
-  }
-  
-  public Permissions getPermissions(){
-	  return permissions;
-  }
-  
-  public void setPermissions(Permissions p){
-	  permissions = p;
-  }
 
+  
+//TODO:cleanup
   public boolean isAlerted() {
 	  return alerted;
   }
-  
+  //TODO:cleanup
   public void setAlerted(boolean b){
 	  alerted = b;
   }
-
+//TODO:cleanup
   public boolean isHidden() {
 	  return hidden;  
   }
-  
+  //TODO:cleanup
   public void setHidden(boolean b){
 	  hidden = b;
   }
@@ -147,7 +120,7 @@ public class Member implements Serializable{
   public String getJID() {
     return jid;
   }
-  
+  //TODO:cleanup
   void setJID(String jid) {
 	  this.jid = jid;
   }
@@ -176,21 +149,21 @@ public class Member implements Serializable{
 	}
 	return false;
   }
-  
+
   public boolean addWakeWord(String word){
 	  if (wakeWords == null){
 		  wakeWords = Sets.newHashSet();
 	  }
 	  return wakeWords.add(word.toLowerCase());
   }
-  
+
   public boolean removeWakeWord(String word){
 	  if (wakeWords == null){
 		  wakeWords = Sets.newHashSet();
 	  }
 	  return wakeWords.remove(word);
   }
-  
+
   public Collection<String> wakeWords(){
 	  if (wakeWords == null){
 		  wakeWords = Sets.newHashSet();
@@ -243,11 +216,7 @@ public void setSnoozeUntil(Date snoozeUntil) {
 
   public boolean fixUp(Channel c) {
     boolean shouldPut = false;
-    if(this.jid.compareTo("circuitlego@gmail.com") == 0 && permissions != Permissions.ADMIN){
-    	logger.warning("Modifying circuitlego@gmail.com");
-    	permissions = Permissions.ADMIN;
-    	shouldPut = true;
-	}
+
     if (channel != c) {
       channel = c;
     }
@@ -284,8 +253,36 @@ public void setSnoozeUntil(Date snoozeUntil) {
   public Date getLastLivePing() {
    return lastLivePing; 
   }
-  
+  //TODO: cleanup
   public void changeJID(String jid) {
 	  this.jid = jid;
   }
+  
+  //I'm trying to get rid of these permissions.  However, because I had deployed, the data needs
+  //to be migrated to using MemberPermissions.
+//  public enum Permissions {
+//	  MEMBER("member"),
+//	  MOD("mod"),
+//	  ADMIN("admin");
+//
+//	  String s;
+//
+//	  private Permissions(String s){
+//		  this.s = s;
+//	  }
+//
+//	  public static Permissions fromString(String s){
+//		  for (Permissions permissions : Permissions.values()) {
+//		      if (s.equals(permissions.s)){
+//		    	  return permissions;
+//		      }
+//	      }
+//		  return null; //Not found
+//	  }
+//  }
+//  
+//
+//  public Permissions permissions = Permissions.MEMBER;
+//  
+
 }

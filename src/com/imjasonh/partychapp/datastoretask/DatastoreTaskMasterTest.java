@@ -36,7 +36,7 @@ public class DatastoreTaskMasterTest extends TestCase {
     for (int i = 0; i < n; ++i) {
       String name = "pancake" + numbers[i];
     try{
-      Channel c = new Channel(new JID(name + "@" + Configuration.chatDomain), user);
+      Channel c = new Channel(new JID(name + "@" + Configuration.chatDomain));
       c.addMember(user);
       c.put();
     }catch (Exception e) {

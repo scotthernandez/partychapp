@@ -1,5 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
+import com.google.appengine.api.users.UserServiceFactory;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
@@ -28,12 +29,12 @@ public class DeleteChannelServlet extends AbstractChannelUserServlet {
     Datastore datastore = Datastore.instance();
     datastore.startRequest();
     try {
-        if (user.isAdmin()){
+        if (UserServiceFactory.getUserService().isUserAdmin()){
         	channel.removeAllUsers();
         	datastore.deleteChannelByName(channel.getName());
             resp.getWriter().write("success");
         }else{
-            resp.getWriter().write("Sorry, only all powerful people like can delete a channel.");
+            resp.getWriter().write("Sorry, admins can delete a channel.");
         }
     } finally {
       datastore.endRequest();      

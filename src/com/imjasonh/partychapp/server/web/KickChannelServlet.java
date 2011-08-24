@@ -4,7 +4,8 @@ import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.Member.Permissions;
+import com.xgen.chat.permissions.MemberPermissions;
+import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -47,7 +48,7 @@ public class KickChannelServlet extends AbstractChannelUserServlet {
 	    
 
 		Datastore.instance().startRequest();
-	    if(member.hasPermissions(Permissions.MOD)){
+	    if(MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){
 	    	if(channel.kick(email)){
 	    		resp.getWriter().write("success");
 	    		channel.put();

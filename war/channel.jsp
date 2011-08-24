@@ -6,6 +6,10 @@
 <%@ page import="com.imjasonh.partychapp.User"%>
 <%@ page import="com.imjasonh.partychapp.ppb.Reason"%>
 <%@ page import="com.imjasonh.partychapp.ppb.Target"%>
+<%@ page import="com.xgen.chat.permissions.MemberPermissions"%>
+<%@ page import="com.xgen.chat.permissions.MemberPermissions.PermissionLevel"%>
+<%@ page import="com.google.appengine.api.users.UserService"%>
+<%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
 
 <!DOCTYPE html>
 <html>
@@ -16,8 +20,11 @@
 <%
   Channel channel = (Channel) request.getAttribute("channel");
   Datastore datastore = Datastore.instance();
+  datastore.startRequest();
   User user = datastore.getOrCreateUser((String) request.getAttribute("email"));
   Member member = channel.getMemberByJID(user.getJID());
+  
+  UserService userService = UserServiceFactory.getUserService();
 %>
 
 <jsp:include page="include/head.jsp">
@@ -37,7 +44,7 @@
 	<p style="font-size:20px"><b>Members of <%=channel.getName()%>:</b></p>
 
 	<jsp:include page="include/channel-members.jsp"/>
-	<%if (user.isAdmin() || member.hasPermissions(Member.Permissions.MOD)){%>
+	<%if (userService.isUserAdmin() || MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){%>
 	<br><b>Invite others to <%=channel.getName()%>:</b>
 	<table>
 	  <tr>
@@ -70,7 +77,7 @@
 	<script>	window.myInstance = myLog('<%= channel.getName() %>');
 	</script>
 	
-	<%if (user.isAdmin() || member.hasPermissions(Member.Permissions.ADMIN)){%>
+	<%if (userService.isUserAdmin() || MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.ADMIN)){%>
 	<p style="font-size:20px"><b>Manage Logs:</b></p>
 	
 	<form action="/log/download" method="POST">
@@ -157,7 +164,7 @@
   <div class="tabbertab" title="Settings">
   
   
-	<%if (user.isAdmin() || member.hasPermissions(Member.Permissions.ADMIN)){%>
+	<%if (userService.isUserAdmin() || MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.ADMIN)){%>
 <p style="font-size:20px"><b><%=channel.getName()%>'s settings:</b></p>
 <div id="settings-container">
 	<form action="/channel/edit" method="POST">
@@ -249,7 +256,7 @@
 	  </tr>
 	</table>
 	</form>
-<% if (user.isAdmin() || member.hasPermissions(Member.Permissions.ADMIN)) {%>
+<% if (userService.isUserAdmin() || MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.ADMIN)) {%>
 	  <button id="removechannel">Delete Channel</button>
 	<script>
 	    		var button = document.getElementById('removechannel');
@@ -267,7 +274,7 @@
 
 
 
-
+<%datastore.endRequest();%>
 
 <jsp:include page="include/footer.jsp"/>
 </body>

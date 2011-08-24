@@ -3,7 +3,6 @@ package com.imjasonh.partychapp.server.command;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 
 
 public class ImportantHandler extends SlashCommand {
@@ -33,10 +32,5 @@ public class ImportantHandler extends SlashCommand {
 
   public String documentation() {
     return "/! message - Get your point accross with big headers. Use a lot if you want to be kicked.";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

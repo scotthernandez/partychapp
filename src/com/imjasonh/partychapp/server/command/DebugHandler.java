@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.DebuggingOptions.Option;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message;
 
 
@@ -11,7 +10,7 @@ public class DebugHandler extends SlashCommand {
   }
 
   @Override
-  void doCommand(Message msg, String argument) {
+  protected void doCommand(Message msg, String argument) {
     String reply;
     if (argument == null) {
       argument = "";
@@ -36,11 +35,6 @@ public class DebugHandler extends SlashCommand {
   public String documentation() {
     return "/debug [sequenceIds|errorNotifications|clear] - " +
         "if you don't know what this does, you probably shouldn't use it";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.ADMIN);
   }
 
 }

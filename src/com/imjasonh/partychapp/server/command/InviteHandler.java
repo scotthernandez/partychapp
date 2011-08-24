@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import com.imjasonh.partychapp.Configuration;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.server.InviteUtil;
 
@@ -37,10 +36,10 @@ public class InviteHandler extends SlashCommand {
     assert msg.channel != null;
     assert msg.member != null;
     
-    if(!msg.member.hasPermissions(Permissions.MOD)){
-    	msg.channel.sendDirect("You do not have enough permissions to /invite someone.", msg.member);
-    	return;
-    }
+//    if(!msg.member.hasPermissions(Permissions.MOD)){
+//    	msg.channel.sendDirect("You do not have enough permissions to /invite someone.", msg.member);
+//    	return;
+//    }
     
     if (Strings.isNullOrEmpty(jids)) {
       msg.channel.sendDirect(
@@ -117,10 +116,5 @@ public class InviteHandler extends SlashCommand {
       output.add(address.getAddress());
     }
     return error.toString();
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MOD);
   }
 }

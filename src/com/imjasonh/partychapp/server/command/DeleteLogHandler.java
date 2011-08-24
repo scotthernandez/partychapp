@@ -2,7 +2,6 @@ package com.imjasonh.partychapp.server.command;
 
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.logging.LogDAO;
 
 public class DeleteLogHandler extends SlashCommand {
@@ -18,13 +17,9 @@ public class DeleteLogHandler extends SlashCommand {
 	}
 
 	@Override
-	void doCommand(Message msg, String argument) {
+	protected void doCommand(Message msg, String argument) {
 		LogDAO.deleteAll();
 
 	}
 
-	@Override
-	public boolean allows(Message msg) {
-		return msg.member.hasPermissions(Permissions.ADMIN);
-	}
 }

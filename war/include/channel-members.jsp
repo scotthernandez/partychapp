@@ -9,6 +9,8 @@
 <%@ page import="com.imjasonh.partychapp.Channel"%>
 <%@ page import="com.imjasonh.partychapp.Member"%>
 <%@ page import="com.imjasonh.partychapp.Datastore"%>
+<%@ page import="com.xgen.chat.permissions.MemberPermissions"%>
+<%@ page import="com.xgen.chat.permissions.MemberPermissions.PermissionLevel"%>
 
 <%
 	Channel channel = (Channel) request.getAttribute("channel");
@@ -24,7 +26,7 @@
   <tr>
     <th>Alias</th>
     <th>Jabber ID </th>
-<%  if (member != null && member.hasPermissions(Member.Permissions.MOD)){
+<%  if (member != null && MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){
 %>
     <th>Kick</th>
     <th>Permissions</th>
@@ -45,7 +47,7 @@
 		  <tr id="<%=i+"-kick-row"%>">
 		    <td><%=m.getAlias()%></td>
 		    <td><%=m.getJID()%></td>
-<%  if (member != null && member.hasPermissions(Member.Permissions.MOD)){
+<%  if (member != null && MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){
 %>
 		    <td>
 	    		<div style="height:16px; width:43px; color:#00e; background-color:transparent; text-decoration:underline; border:0px; cursor:pointer;" id="<%=i+"-kick-button"%>"><b>[x]</b></div>
@@ -56,22 +58,22 @@
 	    		</script>
 			</td>
 			    <td>
-			    <%if (member.hasPermissions(m.getPermissions())){ %>
+			    <%if (MemberPermissions.instance().hasLevel(channel, member, MemberPermissions.instance().getLevel(channel, m))){ %>
 			    	<select id=<%=i+"-permissions-select"%>>
 			    		<option>Member</option>
-						<% if (member.hasPermissions(Member.Permissions.MOD)){%>
+						<% if (MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){%>
 							<option>Mod</option>
 						<% }%>
-						<% if (member.hasPermissions(Member.Permissions.ADMIN)){%>
+						<% if (MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.ADMIN)){%>
 							<option>Admin</option>
 						<% }%>
 			    	</select>
 			    	<script>
 		    		var select = document.getElementById('<%=i+"-permissions-select"%>');
-		    		adminOnClick('<%=channel.getName()%>', '<%=m.getJID()%>', select, '<%=m.getPermissions()%>');
+		    		adminOnClick('<%=channel.getName()%>', '<%=m.getJID()%>', select, '<%=MemberPermissions.instance().getLevel(channel, m)%>');
 		    		</script>
 			    <%}else{%>
-			    	<%= m.getPermissions()%>
+			    	<%= MemberPermissions.instance().getLevel(channel, m)%>
 			    <%} %>
 		    	</td>
 			  </tr>
@@ -83,7 +85,7 @@
   <table class="channel-table">
     <tr>
       <th>Email address</th>
-<%  if (member != null && member.hasPermissions(Member.Permissions.ADMIN)){
+<%  if (member != null && MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.ADMIN)){
 %>
     <th>Kick</th>
 <%  } 
@@ -98,7 +100,7 @@
     %>
       <tr id="<%=i+"-kick-invitee-row"%>" >
         <td><%=invitedMember%></td>
-<%  if (member != null && member.hasPermissions(Member.Permissions.ADMIN)){
+<%  if (member != null && MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.ADMIN)){
 %>
 		    <td>
 	    		<div style="height:16px; width:43px; color:#00e; background-color:transparent; text-decoration:underline; border:0px; cursor:pointer;" id="<%=i+"-kick-invitee-button"%>" ><b>[x]</b></div>

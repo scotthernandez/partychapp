@@ -1,5 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
+import com.google.appengine.api.users.UserServiceFactory;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Member;
@@ -30,7 +31,7 @@ public class AutoJoinChannelServlet extends AbstractChannelUserServlet {
     
     datastore.startRequest();
     try {
-        if (channel == null || !user.isAdmin()){
+        if (channel == null || !UserServiceFactory.getUserService().isUserAdmin()){
           resp.getWriter().write("you are not an admin user and should not have this button in the first place sorry");
           return;
         } else {

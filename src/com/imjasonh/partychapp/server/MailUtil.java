@@ -35,7 +35,7 @@ public class MailUtil {
     
     try {
       instance().send(email);
-      LOG.warning("Sent email to \"" + recipient + "\" from \"" + sender + "\" with subject \"" + subject + "\" and body \"" + body + "\"");
+      LOG.log(Level.INFO, "Sent email to \"" + recipient + "\" from \"" + sender + "\" with subject \"" + subject + "\" and body \"" + body + "\"");
     } catch (IOException e) {
       LOG.log(Level.SEVERE,
               "Caught exception while trying to send email to " +

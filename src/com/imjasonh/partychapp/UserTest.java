@@ -30,8 +30,8 @@ public class UserTest extends TestCase {
     datastore.put(userLowercase);
     datastore.put(userUppercase);    
     try{
-    channel1 = new Channel(new JID("channel1@partychat"), userLowercase);
-    channel2 = new Channel(new JID("channel2@partychat"), userLowercase);
+    channel1 = new Channel(new JID("channel1@partychat"));
+    channel2 = new Channel(new JID("channel2@partychat"));
     }catch (Exception e) {
 		 e.printStackTrace();
 	}

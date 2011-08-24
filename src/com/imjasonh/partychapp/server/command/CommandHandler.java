@@ -10,5 +10,4 @@ public interface CommandHandler {
   
   public String documentation();
   
-  public boolean allows(Message msg);
 }

@@ -1,4 +1,4 @@
-package com.xgen.partychapp.clienthub;
+package com.xgen.chat.clienthub;
 
 @SuppressWarnings("serial")
 public class ClientHubAPIException extends Exception {

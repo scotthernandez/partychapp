@@ -9,13 +9,18 @@ import com.google.common.collect.Lists;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Configuration;
 import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.server.InviteUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.command.InviteHandler;
-import com.xgen.partychapp.clienthub.ClientHubAPIException;
+import com.xgen.chat.clienthub.ClientHubAPIException;
+import com.xgen.chat.clienthub.ClientHubHelper;
+import com.xgen.chat.permissions.MemberPermissions;
+import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -45,7 +50,8 @@ public class CreateChannelServlet extends HttpServlet {
             req.getParameter("name")).replaceAll(".");
     Datastore datastore = Datastore.instance();
     datastore.startRequest();
-    try {
+
+    try{
       Channel channel = datastore.getChannelByName(name);
       if (channel != null) {
         resp.getWriter().write("Sorry, room name is taken");
@@ -58,20 +64,32 @@ public class CreateChannelServlet extends HttpServlet {
       // datastore and end up in an inconsistent state.
       JID serverJID = new JID(name + "@" + Configuration.chatDomain);
       // The creator only gets an XMPP invite, not an email one.
-      com.imjasonh.partychapp.User pchapUser =
-          datastore.getOrCreateUser(user.getEmail());
-      try{
-          channel = new Channel(serverJID, pchapUser);
-	  }catch (ClientHubAPIException e) {
-		  resp.getWriter().write("Sorry, the room name you chose is the name of a client on clienthub.<br>You must be a member of that clienthub page to register this room.");
-		  return;
-	  }catch (Exception e){
-		  logger.warning("Exception in channel creation: " + e);
-		  e.printStackTrace();
-		  return;
-	  }
-      SendUtil.invite(user.getEmail(), serverJID);
-
+      com.imjasonh.partychapp.User pchapUser = datastore.getOrCreateUser(user.getEmail());
+      
+      channel = new Channel(serverJID);
+    
+    try{
+      if (ClientHubHelper.instance().isClient(channel)){
+    	  if(!ClientHubHelper.instance().isContact(channel, user.getEmail()) || userService.isUserAdmin()){
+    		  resp.getWriter().write("Sorry, the room name you chose is the name of a client on clienthub.<br>You must be a member of that clienthub page to register this room.");
+    		  //Channel wasn't put() so it won't be persisted.  As if it was never created.
+    		  return;
+    	  }
+    	  ClientHubHelper.instance().addAllContactsIfClient(channel);
+      }
+    }catch(ClientHubAPIException e){
+  		logger.log(Level.WARNING, e.toString());
+  	    resp.getWriter().write("There was a problem connecting with ClientHub.  Notify the admins and check the log.");
+    }finally{
+    	if (userService.isUserAdmin() || pchapUser.is10Gen()){
+      	  Member m = channel.addMember(pchapUser);
+      	  MemberPermissions.instance().setLevel(channel, m, PermissionLevel.ADMIN);
+            SendUtil.invite(user.getEmail(), serverJID);
+        }else{
+      	  resp.getWriter().write("Failed to create channel.  You have no permission to do so.");
+        }
+    }
+    	
       // works for "true" ignoring case
       if (Boolean.parseBoolean(req.getParameter("inviteonly"))) {
         channel.setInviteOnly(true);
@@ -94,7 +112,7 @@ public class CreateChannelServlet extends HttpServlet {
   
       channel.put();
       resp.getWriter().write(
-          "Created! You are now an admin of " + channel.getName() + ". Just accept the chat request and start talking. " +
+          "Created! You are now a member of " + channel.getName() + ". Just accept the chat request and start talking. " +
       		"To add users later, type '/invite user@whatever.com'.");
       
       resp.getWriter().write(

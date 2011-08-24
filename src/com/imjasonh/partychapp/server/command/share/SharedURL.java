@@ -1,4 +1,4 @@
-package com.imjasonh.partychapp.filters;
+package com.imjasonh.partychapp.server.command.share;
 
 import java.util.Date;
 

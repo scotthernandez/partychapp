@@ -1,16 +1,13 @@
-package com.imjasonh.partychapp.filters;
+package com.imjasonh.partychapp.server.command.share;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.imjasonh.partychapp.Member.Permissions;
-import com.imjasonh.partychapp.filters.SharedURL;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.server.command.Command;
 import com.imjasonh.partychapp.server.command.CommandHandler;
-import com.imjasonh.partychapp.server.command.ShareHandler;
 import com.imjasonh.partychapp.urlinfo.UrlInfo;
 import com.imjasonh.partychapp.urlinfo.UrlInfoService;
 
@@ -70,11 +67,6 @@ public class LinkFilter implements CommandHandler {
 	public String documentation() {
 		// Nothing to show in help.
 		return null;
-	}
-
-	@Override
-	public boolean allows(Message msg) {
-		return msg.member.hasPermissions(Permissions.MEMBER);
 	}
 
 }

@@ -62,7 +62,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     
   <servlet>
     <servlet-name>PermissionsChannelServlet</servlet-name>
-    <servlet-class>com.imjasonh.partychapp.server.web.PermissionsChannelServlet</servlet-class>
+    <servlet-class>com.xgen.chat.permissions.PermissionsChannelServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -329,6 +329,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   <servlet-mapping>
     <servlet-name>adminchannelhandler</servlet-name>
     <url-pattern>/admin/channel/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>adminchannelinvalidate</servlet-name>
+    <servlet-class>com.imjasonh.partychapp.server.admin.ChannelInvalidateServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>adminchannelinvalidate</servlet-name>
+    <url-pattern>/admin/channelinvalidate/*</url-pattern>
   </servlet-mapping>
 
   <servlet>

@@ -6,7 +6,6 @@ import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.User;
-import com.imjasonh.partychapp.Member.Permissions;
 
 public class SummonHandler extends SlashCommand {
   @SuppressWarnings("unused")
@@ -72,10 +71,5 @@ public class SummonHandler extends SlashCommand {
 
   public String documentation() {
     return "/summon <alias> - summons a person in the room by sending them an email.";
-  }
-
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

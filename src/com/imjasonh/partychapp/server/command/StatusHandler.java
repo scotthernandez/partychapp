@@ -2,7 +2,6 @@ package com.imjasonh.partychapp.server.command;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.DebuggingOptions.Option;
-import com.imjasonh.partychapp.Member.Permissions;
 
 public class StatusHandler extends SlashCommand {
   
@@ -29,10 +28,5 @@ public class StatusHandler extends SlashCommand {
   
   public String documentation() {
     return "/status - show what room you're in";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

@@ -4,13 +4,16 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import com.imjasonh.partychapp.datastoretask.DatastoreTaskMasterTest;
+import com.imjasonh.partychapp.ppb.GraphScoreHandlerTest;
+import com.imjasonh.partychapp.ppb.PPBHandlerTest;
 import com.imjasonh.partychapp.ppb.PlusPlusBotTest;
+import com.imjasonh.partychapp.ppb.ReasonsHandlerTest;
+import com.imjasonh.partychapp.ppb.ScoreHandlerTest;
 import com.imjasonh.partychapp.server.PartychappServletTest;
 import com.imjasonh.partychapp.server.command.AliasHandlerTest;
 import com.imjasonh.partychapp.server.command.BroadcastHandlerTest;
 import com.imjasonh.partychapp.server.command.BugHandlerTest;
 import com.imjasonh.partychapp.server.command.DebugHandlerTest;
-import com.imjasonh.partychapp.server.command.GraphScoreHandlerTest;
 import com.imjasonh.partychapp.server.command.IncomingEmailHandlerTest;
 import com.imjasonh.partychapp.server.command.IncomingSMSHandlerTest;
 import com.imjasonh.partychapp.server.command.InviteHandlerTest;
@@ -18,18 +21,15 @@ import com.imjasonh.partychapp.server.command.KickHandlerTest;
 import com.imjasonh.partychapp.server.command.LeaveHandlerTest;
 import com.imjasonh.partychapp.server.command.ListHandlerTest;
 import com.imjasonh.partychapp.server.command.MeHandlerTest;
-import com.imjasonh.partychapp.server.command.PPBHandlerTest;
-import com.imjasonh.partychapp.server.command.ReasonsHandlerTest;
-import com.imjasonh.partychapp.server.command.ScoreHandlerTest;
 import com.imjasonh.partychapp.server.command.SearchReplaceHandlerTest;
 import com.imjasonh.partychapp.server.command.SendBroadcastSMSHandlerTest;
-import com.imjasonh.partychapp.server.command.ShareHandlerTest;
 import com.imjasonh.partychapp.server.command.SnoozeHandlerTest;
 import com.imjasonh.partychapp.server.command.StatsHandlerTest;
 import com.imjasonh.partychapp.server.command.StatusHandlerTest;
 import com.imjasonh.partychapp.server.command.SummonHandlerTest;
 import com.imjasonh.partychapp.server.command.ToggleLoggingHandlerTest;
 import com.imjasonh.partychapp.server.command.UndoHandlerTest;
+import com.imjasonh.partychapp.server.command.share.ShareHandlerTest;
 import com.imjasonh.partychapp.urlinfo.SimpleUrlInfoServiceTest;
 
 public class AllTests {

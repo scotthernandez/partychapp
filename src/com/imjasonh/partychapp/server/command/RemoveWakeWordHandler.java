@@ -3,7 +3,6 @@ package com.imjasonh.partychapp.server.command;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 
 
 public class RemoveWakeWordHandler extends SlashCommand {
@@ -37,10 +36,5 @@ public class RemoveWakeWordHandler extends SlashCommand {
 
   public String documentation() {
     return "/rmwake word1[, word2, ...] - remove words that wake you from snoozing.";
-  }
-  
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
   }
 }

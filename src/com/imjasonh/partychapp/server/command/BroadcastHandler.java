@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.Message.MessageType;
 
 public class BroadcastHandler implements CommandHandler {
@@ -21,8 +20,4 @@ public class BroadcastHandler implements CommandHandler {
     return msg.messageType.equals(MessageType.XMPP);
   }
   
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
-  }
 }

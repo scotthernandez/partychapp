@@ -36,7 +36,7 @@ public class ChannelCleanupServlet extends HttpServlet {
     datastore.startRequest();
     try{
 	  Channel channel = datastore.getChannelByName(channelName);
-	  datastore.endRequest();
+
 	  if (channel == null) {
 	    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 	    return;

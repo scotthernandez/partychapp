@@ -61,7 +61,8 @@ public class LiveDatastore extends Datastore {
   private Objectify ofy(){
 	  return Ofy.instance();
   }
-  
+	
+  //TODO:cleanup
   private <T> T getAndLog(Class<? extends T> c, String s){
 
 //		try{
@@ -98,7 +99,7 @@ public class LiveDatastore extends Datastore {
     	User user = getAndLog(User.class, jid);
       	return user;
     } catch (NotFoundException notFound) {
-    	  User user = ofy().query(User.class).filter("email", jid).get();
+    	  User user = ofy().query(User.class).filter("email", jid).get();//TODO:cleanup
 	      return user;
     }    
   }
@@ -147,7 +148,7 @@ public class LiveDatastore extends Datastore {
 	  							  .list();
 	  return reasons;
   }
-
+//TODO:cleanup
   public List<Channel> getAllChannels() {
 	  List<Channel> channels = ofy().query(Channel.class).list();
 	  return channels;
@@ -156,7 +157,6 @@ public class LiveDatastore extends Datastore {
   @Override
   public void put(Object o) {
 	try{
-		logger.warning(o.toString() + " was put.");
 		ofy().put(o);
 	}catch(Exception e){
 	      logger.log(Level.SEVERE, "Could not put a "+o.getClass().getCanonicalName()+" using objectify.", e);
@@ -189,6 +189,7 @@ public class LiveDatastore extends Datastore {
   public void endRequest(){
   }
 
+	//FIXME: not working
   int countUsersActiveInLastNDays(DatastoreService ds, int numDays) {
 	  com.googlecode.objectify.Query<User> q = ofy().query(User.class);
 	  if (numDays > 0) {
@@ -274,7 +275,7 @@ public class LiveDatastore extends Datastore {
     return new ExtractingKeyIterable(pq.asIterator(fetchOptions));
   }
 
-	@Override
+	@Override //TODO:cleanup
 	public void deleteChannelByName(String name) {
 		ofy().delete(Channel.class, name);
 	}

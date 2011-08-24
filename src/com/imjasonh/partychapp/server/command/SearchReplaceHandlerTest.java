@@ -2,6 +2,7 @@ package com.imjasonh.partychapp.server.command;
 
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.ppb.PPBHandler;
 import com.imjasonh.partychapp.testing.FakeDatastore;
 
 public class SearchReplaceHandlerTest extends CommandHandlerTestCase {

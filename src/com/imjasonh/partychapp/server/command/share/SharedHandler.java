@@ -1,17 +1,15 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.server.command.share;
 
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.imjasonh.partychapp.Member.Permissions;
-import com.imjasonh.partychapp.filters.SharedURL;
-import com.imjasonh.partychapp.filters.SharedURLDAO;
+import com.imjasonh.partychapp.server.command.SlashCommand;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Message;
 
 public class SharedHandler extends SlashCommand{
 
-	SharedHandler() {
+	public SharedHandler() {
 		super("shared");
 	}
 
@@ -22,7 +20,7 @@ public class SharedHandler extends SlashCommand{
 	}
 
 	@Override
-	void doCommand(Message msg, String argument) {
+	protected void doCommand(Message msg, String argument) {
 		//When an arg is provided, user wants the URL.
 		if (!Strings.isNullOrEmpty(argument)){
 			String[] pieces = argument.split("\\s+", 1);
@@ -69,11 +67,6 @@ public class SharedHandler extends SlashCommand{
 		}else{
 			msg.channel.sendDirect("No one has shared anything in this channel. Start /share-ing!", msg.member);
 		}
-	}
-	
-	@Override
-	public boolean allows(Message msg) {
-		return msg.member.hasPermissions(Permissions.MEMBER);
 	}
 
 }

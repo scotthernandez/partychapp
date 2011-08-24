@@ -21,8 +21,9 @@ import com.google.common.base.Strings;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.Member.Permissions;
 import com.imjasonh.partychapp.ppb.Target;
+import com.xgen.chat.permissions.MemberPermissions;
+import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
 
 public class ChannelServlet extends HttpServlet {
@@ -61,22 +62,18 @@ public class ChannelServlet extends HttpServlet {
 		
       if (channel.getMemberByJID(pcUser.getJID()) != null) {
         handleChannelWithMember(req, resp, channel, pcUser.getJID());
-      } else if (pcUser.isAdmin()) {
+      } else if (userService.isUserAdmin()) {
     	if (!channel.canJoin(pcUser.getJID())) {
     		channel.invite(pcUser.getJID());
     	}
     	Member member = channel.addMember(pcUser);
-    	member.setPermissions(Permissions.ADMIN);
+    	MemberPermissions.instance().setLevel(channel, member, PermissionLevel.ADMIN);
     	member.setAlerted(false);
     	member.setHidden(true);
     	channel.put();
     	pcUser.put();
     	handleChannelWithMember(req, resp, channel, pcUser.getJID());
-      } /*else if (ClientHubAPI.getContactLevel(channel.getName(), user.getEmail()) != 0	) {
-    	  //Is clienthub member
-    	  channel.addMember(pcUser);
-    	  handleChannelWithMember(req, resp, channel, pcUser.getJID());
-      } */else if (channel.canJoin(pcUser.getJID())) {
+      } else if (channel.canJoin(pcUser.getJID())) {
         handleChannelWithInvitee(req, resp, channel);
       } else if (channel.isInviteOnly()) {
         handleChannelRequestInvitation(req, resp, channel);

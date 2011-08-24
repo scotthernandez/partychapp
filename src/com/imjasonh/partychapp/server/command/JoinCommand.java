@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import com.imjasonh.partychapp.Message;
 import com.imjasonh.partychapp.Message.MessageType;
 import com.imjasonh.partychapp.server.SendUtil;
+import com.xgen.chat.clienthub.ClientHubAPIException;
+import com.xgen.chat.clienthub.ClientHubHelper;
 
 /**
  * Action taken when the user is not yet a member of the *existing* room.
@@ -22,11 +24,13 @@ public class JoinCommand implements CommandHandler {
 
     String email = msg.userJID.getId().split("/")[0];
     
-    if (!msg.channel.canJoin(email)) {
-      String reply = "You must be invited to this room.";
-      SendUtil.sendDirect(reply, msg.userJID, msg.serverJID);
-      return;
-    }
+    try {
+		if (!msg.channel.canJoin(email) || ClientHubHelper.instance().isContact(msg.channel, msg.member.getJID())) {
+		  String reply = "You must be invited to this room.";
+		  SendUtil.sendDirect(reply, msg.userJID, msg.serverJID);
+		  return;
+		}
+	
 
     msg.member = msg.channel.addMember(msg.user);
     msg.channel.put();
@@ -39,7 +43,10 @@ public class JoinCommand implements CommandHandler {
         + msg.member.getAlias() + "'";
     msg.channel.broadcast(broadcast, msg.member);
     
-    //Command.getCommandHandler(msg).doCommand(msg);
+    Command.getCommandHandler(msg);
+    } catch (ClientHubAPIException e) {
+		//
+	}
   }
 
   public String documentation() {
@@ -50,8 +57,4 @@ public class JoinCommand implements CommandHandler {
     return msg.channel != null && msg.member == null && msg.messageType.equals(MessageType.XMPP);
   }
 
-  @Override
-  public boolean allows(Message msg) {
-  	return true;
-  }
 }

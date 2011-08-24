@@ -1,6 +1,7 @@
-package com.imjasonh.partychapp.server.command;
+package com.imjasonh.partychapp.ppb;
 
 import com.imjasonh.partychapp.Message;
+import com.imjasonh.partychapp.server.command.CommandHandlerTestCase;
 
 public class ScoreHandlerTest extends CommandHandlerTestCase {
   ScoreHandler handler = new ScoreHandler();

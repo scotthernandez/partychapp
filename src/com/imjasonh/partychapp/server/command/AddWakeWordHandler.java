@@ -3,7 +3,6 @@ package com.imjasonh.partychapp.server.command;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
-import com.imjasonh.partychapp.Member.Permissions;
 
 
 public class AddWakeWordHandler extends SlashCommand {
@@ -40,8 +39,4 @@ public class AddWakeWordHandler extends SlashCommand {
     return "/addwake word1[, word2, ...] - add words that will wake you from snoozing";
   }
   
-  @Override
-  public boolean allows(Message msg) {
-  	return msg.member.hasPermissions(Permissions.MEMBER);
-  }
 }
