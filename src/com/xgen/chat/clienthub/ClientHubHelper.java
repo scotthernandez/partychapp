@@ -1,10 +1,13 @@
 package com.xgen.chat.clienthub;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
+import com.google.appengine.repackaged.com.google.common.collect.Sets;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
@@ -82,27 +85,30 @@ public class ClientHubHelper {
 		return false;
 	}
 	
-	public boolean addAllContactsIfClient(Channel channel){
+	public Collection<Member> addAllContactsIfClient(Channel channel){
 		try{
+			Set<Member> added = Sets.newHashSet();
 			Map<String, ClientHubContact> map = getContactsIfClient(channel);
 			if (map != null){
 				for (ClientHubContact contact : map.values()){
 					if (contact.isEngineering() || contact.isJira()){
 						if (channel.getMemberByJID(contact.getEmail()) == null){
-							addMember(channel, contact);
+							Member m = addMember(channel, contact);
+							added.add(m);
 							SendUtil.invite(contact.getEmail(), channel.serverJID());
 						}
 					}
 				}
-				return true;
+				return added;
 			}
 		}catch(ClientHubAPIException e){
 			logger.log(Level.WARNING, e.toString());
 		}
-		return false;
+		return null;
 	}
 	
-	private void addMember(Channel channel, ClientHubContact contact){
+	
+	private Member addMember(Channel channel, ClientHubContact contact){
 		User user = Datastore.instance().getOrCreateUser(contact.getEmail());
 		Member member = channel.addMember(user);
 	    SendUtil.invite(member.getJID(), channel.serverJID());
@@ -116,6 +122,7 @@ public class ClientHubHelper {
 	    	MemberPermissions.instance().setLevel(channel, member, PermissionLevel.MEMBER);
 	    }
 	    MemberPermissions.instance().put();
+	    return member;
 	}
 	
 	public boolean addMemberIfContact(Channel channel, ClientHubContact contact){

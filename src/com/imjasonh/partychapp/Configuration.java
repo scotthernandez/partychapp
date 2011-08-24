@@ -1,7 +1,7 @@
 package com.imjasonh.partychapp;
 
 public class Configuration {
-  public static final String domain = "10genchat";
+  public static final String domain = "chat-10gen";
   public static final String chatDomain = domain + ".appspotchat.com";
   public static final String webDomain = "chat.10gen.com";
   //public static final String webDomain = domain + ".appspot.com";
