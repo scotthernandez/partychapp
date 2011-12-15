@@ -1,34 +1,48 @@
 package com.xgen.chat.clienthub;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.rtep.nosockHttpClient.GAEConnectionManager;
 
-import org.apache.http.*;
-import org.apache.http.auth.*;
-import org.apache.http.auth.params.*;
-import org.apache.http.client.*;
-import org.apache.http.client.methods.*;
-import org.apache.http.client.params.*;
-import org.apache.http.client.utils.*;
-import org.apache.http.entity.*;
-import org.apache.http.impl.client.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.params.AuthPNames;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.AuthPolicy;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.appengine.repackaged.com.google.common.collect.Lists;
 import com.google.appengine.repackaged.com.google.common.collect.Maps;
-import com.google.appengine.repackaged.com.google.common.io.CharStreams;
 
 public class ClientHubAPI
 {
@@ -67,7 +81,7 @@ public class ClientHubAPI
     	try{
 	    	InputStream stream = entity.getContent();
 	        InputStreamReader reader = new InputStreamReader(stream);
-	        String respString = CharStreams.toString(reader); 	//I think this could be done in a more efficient way.
+	        String respString = StreamUtil.readFully(reader); 	//I think this could be done in a more efficient way.
 	        stream.close();
 	        
 	        //If client, response is an array of json objects: [{...},{...},...]
@@ -156,7 +170,7 @@ public class ClientHubAPI
 	        
 	    	InputStream stream = entity.getContent();
 	        InputStreamReader reader = new InputStreamReader(stream);
-	        String jsonString = CharStreams.toString(reader); 	
+	        String jsonString = StreamUtil.readFully(reader); 	
 	        
 	        if (((Character)jsonString.charAt(0)).compareTo('{') == 0){
 	
@@ -179,7 +193,114 @@ public class ClientHubAPI
 
         throw new ClientHubAPIException();
     }
-    
+
+    public static class StreamUtil {
+
+        public static String[] execSafe( String command ){
+            try {
+                return exec( command );
+            }
+            catch ( IOException ioe ){
+                throw new RuntimeException( ioe );
+            }
+        }
+
+        public static String[] exec( String command )
+            throws IOException {
+            Process p = Runtime.getRuntime().exec( command );
+            String out = StreamUtil.readFully( p.getInputStream() );
+            String err = StreamUtil.readFully( p.getErrorStream() );
+            p.destroy();
+            return new String[]{ out , err };
+        }
+
+        public static String readFully( File f )
+            throws IOException {
+            return readFully( f , "utf8" );
+        }
+        
+        public static String readFully( File f , String encoding )
+            throws IOException {
+            FileInputStream fin = new FileInputStream( f );
+            String s = readFully( fin , encoding );
+            fin.close();
+            return s;
+        }
+
+        public static String readFully(InputStream is) 
+            throws IOException {
+            return readFully( is , null );
+        }
+
+        public static String readFully(InputStream is , String encoding ) 
+            throws IOException {
+            return readFully( encoding == null ? 
+                              new InputStreamReader( is ) : 
+                              new InputStreamReader( is , encoding ) );
+        }
+
+        public static String readFully(InputStreamReader isr) 
+            throws IOException {
+            return readFully(new BufferedReader(isr));
+        }
+        
+        public static String readFully(BufferedReader br) 
+            throws IOException {
+            StringBuilder buf = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                buf.append(line);
+                buf.append('\n');
+            }
+            return buf.toString();
+        }
+
+        public static byte[] readBytesFully( InputStream is )
+            throws IOException {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            pipe( is , baos );
+            return baos.toByteArray();
+        }
+        
+        public static int pipe( InputStream is , OutputStream out )
+            throws IOException {
+            return pipe( is , out , -1 );
+        }
+        
+        public static int pipe( InputStream is , OutputStream out , int maxSize )
+            throws IOException {
+            byte buf[] = new byte [4096];
+            int len = -1;
+            int total = 0;
+            while ((len = is.read(buf)) != -1){
+                out.write(buf, 0, len); 
+                total += len;
+                if ( maxSize > 0 && total > maxSize )
+                    throw new IOException("too big");
+            }
+            return total;
+        }
+
+        public static int send( byte[] b , OutputStream out )
+            throws IOException {
+            ByteArrayInputStream in = new ByteArrayInputStream( b );
+            return pipe( in , out );
+        }
+        
+        public static byte readByte( InputStream in )
+            throws IOException {
+            int b = in.read();
+            if ( b < 0 )
+                throw new IOException("end of stream");
+            return (byte)( b & 0x000000ff );
+        }
+        
+        public static char readChar( InputStream in )
+            throws IOException {
+            return (char)readByte( in );
+        }
+
+    }
 }
 
 //Some test data
