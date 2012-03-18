@@ -1,16 +1,5 @@
 package com.imjasonh.partychapp.server.admin;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
-import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
-
-import com.imjasonh.partychapp.CachingDatastore;
-import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.Datastore;
-import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.User;
-import com.imjasonh.partychapp.WrappingDatastore;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
@@ -22,6 +11,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.imjasonh.partychapp.CachingDatastore;
+import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
+import com.imjasonh.partychapp.User;
+import com.imjasonh.partychapp.WrappingDatastore;
 
 /**
  * Dumps basic information about a channel.

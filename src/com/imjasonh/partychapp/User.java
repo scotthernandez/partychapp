@@ -1,13 +1,5 @@
 package com.imjasonh.partychapp;
 
-import com.google.appengine.repackaged.com.google.common.collect.Sets;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.googlecode.objectify.annotation.AlsoLoad;
-import com.googlecode.objectify.annotation.Indexed;
-import com.googlecode.objectify.annotation.Unindexed;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +11,14 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.persistence.Id;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.googlecode.objectify.annotation.AlsoLoad;
+import com.googlecode.objectify.annotation.Indexed;
+import com.googlecode.objectify.annotation.Unindexed;
 
 @Unindexed
 public class User implements Serializable{

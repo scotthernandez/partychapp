@@ -1,12 +1,21 @@
 package com.imjasonh.partychapp;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.persistence.Embedded;
+import javax.persistence.Id;
+
 import com.google.appengine.api.xmpp.JID;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.googlecode.objectify.annotation.AlsoLoad;
 import com.googlecode.objectify.annotation.Serialized;
 import com.googlecode.objectify.annotation.Unindexed;
-
 import com.imjasonh.partychapp.DebuggingOptions.Option;
 import com.imjasonh.partychapp.Member.SnoozeStatus;
 import com.imjasonh.partychapp.logging.ChannelLog;
@@ -15,23 +24,6 @@ import com.imjasonh.partychapp.logging.LogEntry;
 import com.imjasonh.partychapp.server.MailUtil;
 import com.imjasonh.partychapp.server.SendUtil;
 import com.imjasonh.partychapp.server.live.ChannelUtil;
-import com.xgen.chat.permissions.MemberPermissions;
-import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
-//import com.xgen.partychapp.clienthub.*;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-
-import javax.persistence.Embedded;
-import javax.persistence.Id;
-import javax.persistence.PostLoad;
 
 
 @Unindexed
@@ -72,16 +64,18 @@ public class Channel implements Serializable{
   @Embedded
   private ChannelLog channelLog = new ChannelLog();//TODO:cleanup
   
-  public Channel(){}
+  private Channel(){}
     
+  private Channel(String name){
+	  this.name = name.toLowerCase();
+  }
+  
   public Channel(JID serverJID){
-
-	this.name = serverJID.getId().split("@")[0];
-
+	  this(serverJID.getId().split("@")[0]);
   }
    
   public Channel(Channel other) {
-    this.name = other.name;
+    this(other.name);
     this.inviteOnly = other.inviteOnly;
     this.invitedIds = Lists.newArrayList(other.invitedIds);
     this.members = Sets.newHashSet();

@@ -1,8 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -1,7 +1,6 @@
 package com.imjasonh.partychapp.logging;
 
 import java.util.Date;
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,10 +39,28 @@ public class LogDAO {
   		  .list();
   	  return log;
     }
+
+    public static List<LogEntry> getLog(int limit, int offset){
+    	  List<LogEntry> log = ofy.query(LogEntry.class)
+    		  .order("-timestamp")
+    		  .limit(limit)
+    		  .offset(offset)
+    		  .list();
+    	  return log;
+      }
     
     public static List<LogEntry> getLogByDates(String channel, Date start, Date finish){
     	List<LogEntry> log = ofy.query(LogEntry.class)
 		  .filter("channelName", channel)
+		  .filter("timestamp >=", start)
+		  .filter("timestamp <=", finish)
+		  .order("-timestamp")
+		  .list();
+	  return log;
+    }
+
+    public static List<LogEntry> getLogByDates(Date start, Date finish){
+    	List<LogEntry> log = ofy.query(LogEntry.class)
 		  .filter("timestamp >=", start)
 		  .filter("timestamp <=", finish)
 		  .order("-timestamp")

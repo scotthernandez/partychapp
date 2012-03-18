@@ -1,5 +1,17 @@
 package com.imjasonh.partychapp.server.web;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONArray;
+
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.logging.LogDAO;
@@ -7,19 +19,6 @@ import com.imjasonh.partychapp.logging.LogEntry;
 import com.imjasonh.partychapp.logging.LogJSONUtil;
 import com.xgen.chat.clienthub.ClientHubAPI;
 import com.xgen.chat.clienthub.ClientHubHelper;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONArray;
 
 public class CronClientHubLogServlet  extends HttpServlet {
 

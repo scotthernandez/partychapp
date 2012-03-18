@@ -1,11 +1,5 @@
 package com.imjasonh.partychapp;
 
-import com.google.appengine.repackaged.com.google.common.collect.Sets;
-import com.google.common.collect.Lists;
-import com.googlecode.objectify.annotation.AlsoLoad;
-import com.xgen.chat.permissions.MemberPermissions;
-import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.persistence.PostLoad;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class Member implements Serializable{
 	/** start with 1 for all classes */

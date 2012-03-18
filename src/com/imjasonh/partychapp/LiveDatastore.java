@@ -1,5 +1,16 @@
 package com.imjasonh.partychapp;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.sf.jsr107cache.Cache;
+import net.sf.jsr107cache.CacheException;
+import net.sf.jsr107cache.CacheManager;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -13,20 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
-
 import com.imjasonh.partychapp.ppb.Reason;
 import com.imjasonh.partychapp.ppb.Target;
-
-import net.sf.jsr107cache.Cache;
-import net.sf.jsr107cache.CacheException;
-import net.sf.jsr107cache.CacheManager;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 // NOT thread-safe
@@ -78,7 +77,7 @@ public class LiveDatastore extends Datastore {
   @Override
   public Channel getChannelByName(String name) {
 	  try {
-		  return getAndLog(Channel.class, name);
+		  return getAndLog(Channel.class, name.toLowerCase());
 	  }catch(NotFoundException e){
 	      return null;
 	  }
@@ -96,7 +95,7 @@ public class LiveDatastore extends Datastore {
   @Override
   public User getUserByJID(String jid) {
     try {
-    	User user = getAndLog(User.class, jid);
+    	User user = getAndLog(User.class, jid.toLowerCase());
       	return user;
     } catch (NotFoundException notFound) {
     	  User user = ofy().query(User.class).filter("email", jid).get();//TODO:cleanup

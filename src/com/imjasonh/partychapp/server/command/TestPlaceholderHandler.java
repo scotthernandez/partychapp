@@ -1,19 +1,12 @@
 package com.imjasonh.partychapp.server.command;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import com.imjasonh.partychapp.Message;
-//import com.xgen.partychapp.clienthub.ClientHubAPI;
-//import com.xgen.partychapp.clienthub.ClientHubAPIException;
-//import com.xgen.partychapp.clienthub.ClientHubContact;
 import com.xgen.chat.clienthub.ClientHubAPI;
 import com.xgen.chat.clienthub.ClientHubAPIException;
 import com.xgen.chat.clienthub.ClientHubContact;
-import com.xgen.chat.permissions.MemberPermissions;
-import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
 
 public class TestPlaceholderHandler extends SlashCommand {

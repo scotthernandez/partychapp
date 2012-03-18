@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-import com.google.appengine.repackaged.com.google.common.collect.Maps;
+import com.google.common.collect.Maps;
 import com.googlecode.objectify.NotFoundException;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Serialized;
@@ -14,7 +14,6 @@ import com.googlecode.objectify.annotation.Unindexed;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.Ofy;
-import com.imjasonh.partychapp.server.command.Command;
 
 @Unindexed
 public class MemberPermissions {

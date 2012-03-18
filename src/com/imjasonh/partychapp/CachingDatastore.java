@@ -1,18 +1,17 @@
 package com.imjasonh.partychapp;
 
-import com.google.appengine.repackaged.com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.imjasonh.partychapp.ppb.Reason;
 import com.imjasonh.partychapp.ppb.Target;
 import com.imjasonh.partychapp.server.admin.ChannelInvalidateServlet;
 import com.imjasonh.partychapp.server.admin.ChannelServlet;
 import com.imjasonh.partychapp.server.admin.UserServlet;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Wrapper around {@link Datastore} that adds caching for {@link User} and

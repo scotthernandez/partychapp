@@ -1,24 +1,22 @@
 package com.xgen.chat.permissions;
 
-import com.imjasonh.partychapp.User;
-import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.Datastore;
-import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.server.web.AbstractChannelUserServlet;
-import com.imjasonh.partychapp.server.web.LeaveChannelServlet;
-
-import com.xgen.chat.permissions.MemberPermissions.*;
-
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
+import com.imjasonh.partychapp.User;
+import com.imjasonh.partychapp.server.web.AbstractChannelUserServlet;
+import com.imjasonh.partychapp.server.web.LeaveChannelServlet;
+import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
+
 @SuppressWarnings("serial")
 public class PermissionsChannelServlet extends AbstractChannelUserServlet {
 
-  @SuppressWarnings("unused")
   private static final Logger logger =
       Logger.getLogger(LeaveChannelServlet.class.getName());
   
@@ -30,12 +28,13 @@ public class PermissionsChannelServlet extends AbstractChannelUserServlet {
       User user,
       Channel channel)
       throws IOException {
-	
+	  	
+	  	if (channel == null)
+	  		logger.severe("Channel for name '" + getChannelName(req) + "' is null");
+	  	
 	  	PermissionLevel level = PermissionLevel.fromString((String)req.getParameter("permissions")); 
   		
-  		
 		Member toModify = channel.getMemberByJID((String) req.getParameter("toModify"));
-
 		
 	    Member member = channel.getMemberByJID(user.getJID());
 	    

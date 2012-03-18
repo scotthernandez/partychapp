@@ -9,13 +9,13 @@ import java.util.logging.Logger;
 import com.google.appengine.api.xmpp.JID;
 import com.google.appengine.api.xmpp.MessageBuilder;
 import com.google.appengine.api.xmpp.SendResponse;
+import com.google.appengine.api.xmpp.SendResponse.Status;
 import com.google.appengine.api.xmpp.XMPPFailureException;
 import com.google.appengine.api.xmpp.XMPPService;
 import com.google.appengine.api.xmpp.XMPPServiceFactory;
-import com.google.appengine.api.xmpp.SendResponse.Status;
+import com.google.apphosting.api.ApiProxy.OverQuotaException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Configuration;
 import com.imjasonh.partychapp.stats.ChannelStats;
@@ -36,6 +36,9 @@ public abstract class SendUtil {
   public static boolean getPresence(JID userJID, JID serverJID) {
     try {
       return XMPP.getPresence(userJID, serverJID).isAvailable();
+    } catch (OverQuotaException e) {
+      LOG.log(Level.SEVERE, "over quota while looking up presece for " + userJID, e);
+      return false;
     } catch (XMPPFailureException e) {
       LOG.log(Level.WARNING, "got exception while getting presence for " + userJID, e);
       return false;

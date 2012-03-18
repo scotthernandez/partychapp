@@ -1,25 +1,5 @@
 package com.imjasonh.partychapp.server;
 
-import com.google.appengine.api.quota.QuotaService;
-import com.google.appengine.api.quota.QuotaServiceFactory;
-import com.google.appengine.api.quota.QuotaService.DataType;
-import com.google.appengine.api.taskqueue.DeferredTask;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.xmpp.JID;
-import com.google.appengine.api.xmpp.Message;
-import com.google.appengine.api.xmpp.XMPPService;
-import com.google.appengine.api.xmpp.XMPPServiceFactory;
-
-import com.imjasonh.partychapp.Channel;
-import com.imjasonh.partychapp.Datastore;
-import com.imjasonh.partychapp.Member;
-import com.imjasonh.partychapp.User;
-import com.imjasonh.partychapp.Message.MessageType;
-import com.imjasonh.partychapp.server.command.Command;
-import com.imjasonh.partychapp.stats.ChannelStats;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
@@ -30,6 +10,24 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.quota.QuotaService;
+import com.google.appengine.api.quota.QuotaService.DataType;
+import com.google.appengine.api.quota.QuotaServiceFactory;
+import com.google.appengine.api.taskqueue.DeferredTask;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.xmpp.JID;
+import com.google.appengine.api.xmpp.Message;
+import com.google.appengine.api.xmpp.XMPPService;
+import com.google.appengine.api.xmpp.XMPPServiceFactory;
+import com.imjasonh.partychapp.Channel;
+import com.imjasonh.partychapp.Datastore;
+import com.imjasonh.partychapp.Member;
+import com.imjasonh.partychapp.Message.MessageType;
+import com.imjasonh.partychapp.User;
+import com.imjasonh.partychapp.server.command.Command;
+import com.imjasonh.partychapp.stats.ChannelStats;
 
 @SuppressWarnings("serial")
 public class PartychappServlet extends HttpServlet {
@@ -94,7 +92,7 @@ public class PartychappServlet extends HttpServlet {
 		            .setMessageType(MessageType.XMPP)
 		            .build();
 		        
-			 logger.log(Level.INFO, "About to get Command Handler");
+			 logger.log(Level.INFO, "About to get Command Handler for msg:" + message);
 			 Command.getCommandHandler(message)/*.doCommand(message)*/;
 		      if (message.channel == null || message.member == null){
 		    	  return; //message never amounted to anything.

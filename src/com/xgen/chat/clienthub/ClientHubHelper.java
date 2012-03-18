@@ -6,15 +6,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.appengine.repackaged.com.google.common.collect.Maps;
-import com.google.appengine.repackaged.com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.server.SendUtil;
-//import com.xgen.chat.permissions.PermissionLevel;
-//import com.xgen.chat.permissions.PermissionsHelper;
 import com.xgen.chat.permissions.MemberPermissions;
 import com.xgen.chat.permissions.MemberPermissions.PermissionLevel;
 
@@ -65,7 +63,7 @@ public class ClientHubHelper {
 
 	public boolean isContact(Channel channel, String email) throws ClientHubAPIException{
 		Map<String, ClientHubContact> contactMap = getContactsIfClient(channel);
-		return contactMap.containsKey(email);
+		return contactMap == null ? false : contactMap.containsKey(email);
 	}
 	
 	public boolean addContactIfClient(Channel channel, String email){
