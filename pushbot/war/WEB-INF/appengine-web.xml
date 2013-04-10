@@ -11,5 +11,5 @@
   <inbound-services>
     <service>xmpp_message</service>
   </inbound-services>	
-	
+  <threadsafe>true</threadsafe>
 </appengine-web-app>

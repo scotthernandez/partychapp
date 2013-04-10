@@ -78,21 +78,22 @@ public abstract class AbstractChannelUserServlet extends HttpServlet {
     String channelName = getChannelName(req);
     Datastore datastore = Datastore.instance();
     datastore.startRequest();
-    try {
-      if (pUser != null){
-          Channel channel =
-              datastore.getChannelIfUserPresent(channelName, pUser.getJID());
-          if (channel == null && !userService.isUserAdmin()) {
-              resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-              return;
-            }
+	try {
+		if (pUser != null) {
+			Channel channel = datastore.getChannelIfUserPresent( channelName, pUser.getJID());
+			if (channel == null && !userService.isUserAdmin()) {
+				resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+				return;
+			} else if (channel == null && userService.isUserAdmin()) {
+				channel = datastore.getChannelByName(channelName);
+			}
 
-          methodAdapter.invokeMethod(req, resp, pUser, channel);
-      }
-      
-    } finally {
-    	datastore.endRequest();
-    }        
+			methodAdapter.invokeMethod(req, resp, pUser, channel);
+		}
+
+	} finally {
+		datastore.endRequest();
+	}
   }
   
   protected void doChannelGet(

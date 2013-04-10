@@ -1,5 +1,6 @@
 package com.imjasonh.partychapp.server.web;
 
+import com.google.appengine.api.users.UserServiceFactory;
 import com.imjasonh.partychapp.User;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
@@ -46,9 +47,10 @@ public class KickChannelServlet extends AbstractChannelUserServlet {
 	    	return;
 	    }
 	    
+	    boolean admin = UserServiceFactory.getUserService().isUserAdmin();
 
 		Datastore.instance().startRequest();
-	    if(MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){
+	    if(admin || MemberPermissions.instance().hasLevel(channel, member, PermissionLevel.MOD)){
 	    	if(channel.kick(email)){
 	    		resp.getWriter().write("success");
 	    		channel.put();

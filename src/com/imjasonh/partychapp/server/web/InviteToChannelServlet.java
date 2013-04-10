@@ -23,40 +23,33 @@ public class InviteToChannelServlet extends AbstractChannelUserServlet {
       Logger.getLogger(InviteToChannelServlet.class.getName());
 
   @Override
-  protected void doChannelPost(
-      HttpServletRequest req,
-      HttpServletResponse resp,
-      User user,
-      Channel channel)
-      throws IOException {
-    resp.getWriter().write(
-        "<style>body { font-family: Helvetica, sans-serif }</style>");
-    List<String> invitees = Lists.newArrayList();
-    if (!req.getParameter("invitees").isEmpty()) {
-      String error = InviteHandler.parseEmailAddresses(
-          req.getParameter("invitees"), invitees);
-      for (String invitee : invitees) {
-        channel.invite(invitee);
-        String inviteError = InviteUtil.invite(
-            invitee,
-            channel,
-            user.getEmail(),
-            user.getEmail()); 
-        if (Strings.isNullOrEmpty(inviteError)) {
-          error += "Invited " + invitee + "<br>";
-        } else {
-          error += inviteError + "<br>";            
-        }
+	protected void doChannelPost(HttpServletRequest req,
+								 HttpServletResponse resp, User user, Channel channel)
+																			throws IOException {
+		resp.getWriter().write(
+				"<style>body { font-family: Helvetica, sans-serif }</style>");
+		List<String> invitees = Lists.newArrayList();
+		if (!req.getParameter("invitees").isEmpty()) {
+			String error = InviteHandler.parseEmailAddresses(
+					req.getParameter("invitees"), invitees);
+			for (String invitee : invitees) {
+				channel.invite(invitee);
+				String inviteError = InviteUtil.invite(invitee, channel,
+						user.getEmail(), user.getEmail());
+				if (Strings.isNullOrEmpty(inviteError)) {
+					error += "Invited " + invitee + "<br>";
+				} else {
+					error += inviteError + "<br>";
+				}
 
-        channel.broadcastIncludingSender(
-            "_" + user.getEmail() +
-            " invited " + invitee + " (via the web UI)_");        
-      }
-      resp.getWriter().write(error);
-      
-      channel.put();
-    } else {
-      resp.getWriter().write("No one to invite.<P>");
-    }
-  }
+				channel.broadcastIncludingSender("_" + user.getEmail()
+						+ " invited " + invitee + " (via the web UI)_");
+			}
+			resp.getWriter().write(error);
+
+			channel.put();
+		} else {
+			resp.getWriter().write("No one to invite.<P>");
+		}
+	}
 }

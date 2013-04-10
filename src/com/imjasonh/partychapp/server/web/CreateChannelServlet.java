@@ -46,6 +46,7 @@ public class CreateChannelServlet extends HttpServlet {
   
     String name = ILLEGAL_JID_CHARACTERS.matcher(
             req.getParameter("name")).replaceAll(".");
+    name = name.toLowerCase(); // lower case stored name.
     Datastore datastore = Datastore.instance();
     datastore.startRequest();
 

@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.users.UserServiceFactory;
 import com.imjasonh.partychapp.Channel;
 import com.imjasonh.partychapp.Datastore;
 import com.imjasonh.partychapp.Member;
@@ -29,9 +30,10 @@ public class PermissionsChannelServlet extends AbstractChannelUserServlet {
       Channel channel)
       throws IOException {
 	  	
-	  	if (channel == null)
+	  	if (channel == null) {
 	  		logger.severe("Channel for name '" + getChannelName(req) + "' is null");
-	  	
+	  		logger.info("Request param map : " + req.getParameterMap());
+	  	}
 	  	PermissionLevel level = PermissionLevel.fromString((String)req.getParameter("permissions")); 
   		
 		Member toModify = channel.getMemberByJID((String) req.getParameter("toModify"));
@@ -46,10 +48,11 @@ public class PermissionsChannelServlet extends AbstractChannelUserServlet {
 	    	resp.getWriter().write("Error: Can't change your own permissions.");
 	    	return;
 	    }
+	    boolean admin = UserServiceFactory.getUserService().isUserAdmin();
 	    
 
 		Datastore.instance().startRequest();
-	    if(MemberPermissions.instance().hasLevel(channel, member, level)){
+	    if(admin || MemberPermissions.instance().hasLevel(channel, member, level)){
 	    	MemberPermissions.instance().setLevel(channel, toModify, level);
     		resp.getWriter().write("success");
     		channel.put();
